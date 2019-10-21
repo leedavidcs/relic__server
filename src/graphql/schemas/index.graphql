@@ -1,0 +1,31 @@
+#import './authentication.schema.graphql'
+#import './connection.schema.graphql'
+#import './user.schema.graphql'
+
+"JSON data. Gets returned all at once (cannot specify properties, traditionally like GraphQL)"
+scalar JSON
+"Date data. Gets returned as a unix-time Int"
+scalar Date
+"Location data in Longitude + Latitude. Gets returned as a Float 2-tuple"
+scalar Location
+
+"The viewer of this request."
+type Viewer {
+	"The ID of the Onfleet employee"
+	id: ID
+}
+
+"Root query type"
+type Query {
+	"The viewer of this request."
+	viewer: Viewer
+}
+
+type Mutation {
+	viewer: Viewer
+}
+
+schema {
+	query: Query
+	mutation: Mutation
+}

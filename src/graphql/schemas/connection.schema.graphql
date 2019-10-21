@@ -1,0 +1,11 @@
+"Pagination cursor. Use this to fetch items before or after an item"
+scalar Cursor
+
+"Pagination info, to show if other pages exist"
+type PageInfo {
+	"Pagination info, whether there is more data going forward"
+	hasNextPage: Boolean!
+	"Pagination info, whether there is more data going backward"
+	hasPreviousPage: Boolean!
+	count: Int!
+}

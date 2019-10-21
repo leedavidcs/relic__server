@@ -1,0 +1,20 @@
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# Webpack directories
+.webpack
+
+# Config
+.env.development
+.env.testing
+.env.staging
+.env.production
+
+# Testing
+.nyc_output
+coverage
+test-reports

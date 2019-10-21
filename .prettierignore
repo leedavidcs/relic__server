@@ -1,0 +1,10 @@
+.webpack
+scripts/**/*
+
+# Logs
+logs/**/*
+
+# Testing
+.nyc_output
+coverage
+test-reports
