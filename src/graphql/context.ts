@@ -1,6 +1,7 @@
 import { IWithUser } from "@/authentication";
 import { AbstractConnector, connectors } from "@/connectors";
 import { getLoaders } from "@/dataloaders";
+import { dataSources } from "@/datasources";
 import DataLoader from "dataloader";
 import { ParameterizedContext } from "koa";
 
@@ -17,6 +18,7 @@ export interface IServerContext<
 	L extends IContextLoaders = ReturnType<typeof getLoaders>
 > {
 	connectors: C;
+	dataSources: ReturnType<typeof dataSources>;
 	headers: { [key: string]: string };
 	koaCtx: ParameterizedContext<IWithUser> | null;
 	loaders: L;
@@ -27,7 +29,7 @@ export const deriveApolloContext = (
 	koaCtx: ParameterizedContext<IWithUser> | null,
 	props?: { [key: string]: any }
 ) => {
-	const apolloContext: IServerContext = {
+	const apolloContext: Omit<IServerContext, "dataSources"> = {
 		connectors,
 		headers,
 		koaCtx,

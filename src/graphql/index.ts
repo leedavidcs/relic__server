@@ -1,4 +1,5 @@
 import { IWithUser } from "@/authentication";
+import { dataSources } from "@/datasources";
 import { RedisCache } from "apollo-server-cache-redis";
 import { ApolloServerBase } from "apollo-server-core";
 import { ParameterizedContext } from "koa";
@@ -40,7 +41,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 			}),
 			({ headers, koaCtx }) => deriveApolloContext(headers, koaCtx, props)
 		),
-		dataSources: () => ({}),
+		dataSources,
 		playground: process.env.NODE_ENV === "development",
 		resolvers,
 		typeDefs
