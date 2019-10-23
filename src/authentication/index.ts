@@ -31,8 +31,17 @@ interface IJwtPayload {
 	userId: string;
 }
 
+const getAuthorizationHeader = (ctx: ParameterizedContext<IWithUser>): string | null => {
+	const headerKeys: ReadonlyArray<string> = Object.keys(ctx.headers);
+	const authKey = headerKeys.find((key) => key.toLowerCase() === "authorization");
+
+	const authHeader: string | null = typeof authKey === "string" ? ctx.headers[authKey] : null;
+
+	return authHeader;
+};
+
 const getBearerToken = (ctx: ParameterizedContext<IWithUser>): string | null => {
-	const bearerHeader: string | undefined = ctx.headers.Authorization;
+	const bearerHeader: string | null = getAuthorizationHeader(ctx);
 
 	const token: string | null =
 		typeof bearerHeader === "string" ? bearerHeader.split(" ")[1] : null;
@@ -67,7 +76,9 @@ const getRefreshToken = (userId: string): string => {
 };
 
 const getUserFromBearerToken = async (bearerToken: string): Promise<IUser | null> => {
-	const { userId }: IJwtPayload = verifyBearerToken(bearerToken);
+	const result: IJwtPayload = verifyBearerToken(bearerToken);
+
+	const { userId } = result;
 
 	const user: IUser | null = await UserModel.findById(userId);
 
