@@ -5,9 +5,15 @@ import { IFieldResolver, IResolverObject } from "graphql-tools";
 const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	parent,
 	args,
-	{ connectors: { MongoDB } }
+	{ connectors: { MongoDB }, user }
 ) => {
-	const result: IStockPortfolio = await MongoDB.get<IStockPortfolio>("StockPortfolio").create({});
+	if (user === null) {
+		throw new Error("Should not reach here: User is not found.");
+	}
+
+	const result: IStockPortfolio = await MongoDB.get<IStockPortfolio>("StockPortfolio").create({
+		user: user.id
+	});
 
 	return result;
 };
