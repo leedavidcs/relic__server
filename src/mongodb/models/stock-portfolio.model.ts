@@ -41,7 +41,7 @@ const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({
 				}
 			}
 		],
-		required: true
+		default: []
 	},
 	tickers: {
 		type: [String],
