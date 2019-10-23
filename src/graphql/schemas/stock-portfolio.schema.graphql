@@ -1,0 +1,16 @@
+type StockPortfolioHeader {
+	name: String!
+	dataKey: String
+	width: Int!
+	resizable: Boolean!
+}
+
+type StockPortfolio {
+	user: User!
+	headers: [StockPortfolioHeader!]!
+	tickers: [String!]!
+}
+
+extend type Mutation {
+	createStockPortfolio: StockPortfolio
+}
