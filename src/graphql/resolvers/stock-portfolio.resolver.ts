@@ -1,6 +1,22 @@
 import { IServerContext } from "@/graphql";
 import { IStockPortfolio } from "@/mongodb";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
+import { ConnectionEdge, resolveComplexConnection } from "./connection.resolver";
+
+const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (
+	parent,
+	args,
+	{ connectors: { MongoDB }, loaders }
+) => {
+	const result = await await resolveComplexConnection<IStockPortfolio, any>(
+		MongoDB,
+		"StockPortfolio",
+		args,
+		{ loader: loaders.stockPortfolioById }
+	);
+
+	return result;
+};
 
 const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	parent,
@@ -22,8 +38,15 @@ const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
 	user: ({ user }, args, { loaders }) => loaders.userById.load(user)
 };
 
+const StockPortfolioEdge: IResolverObject<IStockPortfolio, IServerContext> = ConnectionEdge;
+
 export const StockPortfolioTypes = {
-	StockPortfolio
+	StockPortfolio,
+	StockPortfolioEdge
+};
+
+export const StockPortfolioQueries: IResolverObject = {
+	stockPortfolios
 };
 
 export const StockPortfolioMutations: IResolverObject = {
