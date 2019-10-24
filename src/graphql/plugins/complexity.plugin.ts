@@ -1,6 +1,12 @@
+import { ComplexityError } from "@/utils";
 import { ApolloServerPlugin } from "apollo-server-plugin-base";
 import { DocumentNode, GraphQLSchema, separateOperations } from "graphql";
-import { ComplexityEstimator, fieldConfigEstimator, getComplexity, simpleEstimator } from "graphql-query-complexity";
+import {
+	ComplexityEstimator,
+	fieldExtensionsEstimator,
+	getComplexity,
+	simpleEstimator
+} from "graphql-query-complexity";
 
 interface IComplexityPluginConfig {
 	maxComplexity?: number;
@@ -18,13 +24,14 @@ export const complexityPlugin = ({
 				: document;
 
 			const estimators: ComplexityEstimator[] = [
-				fieldConfigEstimator(), simpleEstimator({ defaultComplexity: 1 })
+				fieldExtensionsEstimator(),
+				simpleEstimator({ defaultComplexity: 0 })
 			];
 
 			const complexity: number = getComplexity({ estimators, query, schema, variables });
 
 			if (complexity >= maxComplexity) {
-				throw new Error(
+				throw new ComplexityError(
 					`Query (${complexity}) exceeds the max allowed complexity (${maxComplexity})`
 				);
 			}
