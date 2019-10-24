@@ -12,7 +12,6 @@ import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
 import gqlTypeDefs from "./schemas/index.graphql";
 
-
 export * from "./inputs";
 export * from "./pagination";
 export * from "./resolvers";
@@ -30,12 +29,15 @@ interface IGetApolloServerOptions<P> {
 
 export const getApolloServer = <C extends ApolloServerBase, P extends { [key: string]: any }>(
 	Ctor: Constructor<C>,
-	options: IGetApolloServerOptions<P>,
-	maxComplexity = Infinity
+	options: IGetApolloServerOptions<P>
 ): C => {
-	const { getHeaders, getKoaCtx } = options;
+	const { getHeaders, getKoaCtx, maxComplexity = Infinity } = options;
 
-	const schema: GraphQLSchema = getSchemaWithMiddleware({ resolvers, schemaDirectives, typeDefs });
+	const schema: GraphQLSchema = getSchemaWithMiddleware({
+		resolvers,
+		schemaDirectives,
+		typeDefs
+	});
 
 	const server: C = new Ctor({
 		cache: new RedisCache({
@@ -51,6 +53,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 			return apolloContext;
 		},
 		dataSources,
+		debug: process.env.NODE_ENV === "development",
 		playground: process.env.NODE_ENV === "development",
 		plugins: getPlugins({ maxComplexity, schema }),
 		schema
