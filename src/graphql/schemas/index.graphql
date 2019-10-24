@@ -26,6 +26,7 @@ type Query {
 	viewer: Viewer
 }
 
+"Root mutation type"
 type Mutation {
 	"The viewer of this request"
 	viewer: Viewer

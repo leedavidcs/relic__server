@@ -7,5 +7,6 @@ type PageInfo {
 	hasNextPage: Boolean!
 	"Pagination info, whether there is more data going backward"
 	hasPreviousPage: Boolean!
+	"Total count of results across all pages"
 	count: Int!
 }
