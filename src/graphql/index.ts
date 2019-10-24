@@ -7,6 +7,7 @@ import { ParameterizedContext } from "koa";
 import { Constructor } from "protobufjs";
 import { deriveApolloContext } from "./context";
 import { getSchemaWithMiddleware } from "./middlewares";
+import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
 import gqlTypeDefs from "./schemas/index.graphql";
 
@@ -22,11 +23,13 @@ const cachePort: number = Number(process.env.REDIS_GRAPHQL_PORT);
 interface IGetApolloServerOptions<P> {
 	getHeaders: (params: P) => { [key: string]: string };
 	getKoaCtx: (params: P) => ParameterizedContext<IWithUser> | null;
+	maxComplexity?: number;
 }
 
 export const getApolloServer = <C extends ApolloServerBase, P extends { [key: string]: any }>(
 	Ctor: Constructor<C>,
-	options: IGetApolloServerOptions<P>
+	options: IGetApolloServerOptions<P>,
+	maxComplexity = Infinity
 ): C => {
 	const { getHeaders, getKoaCtx } = options;
 
@@ -47,6 +50,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		},
 		dataSources,
 		playground: process.env.NODE_ENV === "development",
+		plugins: getPlugins({ maxComplexity, schema }),
 		schema
 	});
 

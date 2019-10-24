@@ -8,6 +8,7 @@ import { applyMiddlewares } from "./middlewares";
 import { applyRoutes } from "./routes";
 
 const DEFAULT_PORT: number = 8080;
+const MAX_GRAPHQL_COMPLEXITY: number = 500;
 
 const applyGraphQL = (server: Server): void => {
 	const apolloServer: ApolloServer = getApolloServer<
@@ -15,7 +16,8 @@ const applyGraphQL = (server: Server): void => {
 		{ ctx: ParameterizedContext<IWithUser> }
 	>(ApolloServer, {
 		getHeaders: ({ ctx: { header } }) => header,
-		getKoaCtx: ({ ctx }) => ctx
+		getKoaCtx: ({ ctx }) => ctx,
+		maxComplexity: MAX_GRAPHQL_COMPLEXITY
 	});
 
 	apolloServer.applyMiddleware({ app: server.app });
