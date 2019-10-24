@@ -6,10 +6,12 @@ import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
 import { Constructor } from "protobufjs";
 import { deriveApolloContext } from "./context";
+import { schemaDirectives } from "./directives";
 import { getSchemaWithMiddleware } from "./middlewares";
 import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
 import gqlTypeDefs from "./schemas/index.graphql";
+
 
 export * from "./inputs";
 export * from "./pagination";
@@ -33,7 +35,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 ): C => {
 	const { getHeaders, getKoaCtx } = options;
 
-	const schema: GraphQLSchema = getSchemaWithMiddleware({ resolvers, typeDefs });
+	const schema: GraphQLSchema = getSchemaWithMiddleware({ resolvers, schemaDirectives, typeDefs });
 
 	const server: C = new Ctor({
 		cache: new RedisCache({
