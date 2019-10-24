@@ -1,5 +1,7 @@
 #import './authentication.schema.graphql'
 #import './connection.schema.graphql'
+#import './directives.schema.graphql'
+#import './general-inputs.schema.graphql'
 #import './stock-portfolio.schema.graphql'
 #import './user.schema.graphql'
 

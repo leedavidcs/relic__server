@@ -1,16 +1,60 @@
+"A column configuration for the stock portfolio on the data grid"
 type StockPortfolioHeader {
+	"The name displayed for this column header"
 	name: String!
+	"The dataKey, which determines how values in this column are resolved"
 	dataKey: String
+	"The configured width of this column"
 	width: Int!
+	"Whether this column should be resizable"
 	resizable: Boolean!
 }
 
+"StockPortfolio entity. This is what gets shown on the data grid"
 type StockPortfolio {
-	user: User!
+	"The user that this stock portfolio belongs to. Also the creator"
+	user: User! @cost(complexity: 1)
+	"The headers (configs) for this data grid, including how data is resolved"
 	headers: [StockPortfolioHeader!]!
+	"The tickers that are "
 	tickers: [String!]!
 }
 
+"Connection edges, which hold cursor and resource information"
+type StockPortfolioEdge {
+	"Cursor for pagination"
+	cursor: Cursor!
+	"The actual stock portfolio data"
+	node: StockPortfolio!
+}
+
+"The stock portfolio connection, from which pagination and resource info can be gotten"
+type StockPortfolioConnection {
+	"Holds cursor and resource information"
+	edges: [StockPortfolioEdge!]!
+	"Pagination info, on whether there is more data"
+	pageInfo: PageInfo!
+}
+
+extend type Query {
+	"Gets a paginated list of stock portfolios based on filters"
+	stockPortfolios(
+		"A limit of how many items to grab after the `after` cursor"
+		first: Int = 50
+		"""
+		A limit of how many items to grab before the end bound of the paginated search (the
+		smaller of `before` or `first`)
+		"""
+		last: Int
+		"A cursor to specify before which item a search should occur"
+		before: Cursor
+		"A cursor to specify after which item a search should occur"
+		after: Cursor
+		user: ID
+	): StockPortfolioConnection @cost(complexity: 1, multipliers: ["first"])
+}
+
 extend type Mutation {
+	"Creates an empty stock portfolio"
 	createStockPortfolio: StockPortfolio
 }
