@@ -1,5 +1,8 @@
 #import './authentication.schema.graphql'
 #import './connection.schema.graphql'
+#import './directives.schema.graphql'
+#import './general-inputs.schema.graphql'
+#import './stock-portfolio.schema.graphql'
 #import './user.schema.graphql'
 
 "JSON data. Gets returned all at once (cannot specify properties, traditionally like GraphQL)"
@@ -9,19 +12,25 @@ scalar Date
 "Location data in Longitude + Latitude. Gets returned as a Float 2-tuple"
 scalar Location
 
-"The viewer of this request."
+"The viewer of this request"
 type Viewer {
-	"The ID of the Onfleet employee"
-	id: ID
+	"The viewer's id"
+	id: ID!
+	"The viewer's email"
+	email: String!
+	"The viewer's username"
+	username: String!
 }
 
 "Root query type"
 type Query {
-	"The viewer of this request."
+	"The viewer of this request"
 	viewer: Viewer
 }
 
+"Root mutation type"
 type Mutation {
+	"The viewer of this request"
 	viewer: Viewer
 }
 

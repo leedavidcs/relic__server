@@ -1,7 +1,8 @@
-import { IWithUser } from "@/authentication";
+import { getAuthorizedUser, IWithUser } from "@/authentication";
 import { AbstractConnector, connectors } from "@/connectors";
 import { getLoaders } from "@/dataloaders";
 import { dataSources } from "@/datasources";
+import { IUser } from "@/mongodb";
 import DataLoader from "dataloader";
 import { ParameterizedContext } from "koa";
 
@@ -10,7 +11,7 @@ interface IContextConnectors {
 }
 
 interface IContextLoaders {
-	[key: string]: DataLoader<string, any>;
+	[key: string]: DataLoader<any, any>;
 }
 
 export interface IServerContext<
@@ -20,21 +21,24 @@ export interface IServerContext<
 	connectors: C;
 	dataSources: ReturnType<typeof dataSources>;
 	headers: { [key: string]: string };
-	koaCtx: ParameterizedContext<IWithUser> | null;
 	loaders: L;
+	koaCtx: ParameterizedContext<IWithUser> | null;
+	user: IUser | null;
 }
 
-export const deriveApolloContext = (
+export const deriveApolloContext = async (
 	headers: { [key: string]: string } = {},
-	koaCtx: ParameterizedContext<IWithUser> | null,
-	props?: { [key: string]: any }
+	koaCtx: ParameterizedContext<IWithUser> | null
 ) => {
+	const loaders = getLoaders();
+	const user: IUser | null = koaCtx ? await getAuthorizedUser(koaCtx) : null;
+
 	const apolloContext: Omit<IServerContext, "dataSources"> = {
 		connectors,
 		headers,
+		loaders,
 		koaCtx,
-		loaders: getLoaders(),
-		...props
+		user
 	};
 
 	return apolloContext;

@@ -1,0 +1,39 @@
+"Search items based on a connection property"
+input ConnectionInput {
+	"An array of IDs. Returns items such that this property contains some of specified IDs"
+	someOf: [ID!]
+	"An array of IDs. Returns items such that this property contains all of specified IDs"
+	allOf: [ID!]
+	"Returns items such that this property has this number of values"
+	size: Int
+	"Returns items based on whether or not this property is empty"
+	empty: Boolean
+}
+
+"Search items based on date-time property"
+input DateTimeInput {
+	"Milliseconds of the second (can be from 0-999)"
+	milliseconds: Int
+	"Seconds of the minute (can be 0-59)"
+	seconds: Int
+	"Minutes of the hour (can be 0-59)"
+	minutes: Int
+	"Hours of the day (can be 0-23)"
+	hours: Int
+	"Date: DD in (MM/DD/YYYY), indexed from 1"
+	day: Int
+	"Date: MM in (MM/DD/YYYY), indexed from 1"
+	month: Int
+	"Date: YYYY in (MM/DD/YYYY), indexed from 1"
+	year: Int!
+}
+
+"Search items based on a range, or fuzzy date"
+input VariableDateTimeInput {
+	"Returns items such that this property comes before the specified date-time"
+	before: DateTimeInput
+	"Returns items such that this property comes after the specified date-time"
+	after: DateTimeInput
+	"Returns items such that this property's date-time contains exactly the fields as specifed"
+	equal: DateTimeInput
+}

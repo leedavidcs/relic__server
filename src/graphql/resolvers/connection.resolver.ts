@@ -1,4 +1,5 @@
-import { AbstractConnector, IAbstractCursor, IAbstractSourceWithCursor } from "@/connectors";
+import { IAbstractCursor, IAbstractSourceWithCursor } from "@/connectors";
+import { IObjectFilterKey } from "@/dataloaders";
 import { IServerContext } from "@/graphql";
 import {
 	getPageInfo,
@@ -7,6 +8,7 @@ import {
 	IPaginationParams,
 	limitKeysById
 } from "@/graphql/pagination";
+import { models } from "@/mongodb";
 import { Maybe } from "@/types";
 import Base64URL from "base64-url";
 import DataLoader from "dataloader";
@@ -14,7 +16,7 @@ import { GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { IResolverObject, IResolvers } from "graphql-tools";
 import { Cursor as MongoDBCursor } from "mongodb";
 import { Document } from "mongoose";
-import { isNil, unless } from "ramda";
+import { complement, indexBy, isNil, prop } from "ramda";
 
 export interface IConnectionArguments extends IPaginationParams {
 	before?: any;
@@ -29,6 +31,8 @@ export interface IPageInfo {
 	hasNextPage: boolean;
 	hasPreviousPage: boolean;
 	count: number;
+	startCursor: string | null;
+	lastCursor: string | null;
 }
 
 export interface IConnectionResults<T> {
@@ -43,12 +47,8 @@ export interface IConnectionEdge<T> {
 
 export interface IConnectionResult<T> {
 	edges: Array<T & IDataNode>;
+	nodes: Array<T & IDataNode>;
 	pageInfo: IPageInfo;
-}
-
-export interface IResolveConnectionOptions<T, A extends IConnectionQueryArgs> {
-	adaptQueryArgs?: (queryArgs: A) => { [key: string]: any };
-	loader?: DataLoader<string, T & IDataNode>;
 }
 
 export const ConnectionEdge: IResolverObject<Document, IServerContext> = {
@@ -56,60 +56,93 @@ export const ConnectionEdge: IResolverObject<Document, IServerContext> = {
 	node: (parent) => parent
 };
 
-const DEFAULT_RESOLVE_CONNECTION_OPTIONS: IResolveConnectionOptions<any, any> = {};
+const doesExist = <T>(value: T | null | undefined): value is T => complement(isNil)(value);
 
-export const resolveComplexConnection = async <T, A extends IConnectionQueryArgs>(
-	connector: AbstractConnector,
-	sourceName: string,
+const prime = <
+	S extends keyof typeof models,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	data: ReadonlyArray<T & IDataNode>,
+	filters: { [key: string]: any },
+	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>
+): DataLoader<IObjectFilterKey, (T & IDataNode) | null> => {
+	return data.reduce((acc, item) => acc.prime({ ...filters, id: item.id }, item), loader);
+};
+
+export const resolveRootConnection = async <
+	S extends keyof typeof models,
+	A extends IConnectionQueryArgs = IConnectionQueryArgs,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	sourceName: S,
 	args: A,
-	options?: Partial<IResolveConnectionOptions<T, Omit<A, keyof IConnectionArguments>>>
-): Promise<IConnectionResult<T>> => {
-	const finalOptions: IResolveConnectionOptions<
-		T,
-		Pick<A, Exclude<keyof A, keyof IConnectionArguments>>
-	> = { ...DEFAULT_RESOLVE_CONNECTION_OPTIONS, ...options };
+	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>,
+	context: IServerContext
+) => {
+	const {
+		connectors: { MongoDB }
+	} = context;
 	const { first, last, before, after, ...restArgs } = args;
-	const source: IAbstractSourceWithCursor<T> = connector.getWithCursor<T>(sourceName);
 
-	const adaptQueryArgs = finalOptions.adaptQueryArgs || connector.adaptQueryArgs;
-	const filter: { [key: string]: any } = adaptQueryArgs(restArgs);
+	const source: IAbstractSourceWithCursor<T> = MongoDB.getWithCursor<T>(sourceName);
 
-	const query: IAbstractCursor<T> = await connector.limitQueryWithId(source, filter, {
+	const filter: { [key: string]: any } = MongoDB.adaptQueryArgs(restArgs);
+
+	const query: IAbstractCursor<T> = await MongoDB.limitQueryWithId(source, filter, {
 		before,
 		after
 	});
 
-	const count: number = await query.clone().count();
-	const pageInfo: IPageInfo = await getPageInfo(count, { first, last });
-
 	const paginatedCursor: IAbstractCursor<T> = await getPaginatedCursor(query, { first, last });
-	const edges: Array<T & IDataNode> = await paginatedCursor.toArray();
+	const results: Array<T & IDataNode> = await paginatedCursor.toArray();
+	const [edges, nodes] = [results, results];
 
-	const cacheEdges = unless(isNil, async (loader?: DataLoader<string, T & IDataNode>) =>
-		cache(await edges, loader!)
-	);
+	const count: number = await query.clone().count();
+	const pageInfo: IPageInfo = getPageInfo(count, { first, last }, results);
 
-	cacheEdges(finalOptions.loader);
+	prime(results, filter, loader);
 
-	return { edges, pageInfo };
+	return { edges, nodes, pageInfo };
 };
 
-export const resolveDefaultConnection = async <T>(
-	keys: string[],
-	loader: DataLoader<string, T & IDataNode>,
-	args: IConnectionArguments
-): Promise<IConnectionResult<T>> => {
-	const { first, last, before, after } = args;
-	const count: number = keys.length;
+export const resolveNestedConnection = async <
+	S extends keyof typeof models,
+	A extends IConnectionQueryArgs = IConnectionQueryArgs,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	keys: ReadonlyArray<string>,
+	args: A,
+	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>,
+	context: IServerContext
+) => {
+	const {
+		connectors: { MongoDB }
+	} = context;
+	const { first, last, before, after, ...restArgs } = args;
 
-	const cursorLimitedKeys: string[] = limitKeysById(keys, { before, after });
-	const paginatedKeys: string[] = getPaginatedKeys(cursorLimitedKeys, { first, last });
+	const withFilter: IObjectFilterKey[] = keys.map((id) => ({
+		id,
+		...MongoDB.adaptQueryArgs(restArgs)
+	}));
 
-	const edges: Array<T & IDataNode> = await loader.loadMany(paginatedKeys);
+	const entities: ReadonlyArray<(T & IDataNode) | null> = await loader.loadMany(withFilter);
+	const withoutNulls: ReadonlyArray<T & IDataNode> = entities.filter(doesExist);
+	const entitiesMap: { [key: string]: T & IDataNode } = indexBy(prop("id"), withoutNulls);
 
-	const pageInfo: IPageInfo = await getPageInfo(count, { first, last });
+	const finalKeys: ReadonlyArray<string> = Object.keys(entitiesMap);
+	const cursorLimitedKeys: ReadonlyArray<string> = limitKeysById(finalKeys, { before, after });
+	const paginatedKeys: ReadonlyArray<string> = getPaginatedKeys(cursorLimitedKeys, {
+		first,
+		last
+	});
 
-	return { edges, pageInfo };
+	const results: ReadonlyArray<T & IDataNode> = paginatedKeys.map((key) => entitiesMap[key]);
+	const [edges, nodes] = [results, results];
+
+	const count: number = entities.length;
+	const pageInfo: IPageInfo = await getPageInfo(count, { first, last }, results);
+
+	return { edges, nodes, pageInfo };
 };
 
 const toCursor = ({ value }): string => Base64URL.encode(value.toString());
@@ -119,11 +152,6 @@ const fromCursor = (cursor: string): { value: string } | null => {
 
 	return value ? { value } : null;
 };
-
-const cache = <T extends IDataNode>(
-	data: T[],
-	loader: DataLoader<string, T>
-): DataLoader<string, T> => data.reduce((acc, item) => acc.prime(item.id, item), loader);
 
 const Cursor: GraphQLScalarType = new GraphQLScalarType({
 	name: "Cursor",

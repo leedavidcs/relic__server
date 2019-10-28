@@ -1,7 +1,7 @@
 import { Logger } from "@/utils";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import Mongoose from "mongoose";
-import { UserModel } from "./models";
+import { StockPortfolioModel, UserModel } from "./models";
 
 export * from "./models";
 
@@ -63,5 +63,6 @@ export const closeDatabase = async (): Promise<void> => {
 
 // Add models here
 export const models = {
-	UserModel
+	StockPortfolio: StockPortfolioModel,
+	User: UserModel
 };

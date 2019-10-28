@@ -1,6 +1,13 @@
+"Basic user of the application"
 type User {
+	"The id of the user"
+	id: String
+	"The user's email"
 	email: String
+	"Whether the user verified their email address"
 	emailVerified: String
+	"The user's encoded password"
 	password: String
+	"The user's username"
 	username: String
 }

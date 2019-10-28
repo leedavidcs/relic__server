@@ -34,8 +34,12 @@ const createHandler = async (): Promise<APIGatewayProxyHandler> => {
 				 */
 				const result: APIGatewayProxyResult = await koaHandler(event, context);
 
+				await server.stop();
+
 				resolve(result);
 			} catch (err) {
+				await server.stop();
+
 				reject(err);
 			}
 		})

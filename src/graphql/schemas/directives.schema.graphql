@@ -1,0 +1,1 @@
+directive @cost(complexity: Int!, multipliers: [String!]) on FIELD_DEFINITION
