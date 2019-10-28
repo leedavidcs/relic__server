@@ -1,19 +1,18 @@
 import { IServerContext } from "@/graphql";
 import { IStockPortfolio } from "@/mongodb";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { ConnectionEdge, resolveComplexConnection } from "./connection.resolver";
+import { ConnectionEdge, resolveRootConnection } from "./connection.resolver";
 
-const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (
-	parent,
-	args,
-	{ connectors: { MongoDB }, loaders }
-) => {
-	const result = await await resolveComplexConnection<IStockPortfolio, any>(
-		MongoDB,
-		"StockPortfolio",
-		args,
-		{ loader: loaders.stockPortfolioById }
-	);
+const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent, args, context) => {
+	const {
+		loaders: { stockPortfolio },
+		user
+	} = context;
+
+	const userId: string = user!.id;
+	const filter: { [key: string]: any } = { ...args, user: userId };
+
+	const result = await resolveRootConnection("StockPortfolio", filter, stockPortfolio, context);
 
 	return result;
 };
