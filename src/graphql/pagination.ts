@@ -16,23 +16,29 @@ interface IGetSkipAndLimitParams extends Pick<IPaginationParams, "first" | "last
 	count: number;
 }
 
-export const getPageInfo = (
+export const getPageInfo = <T extends IDataNode>(
 	count: number,
-	pagination: Pick<IPaginationParams, "first" | "last">
+	pagination: Pick<IPaginationParams, "first" | "last">,
+	results: ReadonlyArray<T>
 ): IPageInfo => {
 	const { first, last } = pagination;
+
+	const startCursor: string | null = results.length ? results[0].id : null;
+	const lastCursor: string | null = results.length ? results[results.length - 1].id : null;
+
+	const partial = { count, startCursor, lastCursor };
 
 	const pageInfo: IPageInfo =
 		first || last
 			? {
 					hasNextPage: Boolean(first && count > first),
 					hasPreviousPage: Boolean(last && count > last),
-					count
+					...partial
 			  }
 			: {
 					hasNextPage: false,
 					hasPreviousPage: false,
-					count
+					...partial
 			  };
 
 	return pageInfo;
@@ -84,7 +90,7 @@ export const limitDocsById = <T extends IDataNode>(
 };
 
 export const limitKeysById = (
-	keys: string[],
+	keys: ReadonlyArray<string>,
 	pagination: Pick<IPaginationParams, "before" | "after">
 ): string[] => {
 	const { before, after } = pagination;
@@ -106,7 +112,7 @@ export const limitKeysById = (
 };
 
 export const getPaginatedKeys = (
-	keys: string[],
+	keys: ReadonlyArray<string>,
 	pagination: Pick<IPaginationParams, "first" | "last">
 ): string[] => {
 	const { first, last } = pagination;

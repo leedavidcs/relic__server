@@ -51,7 +51,7 @@ const registerLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	{ email, password, username },
 	{ connectors: { MongoDB } }
 ) => {
-	const UserModel = MongoDB.get<IUser>("UserModel");
+	const UserModel = MongoDB.get<IUser>("User");
 
 	const existingUser: IUser | null = await UserModel.findOne({ email });
 

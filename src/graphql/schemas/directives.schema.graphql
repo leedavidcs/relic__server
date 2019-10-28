@@ -1,0 +1,28 @@
+"Query cost complexity, applied to a field definition"
+directive @cost(
+	"The complexity cost associated with this field"
+	complexity: Int!
+	"The Int argument names with which to multiply the complexity"
+	multipliers: [String!]
+) on FIELD_DEFINITION
+
+"Rate limit this field by logged-in user, or by IP if user does not exist"
+directive @rateLimit(
+	"""
+	"
+	Time interval window that the (max) number of requests can access this field. Specified in
+	Zeit's (ms) notation.
+	"""
+	window: String!
+	"The max number of calls to the given field per (window)"
+	max: Int!
+	"A custom error message"
+	message: String
+	"""
+	An id for the field, to limit reuqests for a field per field's id. Uses Lodash's (get) notation
+	for property access
+	"""
+	identityArgs: [String!]
+	"Limit calls to the field, using the length of the array as the number of calls to the field"
+	arrayLengthField: String
+) on FIELD_DEFINITION
