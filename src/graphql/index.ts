@@ -1,7 +1,7 @@
 import { IWithUser } from "@/authentication";
 import { dataSources } from "@/datasources";
 import { RedisCache } from "apollo-server-cache-redis";
-import { ApolloServerBase } from "apollo-server-core";
+import { ApolloServerBase, Config } from "apollo-server-core";
 import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
 import { Constructor } from "protobufjs";
@@ -11,6 +11,7 @@ import { getSchemaWithMiddleware } from "./middlewares";
 import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
 import gqlTypeDefs from "./schemas/index.graphql";
+import { getValidationRules } from "./validation-rules";
 
 export * from "./inputs";
 export * from "./pagination";
@@ -25,13 +26,14 @@ interface IGetApolloServerOptions<P> {
 	getHeaders: (params: P) => { [key: string]: string };
 	getKoaCtx: (params: P) => ParameterizedContext<IWithUser> | null;
 	maxComplexity?: number;
+	maxDepth?: number;
 }
 
 export const getApolloServer = <C extends ApolloServerBase, P extends { [key: string]: any }>(
 	Ctor: Constructor<C>,
 	options: IGetApolloServerOptions<P>
 ): C => {
-	const { getHeaders, getKoaCtx, maxComplexity = Infinity } = options;
+	const { getHeaders, getKoaCtx, maxComplexity = Infinity, maxDepth = Infinity } = options;
 
 	const schema: GraphQLSchema = getSchemaWithMiddleware({
 		resolvers,
@@ -39,7 +41,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		typeDefs
 	});
 
-	const server: C = new Ctor({
+	const config: Config = {
 		cache: new RedisCache({
 			host: cacheHost,
 			port: cachePort
@@ -56,8 +58,11 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		debug: process.env.NODE_ENV === "development",
 		playground: process.env.NODE_ENV === "development",
 		plugins: getPlugins({ maxComplexity, schema }),
+		validationRules: getValidationRules({ maxDepth }),
 		schema
-	});
+	};
+
+	const server: C = new Ctor(config);
 
 	return server;
 };

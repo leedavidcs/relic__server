@@ -8,9 +8,7 @@ interface IGetPluginsConfig {
 }
 
 export const getPlugins = ({ maxComplexity, schema }: IGetPluginsConfig) => {
-	const plugins: ReadonlyArray<ApolloServerPlugin> = [
-		complexityPlugin({ maxComplexity, schema })
-	];
+	const plugins: ApolloServerPlugin[] = [complexityPlugin({ maxComplexity, schema })];
 
 	return plugins;
 };
