@@ -9,4 +9,8 @@ type PageInfo {
 	hasPreviousPage: Boolean!
 	"Total count of results across all pages"
 	count: Int!
+	"The cursor for the first item in this page"
+	startCursor: Cursor
+	"The cursor for the last item in this page"
+	endCursor: Cursor
 }

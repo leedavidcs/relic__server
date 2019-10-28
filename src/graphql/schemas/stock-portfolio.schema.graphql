@@ -12,6 +12,8 @@ type StockPortfolioHeader {
 
 "StockPortfolio entity. This is what gets shown on the data grid"
 type StockPortfolio {
+	"The ID of the stock portfolio"
+	id: ID
 	"The user that this stock portfolio belongs to. Also the creator"
 	user: User! @cost(complexity: 1)
 	"The headers (configs) for this data grid, including how data is resolved"
@@ -32,6 +34,8 @@ type StockPortfolioEdge {
 type StockPortfolioConnection {
 	"Holds cursor and resource information"
 	edges: [StockPortfolioEdge!]!
+	"Convenience property to avoid nesting"
+	nodes: [StockPortfolio!]!
 	"Pagination info, on whether there is more data"
 	pageInfo: PageInfo!
 }
@@ -50,7 +54,6 @@ extend type Query {
 		before: Cursor
 		"A cursor to specify after which item a search should occur"
 		after: Cursor
-		user: ID
 	): StockPortfolioConnection @cost(complexity: 1, multipliers: ["first"])
 }
 
