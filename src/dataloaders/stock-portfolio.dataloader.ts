@@ -1,4 +1,4 @@
-import { IStockPortfolio, models } from "@/mongodb";
+import { IStockPortfolio } from "@/mongodb";
 import DataLoader from "dataloader";
 import { batchById, batchByIdAndFilters, IObjectFilterKey } from "./utils";
 
@@ -9,4 +9,4 @@ export const stockPortfolioById = (): DataLoader<string, IStockPortfolio & IData
 export const stockPortfolio = (): DataLoader<
 	IObjectFilterKey,
 	(IStockPortfolio & IDataNode) | null
-> => new DataLoader((keys) => batchByIdAndFilters(models.StockPortfolio, keys));
+> => new DataLoader((keys) => batchByIdAndFilters("StockPortfolio", keys));
