@@ -11,7 +11,7 @@ interface IContextConnectors {
 }
 
 interface IContextLoaders {
-	[key: string]: DataLoader<string, any>;
+	[key: string]: DataLoader<any, any>;
 }
 
 export interface IServerContext<
