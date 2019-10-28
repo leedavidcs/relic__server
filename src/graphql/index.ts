@@ -58,8 +58,8 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		debug: process.env.NODE_ENV === "development",
 		playground: process.env.NODE_ENV === "development",
 		plugins: getPlugins({ maxComplexity, schema }),
-		validationRules: getValidationRules({ maxDepth }),
-		schema
+		schema,
+		validationRules: getValidationRules({ maxDepth })
 	};
 
 	const server: C = new Ctor(config);
