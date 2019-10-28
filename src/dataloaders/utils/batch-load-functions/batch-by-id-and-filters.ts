@@ -1,8 +1,14 @@
-import { Document, Model } from "mongoose";
+import { models } from "@/mongodb";
 import objectHash from "object-hash";
 import { IFilter, IObjectFilterKey } from ".";
+import { logOperation } from "../log-operation";
 
-const mapToIds = <T extends Document>(entities: ReadonlyArray<T>): { [id: string]: T } => {
+const mapToIds = <
+	S extends keyof typeof models,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	entities: ReadonlyArray<T>
+): { [id: string]: T } => {
 	const entitiesMap: { [id: string]: T } = entities.reduce(
 		(acc, entity) => ({ ...acc, [entity.id]: entity }),
 		{} as { [id: string]: T }
@@ -35,18 +41,29 @@ const getFiltersMap = (
 	return filtersMap;
 };
 
-const getResultsMap = async <T extends Document>(
-	model: Model<T, {}>,
+const getResultsMap = async <
+	S extends keyof typeof models,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	sourceName: S,
 	filtersMap: { [hash: string]: IFilter }
 ): Promise<{ [hash: string]: { [id: string]: T } }> => {
+	const model = models[sourceName];
+
 	const filtersTuple: ReadonlyArray<[string, IFilter]> = Object.keys(filtersMap).map((hash) => {
 		return [hash, filtersMap[hash]];
 	});
 
 	const resultsTuples: ReadonlyArray<[string, T[]]> = await Promise.all(
-		filtersTuple.map(([hash, filter]) => {
-			return model.find(filter).then<[string, T[]]>((entities) => [hash, entities]);
-		})
+		filtersTuple.map(
+			async ([hash, filter]): Promise<[string, any[]]> => {
+				logOperation(sourceName, "MongoDB.Model.find", filter);
+
+				const entities = await model.find(filter);
+
+				return [hash, entities];
+			}
+		)
 	);
 
 	const resultsMap: { [hash: string]: { [id: string]: T } } = resultsTuples.reduce(
@@ -57,7 +74,10 @@ const getResultsMap = async <T extends Document>(
 	return resultsMap;
 };
 
-const getOrderedResults = <T extends Document>(
+const getOrderedResults = <
+	S extends keyof typeof models,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
 	hashesTuple: ReadonlyArray<[string, IObjectFilterKey]>,
 	resultsMap: { [hash: string]: { [id: string]: T } }
 ): Array<(T & IDataNode) | null> => {
@@ -72,8 +92,11 @@ const getOrderedResults = <T extends Document>(
 	return results;
 };
 
-export const batchByIdAndFilters = async <T extends Document>(
-	model: Model<T, {}>,
+export const batchByIdAndFilters = async <
+	S extends keyof typeof models,
+	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
+>(
+	sourceName: S,
 	keys: ReadonlyArray<IObjectFilterKey>
 ): Promise<Array<(T & IDataNode) | null>> => {
 	const hashesTuple: ReadonlyArray<[string, IObjectFilterKey]> = keys.map((key) => {
@@ -83,7 +106,7 @@ export const batchByIdAndFilters = async <T extends Document>(
 	const filtersMap: { [hash: string]: IFilter } = getFiltersMap(hashesTuple);
 
 	const resultsMap: { [hash: string]: { [id: string]: T } } = await getResultsMap(
-		model,
+		sourceName,
 		filtersMap
 	);
 
