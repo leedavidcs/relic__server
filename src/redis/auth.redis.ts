@@ -3,7 +3,7 @@ import Redis, { RedisClient } from "redis";
 const host: string = process.env.REDIS_AUTH_HOST || "";
 const port: number = Number(process.env.REDIS_AUTH_PORT);
 
-const AuthClient: RedisClient = Redis.createClient({
+export const AuthClient: RedisClient = Redis.createClient({
 	host,
 	port
 });

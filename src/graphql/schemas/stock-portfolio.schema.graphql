@@ -54,10 +54,14 @@ extend type Query {
 		before: Cursor
 		"A cursor to specify after which item a search should occur"
 		after: Cursor
-	): StockPortfolioConnection @cost(complexity: 1, multipliers: ["first"])
+	): StockPortfolioConnection
+		@cost(complexity: 1, multipliers: ["first"])
+		@rateLimit(window: "1m", max: 30)
 }
 
 extend type Mutation {
 	"Creates an empty stock portfolio"
 	createStockPortfolio: StockPortfolio
+		@cost(complexity: 1, multipliers: ["first"])
+		@rateLimit(window: "1m", max: 30)
 }

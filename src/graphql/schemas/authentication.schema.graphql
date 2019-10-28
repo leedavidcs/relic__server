@@ -23,12 +23,12 @@ extend type Mutation {
 		userIdentifier: String!
 		"The user's decrypted password"
 		password: String!
-	): TokenResponse
+	): TokenResponse @rateLimit(window: "1m", max: 30)
 	"Refreshes the currently logged-in user's access token"
 	refreshAccessToken(
 		"The refresh token, that is used to refresh the access token"
 		refreshToken: String!
-	): TokenResponse
+	): TokenResponse @rateLimit(window: "1m", max: 30)
 	"Performs local authentication (custom username + password)"
 	registerLocalUser(
 		"(Unique) The user's email"
@@ -37,5 +37,5 @@ extend type Mutation {
 		password: String!
 		"The user's username"
 		username: String!
-	): RegisterLocalUserResponse
+	): RegisterLocalUserResponse @rateLimit(window: "1m", max: 1)
 }
