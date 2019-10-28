@@ -1,17 +1,7 @@
-import { IUser, models } from "@/mongodb";
-import DataLoader, { BatchLoadFn } from "dataloader";
-import { getOrderedMongoDBResults, logOperation } from "./utils";
+import { IUser } from "@/mongodb";
+import DataLoader from "dataloader";
+import { batchById } from "./utils";
 
-const batchById: BatchLoadFn<string, IUser & IDataNode> = async (keys: string[]) => {
-	const filter = { _id: { $in: keys } };
-
-	logOperation("User", "MongoDB.Model.find", filter);
-
-	const users = await models.User.find(filter)
-		.lean()
-		.then((results) => getOrderedMongoDBResults(keys, results));
-
-	return users as Array<IUser & IDataNode>;
+export const userById = (): DataLoader<string, IUser & IDataNode> => {
+	return new DataLoader((keys: string[]) => batchById("User", keys));
 };
-
-export const userById = (): DataLoader<string, IUser & IDataNode> => new DataLoader(batchById);
