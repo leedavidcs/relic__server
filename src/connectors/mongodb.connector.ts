@@ -155,25 +155,31 @@ export class MongoDBConnector extends AbstractConnector {
 
 				return model.create(...args);
 			},
-			find: (...args) => {
-				logOperation(sourceName, "Model.find", args[0]);
+			find: (...[filter, ...restArgs]) => {
+				const adapted = this.adaptQueryArgs(filter);
 
-				return model.find(...args).then((results) => results.map(useId));
+				logOperation(sourceName, "Model.find", adapted);
+
+				return model.find(adapted, ...restArgs).then((results) => results.map(useId));
 			},
-			findOne: (...args) => {
-				logOperation(sourceName, "Model.findOne", args[0]);
+			findOne: (...[filter, ...restArgs]) => {
+				const adapted = this.adaptQueryArgs(filter);
 
-				return model.findOne(...args);
+				logOperation(sourceName, "Model.findOne", adapted);
+
+				return model.findOne(adapted, ...restArgs);
 			}
 		};
 	}
 
 	public getWithCursor<T>(sourceName: keyof typeof models): IAbstractSourceWithCursor<T> {
 		return {
-			find: (...args) => {
-				logOperation(sourceName, "Cursor.find", args[0]);
+			find: (...[filter, ...restArgs]) => {
+				const adapted = this.adaptQueryArgs(filter);
 
-				const cursor: any = models[sourceName].collection.find(...args);
+				logOperation(sourceName, "Cursor.find", adapted);
+
+				const cursor: any = models[sourceName].collection.find(adapted, ...restArgs);
 
 				/* tslint:disable:no-object-mutation */
 				/**

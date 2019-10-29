@@ -82,11 +82,9 @@ export const resolveRootConnection = async <
 	const {
 		connectors: { MongoDB }
 	} = context;
-	const { first, last, before, after, ...restArgs } = args;
+	const { first, last, before, after, ...filter } = args;
 
 	const source: IAbstractSourceWithCursor<T> = MongoDB.getWithCursor<T>(sourceName);
-
-	const filter: { [key: string]: any } = MongoDB.adaptQueryArgs(restArgs);
 
 	const query: IAbstractCursor<T> = await MongoDB.limitQueryWithId(source, filter, {
 		before,
