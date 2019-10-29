@@ -1,3 +1,10 @@
+input StockPortfolioHeaderInput {
+	name: String!
+	dataKey: String!
+	width: Int!
+	tickers: [String!]!
+}
+
 "A column configuration for the stock portfolio on the data grid"
 type StockPortfolioHeader {
 	"The name displayed for this column header"
@@ -18,7 +25,7 @@ type StockPortfolio {
 	user: User! @cost(complexity: 1)
 	"The headers (configs) for this data grid, including how data is resolved"
 	headers: [StockPortfolioHeader!]!
-	"The tickers that are "
+	"The tickers that are the rows for this data grid"
 	tickers: [String!]!
 }
 
@@ -64,4 +71,13 @@ extend type Mutation {
 	createStockPortfolio: StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
+	"Updates a stock portfolio"
+	updateStockPortfolio(
+		"The ID of the stock portfolio to update"
+		id: ID
+		"Headers for this data grid, including how data is resolved"
+		headers: [StockPortfolioHeaderInput!]
+		"The tickers that are the rows for this data grid"
+		tickers: [String!]
+	): StockPortfolio
 }

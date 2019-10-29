@@ -1,5 +1,6 @@
 import { IServerContext } from "@/graphql";
 import { IStockPortfolio } from "@/mongodb";
+import { NotFoundError } from "@/utils";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { ConnectionEdge, resolveRootConnection } from "./connection.resolver";
 
@@ -33,6 +34,31 @@ const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	return result;
 };
 
+const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+	parent,
+	{ id, headers, tickers },
+	{ connectors: { MongoDB }, user }
+) => {
+	if (user === null) {
+		throw new Error("Should not reach here: User is not found.");
+	}
+
+	const toUpdate = await MongoDB.get<IStockPortfolio>("StockPortfolio").findOne({ id });
+
+	if (toUpdate === null) {
+		throw new NotFoundError(`User could not be found. (id = ${id})`);
+	}
+
+	/* tslint:disable:no-object-mutation */
+	toUpdate.headers = headers;
+	toUpdate.tickers = tickers;
+	/* tslint:enable:no-object-mutation */
+
+	const updated: IStockPortfolio = await toUpdate.save();
+
+	return updated;
+};
+
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
 	user: ({ user }, args, { loaders }) => loaders.userById.load(user)
 };
@@ -49,5 +75,6 @@ export const StockPortfolioQueries: IResolverObject = {
 };
 
 export const StockPortfolioMutations: IResolverObject = {
-	createStockPortfolio
+	createStockPortfolio,
+	updateStockPortfolio
 };
