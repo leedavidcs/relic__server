@@ -17,3 +17,9 @@ export class ComplexityError extends ApolloError {
 		super(message, "FORBIDDEN");
 	}
 }
+
+export class NotFoundError extends ApolloError {
+	constructor(message: string = "This entity could not be found.") {
+		super(message, "Not_FOUND");
+	}
+}
