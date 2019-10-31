@@ -10,13 +10,14 @@ import {
 } from "@/graphql/pagination";
 import { models } from "@/mongodb";
 import { Maybe } from "@/types";
+import { doesExist } from "@/utils";
 import Base64URL from "base64-url";
 import DataLoader from "dataloader";
 import { GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { IResolverObject, IResolvers } from "graphql-tools";
 import { Cursor as MongoDBCursor } from "mongodb";
 import { Document } from "mongoose";
-import { complement, indexBy, isNil, prop } from "ramda";
+import { indexBy, prop } from "ramda";
 
 export interface IConnectionArguments extends IPaginationParams {
 	before?: any;
@@ -55,8 +56,6 @@ export const ConnectionEdge: IResolverObject<Document, IServerContext> = {
 	cursor: (parent) => ({ value: parent.id.toString() }),
 	node: (parent) => parent
 };
-
-const doesExist = <T>(value: T | null | undefined): value is T => complement(isNil)(value);
 
 const prime = <
 	S extends keyof typeof models,
