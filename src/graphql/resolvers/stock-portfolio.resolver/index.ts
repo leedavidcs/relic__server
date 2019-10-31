@@ -2,7 +2,8 @@ import { IServerContext } from "@/graphql";
 import { IStockPortfolio } from "@/mongodb";
 import { NotFoundError } from "@/utils";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { ConnectionEdge, resolveRootConnection } from "./connection.resolver";
+import { ConnectionEdge, resolveRootConnection } from "../connection.resolver";
+import { getStockPortfolioData } from "./get-stock-portfolio-data";
 
 const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent, args, context) => {
 	const {
@@ -60,7 +61,8 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 };
 
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
-	user: ({ user }, args, { loaders }) => loaders.userById.load(user)
+	user: ({ user }, args, { loaders }) => loaders.userById.load(user),
+	data: (parent, args, context) => getStockPortfolioData(parent, context)
 };
 
 const StockPortfolioEdge: IResolverObject<IStockPortfolio, IServerContext> = ConnectionEdge;

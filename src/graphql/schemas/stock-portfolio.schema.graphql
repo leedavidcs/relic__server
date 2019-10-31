@@ -27,6 +27,8 @@ type StockPortfolio {
 	headers: [StockPortfolioHeader!]!
 	"The tickers that are the rows for this data grid"
 	tickers: [String!]!
+	"The data that gets resolved based on headers and tickers"
+	data: JSON!
 }
 
 "Connection edges, which hold cursor and resource information"
