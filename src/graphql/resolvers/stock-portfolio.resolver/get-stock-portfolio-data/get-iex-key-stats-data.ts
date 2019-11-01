@@ -64,6 +64,6 @@ export const getIexKeyStatsData = async (
 				})
 			};
 		},
-		{} as { [key in keyof typeof DataKeys]: any }
+		{} as { [key in keyof typeof DataKeys]?: any }
 	);
 };

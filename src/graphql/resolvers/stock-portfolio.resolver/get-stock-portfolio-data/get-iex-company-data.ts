@@ -43,6 +43,6 @@ export const getIexCompanyData = async (
 				...(companyProp && { [`${Prefixes.IEX_COMPANY}__${key}`]: company[companyProp] })
 			};
 		},
-		{} as { [key in keyof typeof DataKeys]: any }
+		{} as { [key in keyof typeof DataKeys]?: any }
 	);
 };

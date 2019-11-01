@@ -4,6 +4,7 @@ import { doesExist } from "@/utils";
 import { isNil } from "ramda";
 import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
+import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
 
 const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] => {
 	const [prefix, prop] = dataKey.split(PREFIX_PROP_DELIMITER);
@@ -47,10 +48,12 @@ const getDataForTicker = async (
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
 	const companyData = await getIexCompanyData(ticker, groupedKeys, context);
 	const keyStatsData = await getIexKeyStatsData(ticker, groupedKeys, context);
+	const previousDayPriceData = await getIexPreviousDayPriceData(ticker, groupedKeys, context);
 
 	return {
 		...companyData,
-		...keyStatsData
+		...keyStatsData,
+		...previousDayPriceData
 	};
 };
 
