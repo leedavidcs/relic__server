@@ -1,4 +1,5 @@
 import { Document, model, Model, Schema } from "mongoose";
+import { prop, uniqBy } from "ramda";
 import { ForeignKey } from "..";
 import { DataKeys } from "./data-keys";
 
@@ -45,7 +46,17 @@ const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({
 				}
 			}
 		],
-		default: []
+		default: [],
+		validate: {
+			validator: (headers: IStockPortfolio["headers"]) => {
+				const uniqByName: IStockPortfolio["headers"] = uniqBy(prop("name"), headers);
+
+				const isAllUniq: boolean = uniqByName.length === headers.length;
+
+				return isAllUniq;
+			},
+			msg: "Header names must be unique."
+		}
 	},
 	tickers: {
 		type: [String],
