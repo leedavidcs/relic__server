@@ -1,8 +1,8 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, Prefixes } from "@/mongodb";
+import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { PreviousDay } from "iexcloud_api_wrapper";
 
-const IexPreviousDayPriceToPropMap: { [key: string]: keyof PreviousDay } = {
+const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof PreviousDay } = {
 	SYMBOL: "symbol",
 	DATE: "date",
 	OPEN: "open",
@@ -36,12 +36,12 @@ export const getIexPreviousDayPriceData = async (
 	return iexPreviousDayPriceKeys.reduce(
 		(acc, key) => {
 			const previousDayPriceProp: keyof PreviousDay | null =
-				IexPreviousDayPriceToPropMap[key] || null;
+				IexPreviousDayPriceSuffixToPropMap[key] || null;
 
 			return {
 				...acc,
 				...(previousDayPriceProp && {
-					[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}__${key}`]: previousDayPrice[
+					[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}${PREFIX_PROP_DELIMITER}${key}`]: previousDayPrice[
 						previousDayPriceProp
 					]
 				})

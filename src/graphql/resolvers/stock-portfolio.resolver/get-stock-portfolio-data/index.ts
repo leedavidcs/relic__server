@@ -5,6 +5,7 @@ import { isNil } from "ramda";
 import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
+import { getIexQuoteData } from "./get-iex-quote-data";
 
 const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] => {
 	const [prefix, prop] = dataKey.split(PREFIX_PROP_DELIMITER);
@@ -46,14 +47,16 @@ const getDataForTicker = async (
 	groupedKeys: { [key in keyof typeof Prefixes]: ReadonlyArray<string> },
 	context: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
-	const companyData = await getIexCompanyData(ticker, groupedKeys, context);
-	const keyStatsData = await getIexKeyStatsData(ticker, groupedKeys, context);
-	const previousDayPriceData = await getIexPreviousDayPriceData(ticker, groupedKeys, context);
+	const iexCompanyData = await getIexCompanyData(ticker, groupedKeys, context);
+	const iexKeyStatsData = await getIexKeyStatsData(ticker, groupedKeys, context);
+	const iexPreviousDayPriceData = await getIexPreviousDayPriceData(ticker, groupedKeys, context);
+	const iexQuoteData = await getIexQuoteData(ticker, groupedKeys, context);
 
 	return {
-		...companyData,
-		...keyStatsData,
-		...previousDayPriceData
+		...iexCompanyData,
+		...iexKeyStatsData,
+		...iexPreviousDayPriceData,
+		...iexQuoteData
 	};
 };
 

@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, Prefixes } from "@/mongodb";
+import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { KeyStats } from "iexcloud_api_wrapper";
 
 const IexKeyStatsSuffixToPropMap: { [key: string]: keyof KeyStats } = {
@@ -60,7 +60,9 @@ export const getIexKeyStatsData = async (
 			return {
 				...acc,
 				...(keyStatsProp && {
-					[`${Prefixes.IEX_KEY_STATS}__${key}`]: keyStats[keyStatsProp]
+					[`${Prefixes.IEX_KEY_STATS}${PREFIX_PROP_DELIMITER}${key}`]: keyStats[
+						keyStatsProp
+					]
 				})
 			};
 		},

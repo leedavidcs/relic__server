@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, Prefixes } from "@/mongodb";
+import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { Company } from "iexcloud_api_wrapper";
 
 const IexCompanySuffixToPropMap: { [key: string]: keyof Company } = {
@@ -40,7 +40,9 @@ export const getIexCompanyData = async (
 
 			return {
 				...acc,
-				...(companyProp && { [`${Prefixes.IEX_COMPANY}__${key}`]: company[companyProp] })
+				...(companyProp && {
+					[`${Prefixes.IEX_COMPANY}${PREFIX_PROP_DELIMITER}${key}`]: company[companyProp]
+				})
 			};
 		},
 		{} as { [key in keyof typeof DataKeys]?: any }
