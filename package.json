@@ -52,6 +52,7 @@
 		"apollo-server-koa": "^2.9.7",
 		"base64-url": "^2.3.2",
 		"bcryptjs": "^2.4.3",
+		"can-error": "^0.2.0",
 		"classnames": "^2.2.6",
 		"dataloader": "^1.4.0",
 		"dotenv": "^8.2.0",

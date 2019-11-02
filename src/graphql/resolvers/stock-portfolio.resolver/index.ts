@@ -1,6 +1,7 @@
 import { IServerContext } from "@/graphql";
 import { IStockPortfolio } from "@/mongodb";
 import { Logger, NotFoundError } from "@/utils";
+import { canError } from "can-error";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { ConnectionEdge, resolveRootConnection } from "../connection.resolver";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
@@ -46,26 +47,26 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	try {
-		const toUpdate = await stockPortfolioSource.findOne({ id, user: user.id });
+	const [err, toUpdate] = await canError(stockPortfolioSource.findOne)({ id, user: user.id });
 
-		if (toUpdate === null) {
-			throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
-		}
-
-		/* tslint:disable:no-object-mutation */
-		toUpdate.headers = headers;
-		toUpdate.tickers = tickers;
-		/* tslint:enable:no-object-mutation */
-
-		const updated: IStockPortfolio = await toUpdate.save();
-
-		return updated;
-	} catch (err) {
+	if (err) {
 		Logger.error(`Error: updateStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not update the stock portfolio. (id = ${id})`);
 	}
+
+	if (!toUpdate) {
+		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
+	}
+
+	/* tslint:disable:no-object-mutation */
+	toUpdate.headers = headers;
+	toUpdate.tickers = tickers;
+	/* tslint:enable:no-object-mutation */
+
+	const updated: IStockPortfolio = await toUpdate.save();
+
+	return updated;
 };
 
 const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
@@ -79,19 +80,22 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	try {
-		const deleted = await stockPortfolioSource.findOneAndDelete({ id, user: user.id });
+	const [err, deleted] = await canError(stockPortfolioSource.findOneAndDelete)({
+		id,
+		user: user.id
+	});
 
-		if (deleted === null) {
-			throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
-		}
-
-		return deleted;
-	} catch (err) {
+	if (err) {
 		Logger.error(`Error: depeteStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not delete the stock portfolio. (id = ${id})`);
 	}
+
+	if (!deleted) {
+		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
+	}
+
+	return deleted;
 };
 
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
