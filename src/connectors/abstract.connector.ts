@@ -14,6 +14,7 @@ export interface IAbstractSource<T> {
 	create: (...args: any[]) => PromiseLike<T>;
 	find: (...args: any[]) => PromiseLike<T[]>;
 	findOne: (...args: any[]) => PromiseLike<T | null>;
+	findOneAndDelete: (...args: any[]) => PromiseLike<T>;
 }
 
 export interface IAbstractSourceWithCursor<T> {

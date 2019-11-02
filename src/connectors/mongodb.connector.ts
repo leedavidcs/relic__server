@@ -160,7 +160,7 @@ export class MongoDBConnector extends AbstractConnector {
 
 				logOperation(sourceName, "Model.find", adapted);
 
-				return model.find(adapted, ...restArgs).then((results) => results.map(useId));
+				return model.find(adapted, ...restArgs);
 			},
 			findOne: (...[filter, ...restArgs]) => {
 				const adapted = this.adaptQueryArgs(filter);
@@ -168,6 +168,13 @@ export class MongoDBConnector extends AbstractConnector {
 				logOperation(sourceName, "Model.findOne", adapted);
 
 				return model.findOne(adapted, ...restArgs);
+			},
+			findOneAndDelete: (...[filter, ...restArgs]) => {
+				const adapted = this.adaptQueryArgs(filter);
+
+				logOperation(sourceName, "Model.delete", adapted);
+
+				return model.findOneAndDelete(adapted, ...restArgs);
 			}
 		};
 	}
