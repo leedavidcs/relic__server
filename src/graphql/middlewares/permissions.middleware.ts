@@ -13,6 +13,7 @@ export const permissions = shield({
 		registerLocalUser: not(isAuthenticated),
 		refreshAccessToken: isAuthenticated,
 		createStockPortfolio: isAuthenticated,
+		deleteStockPortfolio: isAuthenticated,
 		updateStockPortfolio: isAuthenticated
 	}
 });

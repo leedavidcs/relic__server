@@ -47,7 +47,7 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	const toUpdate = await MongoDB.get<IStockPortfolio>("StockPortfolio").findOne({ id });
 
 	if (toUpdate === null) {
-		throw new NotFoundError(`User could not be found. (id = ${id})`);
+		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
 	}
 
 	/* tslint:disable:no-object-mutation */
@@ -58,6 +58,30 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	const updated: IStockPortfolio = await toUpdate.save();
 
 	return updated;
+};
+
+const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+	parent,
+	{ id },
+	{ connectors: { MongoDB }, user }
+) => {
+	if (user === null) {
+		throw new Error("Should not reach here: User is not found");
+	}
+
+	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
+
+	try {
+		const deleted = await stockPortfolioSource.findOneAndDelete({ id });
+
+		if (deleted === null) {
+			throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
+		}
+
+		return deleted;
+	} catch (err) {
+		throw new Error(`Could not delete the stock portfolio. (id = ${id})`);
+	}
 };
 
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
@@ -78,5 +102,6 @@ export const StockPortfolioQueries: IResolverObject = {
 
 export const StockPortfolioMutations: IResolverObject = {
 	createStockPortfolio,
+	deleteStockPortfolio,
 	updateStockPortfolio
 };

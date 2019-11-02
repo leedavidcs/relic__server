@@ -81,5 +81,9 @@ extend type Mutation {
 		headers: [StockPortfolioHeaderInput!]
 		"The tickers that are the rows for this data grid"
 		tickers: [String!]
-	): StockPortfolio
+	): StockPortfolio @cost(complexity: 1, multipliers: ["first"]) @rateLimit(window: "1m", max: 30)
+	"Deletes a stock portfolio"
+	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio
+		@cost(complexity: 1, multipliers: ["first"])
+		@rateLimit(window: "1m", max: 30)
 }
