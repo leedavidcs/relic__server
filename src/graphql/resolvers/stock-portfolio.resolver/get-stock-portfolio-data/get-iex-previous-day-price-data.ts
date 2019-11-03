@@ -2,7 +2,7 @@ import { IServerContext } from "@/graphql";
 import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { PreviousDay } from "iexcloud_api_wrapper";
 
-const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof PreviousDay } = {
+export const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof PreviousDay } = {
 	SYMBOL: "symbol",
 	DATE: "date",
 	OPEN: "open",

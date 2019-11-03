@@ -7,6 +7,11 @@ import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
 import { getIexQuoteData } from "./get-iex-quote-data";
 
+export * from "./get-iex-company-data";
+export * from "./get-iex-key-stats-data";
+export * from "./get-iex-previous-day-price-data";
+export * from "./get-iex-quote-data";
+
 const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] => {
 	const [prefix, prop] = dataKey.split(PREFIX_PROP_DELIMITER);
 

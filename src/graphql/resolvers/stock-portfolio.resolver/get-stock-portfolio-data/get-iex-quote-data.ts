@@ -2,7 +2,7 @@ import { IServerContext } from "@/graphql";
 import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { Quote } from "iexcloud_api_wrapper";
 
-const IexQuoteSuffixToPropMap: { [key: string]: keyof Quote } = {
+export const IexQuoteSuffixToPropMap: { [key: string]: keyof Quote } = {
 	SYMBOL: "symbol",
 	COMPANY_NAME: "companyName",
 	CALCULATION_PRICE: "calculationPrice",

@@ -2,7 +2,7 @@ import { IServerContext } from "@/graphql";
 import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
 import { KeyStats } from "iexcloud_api_wrapper";
 
-const IexKeyStatsSuffixToPropMap: { [key: string]: keyof KeyStats } = {
+export const IexKeyStatsSuffixToPropMap: { [key: string]: keyof KeyStats } = {
 	COMPANY_NAME: "companyName",
 	MARKET_CAP: "marketcap",
 	WEEK_52_HIGH: "week52high",
