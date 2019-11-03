@@ -1,9 +1,16 @@
+input StockPortfolioHeaderInput {
+	name: String!
+	dataKey: String!
+	width: Int!
+	tickers: [String!]!
+}
+
 "A column configuration for the stock portfolio on the data grid"
 type StockPortfolioHeader {
 	"The name displayed for this column header"
 	name: String!
 	"The dataKey, which determines how values in this column are resolved"
-	dataKey: String
+	dataKey: DataKey
 	"The configured width of this column"
 	width: Int!
 	"Whether this column should be resizable"
@@ -18,8 +25,10 @@ type StockPortfolio {
 	user: User! @cost(complexity: 1)
 	"The headers (configs) for this data grid, including how data is resolved"
 	headers: [StockPortfolioHeader!]!
-	"The tickers that are "
+	"The tickers that are the rows for this data grid"
 	tickers: [String!]!
+	"The data that gets resolved based on headers and tickers"
+	data: JSON!
 }
 
 "Connection edges, which hold cursor and resource information"
@@ -62,6 +71,19 @@ extend type Query {
 extend type Mutation {
 	"Creates an empty stock portfolio"
 	createStockPortfolio: StockPortfolio
+		@cost(complexity: 1, multipliers: ["first"])
+		@rateLimit(window: "1m", max: 30)
+	"Updates a stock portfolio"
+	updateStockPortfolio(
+		"The ID of the stock portfolio to update"
+		id: ID
+		"Headers for this data grid, including how data is resolved"
+		headers: [StockPortfolioHeaderInput!]
+		"The tickers that are the rows for this data grid"
+		tickers: [String!]
+	): StockPortfolio @cost(complexity: 1, multipliers: ["first"]) @rateLimit(window: "1m", max: 30)
+	"Deletes a stock portfolio"
+	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 }

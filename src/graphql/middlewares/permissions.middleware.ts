@@ -10,7 +10,10 @@ const isAuthenticated = rule({ cache: "contextual" })(async (parent, args, { use
 export const permissions = shield({
 	Mutation: {
 		loginLocalUser: not(isAuthenticated),
+		registerLocalUser: not(isAuthenticated),
 		refreshAccessToken: isAuthenticated,
-		createStockPortfolio: isAuthenticated
+		createStockPortfolio: isAuthenticated,
+		deleteStockPortfolio: isAuthenticated,
+		updateStockPortfolio: isAuthenticated
 	}
 });

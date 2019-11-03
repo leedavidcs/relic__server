@@ -1,9 +1,13 @@
 import { Document, model, Model, Schema } from "mongoose";
-import { ForeignKey } from ".";
+import { prop, uniqBy } from "ramda";
+import { ForeignKey } from "..";
+import { DataKeys } from "./data-keys";
+
+export * from "./data-keys";
 
 interface IStockPortfolioHeader {
 	name: string;
-	dataKey: string | null;
+	dataKey: keyof typeof DataKeys | null;
 	width: number;
 	resizable: boolean;
 }
@@ -29,6 +33,7 @@ const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({
 				},
 				dataKey: {
 					type: String,
+					enum: Object.keys(DataKeys).map((key) => DataKeys[key]),
 					default: null
 				},
 				width: {
@@ -41,7 +46,17 @@ const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({
 				}
 			}
 		],
-		default: []
+		default: [],
+		validate: {
+			validator: (headers: IStockPortfolio["headers"]) => {
+				const uniqByName: IStockPortfolio["headers"] = uniqBy(prop("name"), headers);
+
+				const isAllUniq: boolean = uniqByName.length === headers.length;
+
+				return isAllUniq;
+			},
+			msg: "Header names must be unique."
+		}
 	},
 	tickers: {
 		type: [String],
