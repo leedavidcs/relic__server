@@ -10,7 +10,7 @@ type StockPortfolioHeader {
 	"The name displayed for this column header"
 	name: String!
 	"The dataKey, which determines how values in this column are resolved"
-	dataKey: String
+	dataKey: DataKey
 	"The configured width of this column"
 	width: Int!
 	"Whether this column should be resizable"
