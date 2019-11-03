@@ -6,6 +6,8 @@ import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { ConnectionEdge, resolveRootConnection } from "../connection.resolver";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
 
+export * from "./get-stock-portfolio-data";
+
 const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent, args, context) => {
 	const {
 		loaders: { stockPortfolio },
