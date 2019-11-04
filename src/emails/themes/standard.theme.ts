@@ -19,7 +19,7 @@ export const standardTheme = {
 	surfaceOverlay: "#FFFFFF",
 	surfaceOverlayVariant: "#BB86FC",
 	surfaceOverlayHovered: 0.04,
-	surfaceOverlayfocused: 0.12,
+	surfaceOverlayFocused: 0.12,
 	surfaceOverlayPressed: 0.1,
 	surfaceOverlayDragged: 0.08,
 	fontPrimary: ["Helvetica Neue", "Helvetica", "Arial", "Roboto", "Segoe UI", "sans-serif"].join()
