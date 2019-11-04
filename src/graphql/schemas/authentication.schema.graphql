@@ -32,7 +32,7 @@ extend type Mutation {
 	"Performs local authentication (custom username + password)"
 	registerLocalUser(
 		"(Unique) The user's email"
-		email: String!
+		email: EmailAddress!
 		"The user's decrypted password"
 		password: String!
 		"The user's username"
