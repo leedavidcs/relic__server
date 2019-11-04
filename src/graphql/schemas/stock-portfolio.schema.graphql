@@ -20,7 +20,7 @@ type StockPortfolioHeader {
 "StockPortfolio entity. This is what gets shown on the data grid"
 type StockPortfolio {
 	"The ID of the stock portfolio"
-	id: ID
+	id: ID!
 	"The user that this stock portfolio belongs to. Also the creator"
 	user: User! @cost(complexity: 1)
 	"The headers (configs) for this data grid, including how data is resolved"

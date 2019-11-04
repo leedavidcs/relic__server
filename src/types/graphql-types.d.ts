@@ -7,12 +7,81 @@ export type Scalars = {
 	Int: number;
 	Float: number;
 	Cursor: any;
-	/** JSON data. Gets returned all at once (cannot specify properties, traditionally like GraphQL) */
+	/**
+	 * A field whose value conforms to the standard internet email address format as
+	 * specified in RFC822: https://www.w3.org/Protocols/rfc822/.
+	 **/
+	EmailAddress: any;
+	/** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
 	JSON: any;
-	/** Date data. Gets returned as a unix-time Int */
-	Date: any;
-	/** Location data in Longitude + Latitude. Gets returned as a Float 2-tuple */
-	Location: any;
+	/** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+	BigInt: any;
+	/** Use JavaScript Date object for date/time fields. */
+	DateTime: any;
+	/** A field whose value is a generic Globally Unique Identifier: https://en.wikipedia.org/wiki/Universally_unique_identifier. */
+	GUID: any;
+	/** A field whose value is a hex color code: https://en.wikipedia.org/wiki/Web_colors. */
+	HexColorCode: any;
+	/** A field whose value is a CSS HSL color: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsl()_and_hsla(). */
+	HSL: any;
+	/** A field whose value is a CSS HSLA color: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#hsl()_and_hsla(). */
+	HSLA: any;
+	/** A field whose value is a IPv4 address: https://en.wikipedia.org/wiki/IPv4. */
+	IPv4: any;
+	/** A field whose value is a IPv6 address: https://en.wikipedia.org/wiki/IPv6. */
+	IPv6: any;
+	/** A field whose value is a ISBN-10 or ISBN-13 number: https://en.wikipedia.org/wiki/International_Standard_Book_Number. */
+	ISBN: any;
+	/** The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
+	JSONObject: any;
+	/** The `BigInt` scalar type represents non-fractional signed whole numeric values. */
+	Long: any;
+	/** A field whose value is a IEEE 802 48-bit MAC address: https://en.wikipedia.org/wiki/MAC_address. */
+	MAC: any;
+	/** Floats that will have a value less than 0. */
+	NegativeFloat: any;
+	/** Integers that will have a value less than 0. */
+	NegativeInt: any;
+	/** Integers that will have a value of 0 or more. */
+	NonNegative: any;
+	/** Floats that will have a value of 0 or more. */
+	NonNegativeFloat: any;
+	/** Floats that will have a value of 0 or less. */
+	NonPositiveFloat: any;
+	/** Integers that will have a value of 0 or less. */
+	NonPositiveInt: any;
+	/**
+	 * A field whose value conforms to the standard E.164 format as specified in:
+	 * https://en.wikipedia.org/wiki/E.164. Basically this is +17895551234.
+	 **/
+	PhoneNumber: any;
+	/**
+	 * A field whose value is a valid TCP port within the range of 0 to 65535:
+	 * https://en.wikipedia.org/wiki/Transmission_Control_Protocol#TCP_ports
+	 **/
+	Port: any;
+	/** Floats that will have a value greater than 0. */
+	PositiveFloat: any;
+	/** Integers that will have a value greater than 0. */
+	PositiveInt: any;
+	/**
+	 * A field whose value conforms to the standard postal code formats for United
+	 * States, United Kingdom, Germany, Canada, France, Italy, Australia, Netherlands,
+	 * Spain, Denmark, Sweden, Belgium, India, Austria, Portugal, Switzerland or Luxembourg.
+	 **/
+	PostalCode: any;
+	/** A field whose value is a CSS RGB color: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb()_and_rgba(). */
+	RGB: any;
+	/** A field whose value is a CSS RGBA color: https://developer.mozilla.org/en-US/docs/Web/CSS/color_value#rgb()_and_rgba(). */
+	RGBA: any;
+	/** Floats that will have a value of 0 or more. */
+	UnsignedFloat: any;
+	/** Integers that will have a value of 0 or more. */
+	UnsignedInt: any;
+	/** A field whose value conforms to the standard URL format as specified in RFC3986: https://www.ietf.org/rfc/rfc3986.txt. */
+	URL: any;
+	/** A currency string, such as $21.25 */
+	USCurrency: any;
 };
 
 /** Search items based on a connection property */
@@ -190,7 +259,7 @@ export type MutationRefreshAccessTokenArgs = {
 
 /** Root mutation type */
 export type MutationRegisterLocalUserArgs = {
-	email: Scalars["String"];
+	email: Scalars["EmailAddress"];
 	password: Scalars["String"];
 	username: Scalars["String"];
 };
@@ -263,7 +332,7 @@ export type RegisterLocalUserResponse = {
 export type StockPortfolio = {
 	__typename?: "StockPortfolio";
 	/** The ID of the stock portfolio */
-	id?: Maybe<Scalars["ID"]>;
+	id: Scalars["ID"];
 	/** The user that this stock portfolio belongs to. Also the creator */
 	user: User;
 	/** The headers (configs) for this data grid, including how data is resolved */
@@ -327,15 +396,15 @@ export type TokenResponse = {
 export type User = {
 	__typename?: "User";
 	/** The id of the user */
-	id?: Maybe<Scalars["String"]>;
+	id: Scalars["ID"];
 	/** The user's email */
-	email?: Maybe<Scalars["String"]>;
+	email: Scalars["EmailAddress"];
 	/** Whether the user verified their email address */
-	emailVerified?: Maybe<Scalars["String"]>;
+	emailVerified: Scalars["String"];
 	/** The user's encoded password */
-	password?: Maybe<Scalars["String"]>;
+	password: Scalars["String"];
 	/** The user's username */
-	username?: Maybe<Scalars["String"]>;
+	username: Scalars["String"];
 };
 
 /** Search items based on a range, or fuzzy date */

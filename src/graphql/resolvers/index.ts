@@ -1,3 +1,4 @@
+import { resolvers as ScalarTypes } from "graphql-scalars";
 import { IFieldResolver, IResolvers } from "graphql-tools";
 import { IServerContext } from "../context";
 import { AuthenticationMutations } from "./authentication.resolver";
@@ -15,6 +16,7 @@ export * from "./stock-portfolio.resolver";
 const viewer: IFieldResolver<any, IServerContext> = (parent, args, { user }) => user;
 
 export const resolvers: IResolvers<any, IServerContext> = {
+	...ScalarTypes,
 	Query: {
 		viewer,
 		...DataKeyQueries,
