@@ -13,6 +13,8 @@ type Viewer {
 	id: ID!
 	"The viewer's email"
 	email: String!
+	"Whether this viewer verified their email address"
+	emailVerified: Boolean!
 	"The viewer's username"
 	username: String!
 }

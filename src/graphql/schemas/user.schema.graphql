@@ -5,9 +5,7 @@ type User {
 	"The user's email"
 	email: EmailAddress!
 	"Whether the user verified their email address"
-	emailVerified: String!
-	"The user's encoded password"
-	password: String!
+	emailVerified: Boolean!
 	"The user's username"
 	username: String!
 }
