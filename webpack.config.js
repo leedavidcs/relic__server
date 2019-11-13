@@ -54,7 +54,9 @@ const configFn = (env, argv) => {
 			tls: "empty"
 		},
 		externals: {
+			"any-promise": "any-promise",
 			bufferutil: "bufferutil",
+			getos: "getos",
 			hiredis: "hiredis",
 			mongodb: "mongodb",
 			"mongodb/lib/core": "mongodb/lib/core",
