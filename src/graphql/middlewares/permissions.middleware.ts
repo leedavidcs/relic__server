@@ -12,6 +12,7 @@ export const permissions = shield({
 		loginLocalUser: not(isAuthenticated),
 		registerLocalUser: not(isAuthenticated),
 		refreshAccessToken: isAuthenticated,
+		resendVerifyEmail: isAuthenticated,
 		createStockPortfolio: isAuthenticated,
 		deleteStockPortfolio: isAuthenticated,
 		updateStockPortfolio: isAuthenticated
