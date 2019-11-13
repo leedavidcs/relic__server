@@ -33,20 +33,17 @@ export const getIexPreviousDayPriceData = async (
 
 	const previousDayPrice: PreviousDay = await IexAPI.getPreviousDayPrice(ticker);
 
-	return iexPreviousDayPriceKeys.reduce(
-		(acc, key) => {
-			const previousDayPriceProp: keyof PreviousDay | null =
-				IexPreviousDayPriceSuffixToPropMap[key] || null;
+	return iexPreviousDayPriceKeys.reduce((acc, key) => {
+		const previousDayPriceProp: keyof PreviousDay | null =
+			IexPreviousDayPriceSuffixToPropMap[key] || null;
 
-			return {
-				...acc,
-				...(previousDayPriceProp && {
-					[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}${PREFIX_PROP_DELIMITER}${key}`]: previousDayPrice[
-						previousDayPriceProp
-					]
-				})
-			};
-		},
-		{} as { [key in keyof typeof DataKeys]?: any }
-	);
+		return {
+			...acc,
+			...(previousDayPriceProp && {
+				[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}${PREFIX_PROP_DELIMITER}${key}`]: previousDayPrice[
+					previousDayPriceProp
+				]
+			})
+		};
+	}, {} as { [key in keyof typeof DataKeys]?: any });
 };
