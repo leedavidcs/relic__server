@@ -69,18 +69,15 @@ const assignDataToHeaders = (
 	resultsMap: { [dataKey in keyof typeof DataKeys]?: any },
 	headers: IStockPortfolio["headers"]
 ): { [key: string]: any } => {
-	const headersToResults: { [key: string]: any } = headers.reduce(
-		(acc, { name, dataKey }) => {
-			if (dataKey === null) {
-				return acc;
-			}
+	const headersToResults: { [key: string]: any } = headers.reduce((acc, { name, dataKey }) => {
+		if (dataKey === null) {
+			return acc;
+		}
 
-			const result = resultsMap[dataKey];
+		const result = resultsMap[dataKey];
 
-			return { ...acc, [name]: isNil(result) ? null : result };
-		},
-		{} as { [key: string]: any }
-	);
+		return { ...acc, [name]: isNil(result) ? null : result };
+	}, {} as { [key: string]: any });
 
 	return headersToResults;
 };

@@ -53,19 +53,14 @@ export const getIexKeyStatsData = async (
 
 	const keyStats: KeyStats = await IexAPI.getKeyStats(ticker);
 
-	return iexKeyStatsKeys.reduce(
-		(acc, key) => {
-			const keyStatsProp: keyof KeyStats | null = IexKeyStatsSuffixToPropMap[key] || null;
+	return iexKeyStatsKeys.reduce((acc, key) => {
+		const keyStatsProp: keyof KeyStats | null = IexKeyStatsSuffixToPropMap[key] || null;
 
-			return {
-				...acc,
-				...(keyStatsProp && {
-					[`${Prefixes.IEX_KEY_STATS}${PREFIX_PROP_DELIMITER}${key}`]: keyStats[
-						keyStatsProp
-					]
-				})
-			};
-		},
-		{} as { [key in keyof typeof DataKeys]?: any }
-	);
+		return {
+			...acc,
+			...(keyStatsProp && {
+				[`${Prefixes.IEX_KEY_STATS}${PREFIX_PROP_DELIMITER}${key}`]: keyStats[keyStatsProp]
+			})
+		};
+	}, {} as { [key in keyof typeof DataKeys]?: any });
 };

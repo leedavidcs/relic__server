@@ -34,17 +34,14 @@ export const getIexCompanyData = async (
 
 	const company: Company = await IexAPI.getCompany(ticker);
 
-	return iexCompanyKeys.reduce(
-		(acc, key) => {
-			const companyProp: keyof Company | null = IexCompanySuffixToPropMap[key] || null;
+	return iexCompanyKeys.reduce((acc, key) => {
+		const companyProp: keyof Company | null = IexCompanySuffixToPropMap[key] || null;
 
-			return {
-				...acc,
-				...(companyProp && {
-					[`${Prefixes.IEX_COMPANY}${PREFIX_PROP_DELIMITER}${key}`]: company[companyProp]
-				})
-			};
-		},
-		{} as { [key in keyof typeof DataKeys]?: any }
-	);
+		return {
+			...acc,
+			...(companyProp && {
+				[`${Prefixes.IEX_COMPANY}${PREFIX_PROP_DELIMITER}${key}`]: company[companyProp]
+			})
+		};
+	}, {} as { [key in keyof typeof DataKeys]?: any });
 };

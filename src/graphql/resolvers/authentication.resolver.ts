@@ -82,8 +82,35 @@ const registerLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	};
 };
 
+const resendVerifyEmail: IFieldResolver<any, IServerContext, any> = async (
+	parent,
+	args,
+	{ user }
+) => {
+	if (user === null) {
+		throw new Error("Should not reach here: User is not found");
+	}
+
+	const { email, id, username } = user;
+
+	const emailTemplate: string = createEmailHtml(VerifyEmail, {
+		confirmationLink: `${getBaseUrl()}/verifyEmail/${id}`,
+		username
+	});
+	const emailResponse: ISendEmailResponse = await sendEmail({
+		to: email,
+		subject: "Confirm your account",
+		html: emailTemplate
+	});
+
+	const { success } = emailResponse;
+
+	return success;
+};
+
 export const AuthenticationMutations: IResolverObject = {
 	loginLocalUser,
 	refreshAccessToken,
-	registerLocalUser
+	registerLocalUser,
+	resendVerifyEmail
 };

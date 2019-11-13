@@ -23,11 +23,7 @@ export const VerifyEmail: FunctionComponent<IVerifyEmailProps> = ({
 							<p>Hey {username}!</p>
 							<p>
 								Thanks for signing up for an account! Please confirm your email
-								address below so that we know you're you.
-							</p>
-							<p>
-								You're almost all set. Please confirm your email address below, so
-								that we can verify you.
+								address below, so that we can verify you.
 							</p>
 							<div className={classes.buttonWrapper}>
 								<LinkButton

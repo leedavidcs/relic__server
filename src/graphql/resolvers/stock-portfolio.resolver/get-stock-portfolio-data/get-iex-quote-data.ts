@@ -59,17 +59,14 @@ export const getIexQuoteData = async (
 
 	const quote: Quote = await IexAPI.getQuote(ticker);
 
-	return iexQuoteKeys.reduce(
-		(acc, key) => {
-			const quoteProp: keyof Quote | null = IexQuoteSuffixToPropMap[key] || null;
+	return iexQuoteKeys.reduce((acc, key) => {
+		const quoteProp: keyof Quote | null = IexQuoteSuffixToPropMap[key] || null;
 
-			return {
-				...acc,
-				...(quoteProp && {
-					[`${Prefixes.IEX_QUOTE}${PREFIX_PROP_DELIMITER}${key}`]: quote[quoteProp]
-				})
-			};
-		},
-		{} as { [key in keyof typeof DataKeys]?: any }
-	);
+		return {
+			...acc,
+			...(quoteProp && {
+				[`${Prefixes.IEX_QUOTE}${PREFIX_PROP_DELIMITER}${key}`]: quote[quoteProp]
+			})
+		};
+	}, {} as { [key in keyof typeof DataKeys]?: any });
 };

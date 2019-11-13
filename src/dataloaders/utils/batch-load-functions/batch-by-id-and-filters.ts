@@ -20,23 +20,20 @@ const mapToIds = <
 const getFiltersMap = (
 	hashesTuple: ReadonlyArray<[string, IObjectFilterKey]>
 ): { [hash: string]: IFilter } => {
-	const filtersMap: { [hash: string]: IFilter } = hashesTuple.reduce(
-		(acc, [hash, key]) => {
-			const { id, ...filter }: IObjectFilterKey = key;
+	const filtersMap: { [hash: string]: IFilter } = hashesTuple.reduce((acc, [hash, key]) => {
+		const { id, ...filter }: IObjectFilterKey = key;
 
-			const mostUpdatedFilter: IFilter = acc[hash] || filter;
+		const mostUpdatedFilter: IFilter = acc[hash] || filter;
 
-			const withId: IFilter = {
-				...mostUpdatedFilter,
-				id: {
-					$in: ((mostUpdatedFilter.id && mostUpdatedFilter.id.$in) || []).concat(id)
-				}
-			};
+		const withId: IFilter = {
+			...mostUpdatedFilter,
+			id: {
+				$in: ((mostUpdatedFilter.id && mostUpdatedFilter.id.$in) || []).concat(id)
+			}
+		};
 
-			return { ...acc, [hash]: withId };
-		},
-		{} as { [key: string]: IFilter }
-	);
+		return { ...acc, [hash]: withId };
+	}, {} as { [key: string]: IFilter });
 
 	return filtersMap;
 };
