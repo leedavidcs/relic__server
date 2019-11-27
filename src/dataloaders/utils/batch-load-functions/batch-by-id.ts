@@ -1,4 +1,5 @@
 import { models } from "@/mongodb";
+import { Document } from "mongoose";
 import { getOrderedMongoDBResults, logOperation } from "..";
 
 export const batchById = async <
@@ -12,7 +13,7 @@ export const batchById = async <
 
 	logOperation(sourceName, "MongoDB.Model.find", filter);
 
-	const results = await models[sourceName].find(filter).lean();
+	const results: Document[] = await models[sourceName].find(filter).lean();
 	const ordered = getOrderedMongoDBResults(keys, results);
 
 	return ordered as Array<T & IDataNode>;

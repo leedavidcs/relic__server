@@ -1,5 +1,5 @@
 import { AuthorizationError } from "@/utils";
-import { not, rule, shield } from "graphql-shield";
+import { rule, shield } from "graphql-shield";
 
 const isAuthenticated = rule({ cache: "contextual" })(async (parent, args, { user }) => {
 	const doesUserExist: boolean = Boolean(user);
@@ -7,10 +7,16 @@ const isAuthenticated = rule({ cache: "contextual" })(async (parent, args, { use
 	return doesUserExist || new AuthorizationError("This request must be authenticated.");
 });
 
+const isNotAuthenticated = rule({ cache: "contextual" })(async (parent, args, { user }) => {
+	const doesUserExist: boolean = Boolean(user);
+
+	return !doesUserExist;
+});
+
 export const permissions = shield({
 	Mutation: {
-		loginLocalUser: not(isAuthenticated),
-		registerLocalUser: not(isAuthenticated),
+		loginLocalUser: isNotAuthenticated,
+		registerLocalUser: isNotAuthenticated,
 		refreshAccessToken: isAuthenticated,
 		resendVerifyEmail: isAuthenticated,
 		createStockPortfolio: isAuthenticated,
