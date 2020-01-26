@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 
 export const getOrderedMongoDBResults = <T extends Document>(
-	keys: ReadonlyArray<string>,
+	keys: readonly string[],
 	results: T[]
 ) => {
 	const dict = results.reduce((acc, item) => {
@@ -10,7 +10,7 @@ export const getOrderedMongoDBResults = <T extends Document>(
 		return newAcc;
 	}, {} as { [key: string]: T & IDataNode });
 
-	const orderedResults: Array<(T & IDataNode) | null> = keys.map((key) => dict[key] || null);
+	const orderedResults: ((T & IDataNode) | null)[] = keys.map((key) => dict[key] || null);
 
 	return orderedResults;
 };

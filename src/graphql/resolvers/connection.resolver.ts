@@ -47,8 +47,8 @@ export interface IConnectionEdge<T> {
 }
 
 export interface IConnectionResult<T> {
-	edges: Array<T & IDataNode>;
-	nodes: Array<T & IDataNode>;
+	edges: (T & IDataNode)[];
+	nodes: (T & IDataNode)[];
 	pageInfo: IPageInfo;
 }
 
@@ -61,7 +61,7 @@ const prime = <
 	S extends keyof typeof models,
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
-	data: ReadonlyArray<T & IDataNode>,
+	data: readonly (T & IDataNode)[],
 	filters: { [key: string]: any },
 	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>
 ): DataLoader<IObjectFilterKey, (T & IDataNode) | null> => {
@@ -85,13 +85,13 @@ export const resolveRootConnection = async <
 
 	const source: IAbstractSourceWithCursor<T> = MongoDB.getWithCursor<T>(sourceName);
 
-	const query: IAbstractCursor<T> = await MongoDB.limitQueryWithId(source, filter, {
+	const query: IAbstractCursor<T> = MongoDB.limitQueryWithId(source, filter, {
 		before,
 		after
 	});
 
 	const paginatedCursor: IAbstractCursor<T> = await getPaginatedCursor(query, { first, last });
-	const results: Array<T & IDataNode> = await paginatedCursor.toArray();
+	const results: (T & IDataNode)[] = await paginatedCursor.toArray();
 	const [edges, nodes] = [results, results];
 
 	const count: number = await query.clone().count();
@@ -107,7 +107,7 @@ export const resolveNestedConnection = async <
 	A extends IConnectionQueryArgs = IConnectionQueryArgs,
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
-	keys: ReadonlyArray<string>,
+	keys: readonly string[],
 	args: A,
 	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>,
 	context: IServerContext
@@ -122,25 +122,23 @@ export const resolveNestedConnection = async <
 		...MongoDB.adaptQueryArgs(restArgs)
 	}));
 
-	const entities: ReadonlyArray<Error | (T & IDataNode) | null> = await loader.loadMany(
-		withFilter
-	);
-	const withoutNulls: ReadonlyArray<Error | (T & IDataNode)> = entities.filter(doesExist);
-	const withoutErrors: ReadonlyArray<T & IDataNode> = withoutNulls.filter(isNotError);
+	const entities: readonly (Error | (T & IDataNode) | null)[] = await loader.loadMany(withFilter);
+	const withoutNulls: readonly (Error | (T & IDataNode))[] = entities.filter(doesExist);
+	const withoutErrors: readonly (T & IDataNode)[] = withoutNulls.filter(isNotError);
 	const entitiesMap: { [key: string]: T & IDataNode } = indexBy(prop("id"), withoutErrors);
 
-	const finalKeys: ReadonlyArray<string> = Object.keys(entitiesMap);
-	const cursorLimitedKeys: ReadonlyArray<string> = limitKeysById(finalKeys, { before, after });
-	const paginatedKeys: ReadonlyArray<string> = getPaginatedKeys(cursorLimitedKeys, {
+	const finalKeys: readonly string[] = Object.keys(entitiesMap);
+	const cursorLimitedKeys: readonly string[] = limitKeysById(finalKeys, { before, after });
+	const paginatedKeys: readonly string[] = getPaginatedKeys(cursorLimitedKeys, {
 		first,
 		last
 	});
 
-	const results: ReadonlyArray<T & IDataNode> = paginatedKeys.map((key) => entitiesMap[key]);
+	const results: readonly (T & IDataNode)[] = paginatedKeys.map((key) => entitiesMap[key]);
 	const [edges, nodes] = [results, results];
 
 	const count: number = entities.length;
-	const pageInfo: IPageInfo = await getPageInfo(count, { first, last }, results);
+	const pageInfo: IPageInfo = getPageInfo(count, { first, last }, results);
 
 	return { edges, nodes, pageInfo };
 };

@@ -24,7 +24,11 @@ export const LocalAuth: Strategy = new Strategy(
 
 		const isCorrectPassword: boolean = BCrypt.compareSync(password, user.password);
 
-		isCorrectPassword ? done(null, user._id) : done(new Error("Invalid credentials"));
+		if (isCorrectPassword) {
+			return done(null, user._id);
+		}
+
+		done(new Error("Invalid credentials"));
 	}
 );
 
@@ -37,8 +41,6 @@ export const authenticateLocal = (
 			{ session: false },
 			(err: Error | null, userId: Types.ObjectId): void =>
 				err ? reject(err) : resolve(issueTokens(userId))
-		)(ctx, async () => {
-			return;
-		});
+		)(ctx, () => Promise.resolve(undefined));
 	});
 };

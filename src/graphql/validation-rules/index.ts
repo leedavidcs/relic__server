@@ -6,7 +6,7 @@ interface IGetValidationRulesConfig {
 }
 
 export const getValidationRules = ({ maxDepth }: IGetValidationRulesConfig) => {
-	const validationRules: Array<(context: ValidationContext) => any> = [
+	const validationRules: ((context: ValidationContext) => any)[] = [
 		depthLimitValidationRules(maxDepth)
 	];
 

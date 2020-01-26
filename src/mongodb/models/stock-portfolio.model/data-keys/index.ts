@@ -15,7 +15,7 @@ export const Prefixes = {
 	IEX_QUOTE: "IEX_QUOTE"
 };
 
-export const PREFIX_PROP_DELIMITER: string = "__";
+export const PREFIX_PROP_DELIMITER = "__";
 
 export const DataKeys = {
 	...IexCompanyDataKeys,

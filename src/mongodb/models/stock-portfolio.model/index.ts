@@ -1,6 +1,6 @@
+import { ForeignKey } from "@/mongodb";
 import { Document, model, Model, Schema } from "mongoose";
 import { prop, uniqBy } from "ramda";
-import { ForeignKey } from "..";
 import { DataKeys } from "./data-keys";
 
 export * from "./data-keys";
@@ -14,8 +14,8 @@ interface IStockPortfolioHeader {
 
 export interface IStockPortfolio extends Document {
 	user: ForeignKey<"User">;
-	headers: ReadonlyArray<IStockPortfolioHeader>;
-	tickers: ReadonlyArray<string>;
+	headers: readonly IStockPortfolioHeader[];
+	tickers: readonly string[];
 }
 
 const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({

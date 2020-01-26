@@ -1,9 +1,9 @@
 import { IServerContext } from "@/graphql";
+import { ConnectionEdge, resolveRootConnection } from "@/graphql/resolvers/connection.resolver";
 import { IStockPortfolio } from "@/mongodb";
-import { Logger, NotFoundError } from "@/utils";
+import { Logger, NotFoundError, UnexpectedError } from "@/utils";
 import { canError } from "can-error";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { ConnectionEdge, resolveRootConnection } from "../connection.resolver";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
 
 export * from "./get-stock-portfolio-data";
@@ -14,7 +14,11 @@ const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent,
 		user
 	} = context;
 
-	const userId: string = user!.id;
+	if (!user) {
+		throw new UnexpectedError();
+	}
+
+	const userId: string = user.id;
 	const filter: { [key: string]: any } = { ...args, user: userId };
 
 	const result = await resolveRootConnection("StockPortfolio", filter, stockPortfolio, context);

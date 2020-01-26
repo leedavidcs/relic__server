@@ -14,12 +14,12 @@ export interface IWithUser {
 	user: IUser | null;
 }
 
-const CONVERSION_UNIX_TIME: number = 1000;
+const CONVERSION_UNIX_TIME = 1000;
 const JWT_SIGN_ALGORITHM: Algorithm = "HS256";
 
-const jwtExpiresIn: number = Number(process.env.JWT_EXPIRES_IN);
+const jwtExpiresIn = Number(process.env.JWT_EXPIRES_IN);
 const jwtSecretKey: string = process.env.JWT_SECRET_KEY || "";
-const jwtRefreshExpiresIn: number = Number(process.env.JWT_REFRESH_EXPIRES_IN);
+const jwtRefreshExpiresIn = Number(process.env.JWT_REFRESH_EXPIRES_IN);
 const jwtRefreshSecretKey: string = process.env.JWT_REFRESH_SECRET_KEY || "";
 
 export interface ITokenResponse {
@@ -32,7 +32,7 @@ interface IJwtPayload {
 }
 
 const getAuthorizationHeader = (ctx: ParameterizedContext<IWithUser>): string | null => {
-	const headerKeys: ReadonlyArray<string> = Object.keys(ctx.headers);
+	const headerKeys: readonly string[] = Object.keys(ctx.headers);
 	const authKey = headerKeys.find((key) => key.toLowerCase() === "authorization");
 
 	const authHeader: string | null = typeof authKey === "string" ? ctx.headers[authKey] : null;

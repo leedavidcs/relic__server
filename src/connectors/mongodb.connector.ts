@@ -10,16 +10,15 @@ import { isConnectionInput, isVariableDateTimeInput } from "@/validators";
 import { ObjectId } from "bson";
 import moment from "moment";
 import { Cursor } from "mongodb";
-import { Types } from "mongoose";
+import { Collection, Types } from "mongoose";
 import { isNil, reject } from "ramda";
 import {
 	AbstractConnector,
-	IAbstractCursor,
 	IAbstractSource,
 	IAbstractSourceWithCursor
 } from "./abstract.connector";
 
-const MONTHS_IN_YEAR: number = 12;
+const MONTHS_IN_YEAR = 12;
 
 const isId = (value: any): value is string => {
 	try {
@@ -59,7 +58,7 @@ const applyArrayFilter = <T>(
 	key: string,
 	values: T[]
 ): { [key: string]: any } => {
-	const idAdjustedValues: Array<T | ObjectId> = values.map(idAdjustValue);
+	const idAdjustedValues: (T | ObjectId)[] = values.map(idAdjustValue);
 	const op: string = idAdjustedValues.length ? "$in" : "eq";
 
 	return { ...filter, [key]: { [op]: idAdjustedValues } };
@@ -77,9 +76,9 @@ const applyDateTimeInputFilter = (
 	value: IVariableDateTimeInput
 ): { [key: string]: any } => {
 	const { before, after, equal } = value;
-	const oldFilters: Array<{ [key: string]: any }> = filter.$or || [];
+	const oldFilters: { [key: string]: any }[] = filter.$or || [];
 
-	const newFilters: Array<{ [key: string]: any } | null | undefined> = reject(isNil, [
+	const newFilters: ({ [key: string]: any } | null | undefined)[] = reject(isNil, [
 		isNil(before) ? before : { [key]: { $lt: toDate(before) } },
 		isNil(after) ? after : { [key]: { $gt: toDate(after) } },
 		isNil(equal) ? equal : { [key]: { $lt: getEndDate(equal), $gt: toDate(equal) } }
@@ -96,9 +95,9 @@ const applyConnectionInputFilter = (
 	value: IConnectionInput
 ): { [key: string]: any } => {
 	const { someOf, allOf, size, empty } = value;
-	const oldFilters: Array<{ [key: string]: any }> = filter.$and || [];
+	const oldFilters: { [key: string]: any }[] = filter.$and || [];
 
-	const newFilters: Array<{ [key: string]: any } | null | undefined> = reject(isNil, [
+	const newFilters: ({ [key: string]: any } | null | undefined)[] = reject(isNil, [
 		isNil(someOf) ? someOf : { [key]: { $in: someOf.map(idAdjustValue) } },
 		isNil(allOf) ? allOf : { [key]: { $in: allOf.map(idAdjustValue) } },
 		isNil(size) ? size : { [key]: { $size: size } },
@@ -128,7 +127,7 @@ export class MongoDBConnector extends AbstractConnector {
 		source: IAbstractSourceWithCursor<T>,
 		filter: { [key: string]: any },
 		pagination: Pick<IPaginationParams, "before" | "after">
-	): IAbstractCursor<T> {
+	): Cursor<T & IDataNode> {
 		const { before, after } = pagination;
 
 		const paginatedFilter: { [key: string]: any } = {
@@ -143,7 +142,7 @@ export class MongoDBConnector extends AbstractConnector {
 				})
 		};
 
-		return source.find(paginatedFilter);
+		return (source as Collection).find<T & IDataNode>(paginatedFilter);
 	}
 
 	public get<T>(sourceName: keyof typeof models): IAbstractSource<T> {
@@ -188,7 +187,7 @@ export class MongoDBConnector extends AbstractConnector {
 
 				const cursor: any = models[sourceName].collection.find(adapted, ...restArgs);
 
-				/* tslint:disable:no-object-mutation */
+				/* eslint-disable no-underscore-dangle */
 				/**
 				 * !HACK
 				 * @description Attempting not having to map `_id` to `id` outside of this
@@ -200,7 +199,7 @@ export class MongoDBConnector extends AbstractConnector {
 				 */
 				cursor._toArray = cursor.toArray;
 				cursor.toArray = () => cursor._toArray().then((results) => results.map(useId));
-				/* tslint:enable:no-object-mutation */
+				/* eslint-enable no-underscore-dangle */
 
 				return cursor as Cursor;
 			}
@@ -214,12 +213,13 @@ export class MongoDBConnector extends AbstractConnector {
 			(acc, key) => {
 				const value = queryArgs[key];
 				const adaptedKey: string = key === "id" ? "_id" : key;
-				// prettier-ignore
-				const extendedAcc: { [key: string]: any } =
-					Array.isArray(value)             ? applyArrayFilter(acc, adaptedKey, value)
-					: isConnectionInput(value)       ? applyConnectionInputFilter(acc, adaptedKey, value)
-					: isVariableDateTimeInput(value) ? applyDateTimeInputFilter(acc, adaptedKey, value)
-					                                 : applyDefaultFilter(acc, adaptedKey, value);
+				const extendedAcc: { [key: string]: any } = Array.isArray(value)
+					? applyArrayFilter(acc, adaptedKey, value)
+					: isConnectionInput(value)
+					? applyConnectionInputFilter(acc, adaptedKey, value)
+					: isVariableDateTimeInput(value)
+					? applyDateTimeInputFilter(acc, adaptedKey, value)
+					: applyDefaultFilter(acc, adaptedKey, value);
 
 				return extendedAcc;
 			},

@@ -19,7 +19,7 @@ const getRealConnectionUri = (): string => {
 	/* tslint:enable:no-if-statement */
 
 	const authPartial: string = pass && user ? `${user}:${pass}@` : "";
-	const uri: string = `mongodb://${authPartial}${host}:${port}/${dbName}`;
+	const uri = `mongodb://${authPartial}${host}:${port}/${dbName}`;
 
 	return uri;
 };

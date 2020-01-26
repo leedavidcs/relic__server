@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
+import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { Company } from "iexcloud_api_wrapper";
 
 export const IexCompanySuffixToPropMap: { [key: string]: keyof Company } = {
@@ -19,10 +19,10 @@ export const IexCompanySuffixToPropMap: { [key: string]: keyof Company } = {
 
 export const getIexCompanyData = async (
 	ticker: string,
-	groupedKeys: { [key in keyof typeof Prefixes]: ReadonlyArray<string> },
+	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
 	context: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
-	const iexCompanyKeys: ReadonlyArray<string> = groupedKeys[Prefixes.IEX_COMPANY];
+	const iexCompanyKeys: readonly string[] = groupedKeys[Prefixes.IEX_COMPANY];
 
 	if (!iexCompanyKeys) {
 		return {};

@@ -1,0 +1,17 @@
+# configs
+.github/**
+.jest/**
+.storybook/**
+
+# production
+.webpack/**
+
+# dependencies
+node_modules/**
+
+# scripts
+*.js
+
+# generated files
+**/types/**
+**/*.d.ts

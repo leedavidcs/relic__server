@@ -1,6 +1,6 @@
+import { IServerContext } from "@/graphql/context";
 import { resolvers as ScalarTypes } from "graphql-scalars";
 import { IFieldResolver, IResolvers } from "graphql-tools";
-import { IServerContext } from "../context";
 import { AuthenticationMutations } from "./authentication.resolver";
 import { ConnectionTypes } from "./connection.resolver";
 import { DataKeyQueries, DataKeyTypes } from "./data-key.resolver";
