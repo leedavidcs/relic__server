@@ -1,6 +1,6 @@
 import { IexCompanySuffixToPropMap } from "@/graphql/resolvers/stock-portfolio.resolver";
 import { IexCompanyDataKeys, PREFIX_PROP_DELIMITER } from "@/mongodb";
-import { DataKey, DataKey_Provider, DataKeyOption } from "@/types";
+import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
 
 export const IexCompanyDataKeyOptions = Object.keys(IexCompanyDataKeys).reduce((acc, dataKey) => {
 	const [, suffix] = dataKey.split(PREFIX_PROP_DELIMITER);

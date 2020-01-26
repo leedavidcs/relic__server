@@ -1,13 +1,13 @@
+import { logOperation } from "@/dataloaders/utils";
 import { models } from "@/mongodb";
 import objectHash from "object-hash";
 import { IFilter, IObjectFilterKey } from ".";
-import { logOperation } from "../log-operation";
 
 const mapToIds = <
 	S extends keyof typeof models,
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
-	entities: ReadonlyArray<T>
+	entities: readonly T[]
 ): { [id: string]: T } => {
 	const entitiesMap: { [id: string]: T } = entities.reduce(
 		(acc, entity) => ({ ...acc, [entity.id]: entity }),
@@ -18,7 +18,7 @@ const mapToIds = <
 };
 
 const getFiltersMap = (
-	hashesTuple: ReadonlyArray<[string, IObjectFilterKey]>
+	hashesTuple: readonly [string, IObjectFilterKey][]
 ): { [hash: string]: IFilter } => {
 	const filtersMap: { [hash: string]: IFilter } = hashesTuple.reduce((acc, [hash, key]) => {
 		const { id, ...filter }: IObjectFilterKey = key;
@@ -47,11 +47,11 @@ const getResultsMap = async <
 ): Promise<{ [hash: string]: { [id: string]: T } }> => {
 	const model = models[sourceName];
 
-	const filtersTuple: ReadonlyArray<[string, IFilter]> = Object.keys(filtersMap).map((hash) => {
+	const filtersTuple: readonly [string, IFilter][] = Object.keys(filtersMap).map((hash) => {
 		return [hash, filtersMap[hash]];
 	});
 
-	const resultsTuples: ReadonlyArray<[string, T[]]> = await Promise.all(
+	const resultsTuples: readonly [string, T[]][] = await Promise.all(
 		filtersTuple.map(
 			async ([hash, filter]): Promise<[string, any[]]> => {
 				logOperation(sourceName, "MongoDB.Model.find", filter);
@@ -75,10 +75,10 @@ const getOrderedResults = <
 	S extends keyof typeof models,
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
-	hashesTuple: ReadonlyArray<[string, IObjectFilterKey]>,
+	hashesTuple: readonly [string, IObjectFilterKey][],
 	resultsMap: { [hash: string]: { [id: string]: T } }
-): Array<(T & IDataNode) | null> => {
-	const results: Array<(T & IDataNode) | null> = hashesTuple.map(([hash, key]) => {
+): ((T & IDataNode) | null)[] => {
+	const results: ((T & IDataNode) | null)[] = hashesTuple.map(([hash, key]) => {
 		const { id } = key;
 
 		const resultsSet: { [id: string]: T } | null = resultsMap[hash] || null;
@@ -94,9 +94,9 @@ export const batchByIdAndFilters = async <
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
 	sourceName: S,
-	keys: ReadonlyArray<IObjectFilterKey>
-): Promise<Array<(T & IDataNode) | null>> => {
-	const hashesTuple: ReadonlyArray<[string, IObjectFilterKey]> = keys.map((key) => {
+	keys: readonly IObjectFilterKey[]
+): Promise<((T & IDataNode) | null)[]> => {
+	const hashesTuple: readonly [string, IObjectFilterKey][] = keys.map((key) => {
 		return [objectHash(key), key];
 	});
 
@@ -107,7 +107,7 @@ export const batchByIdAndFilters = async <
 		filtersMap
 	);
 
-	const results: Array<(T & IDataNode) | null> = getOrderedResults(hashesTuple, resultsMap);
+	const results: ((T & IDataNode) | null)[] = getOrderedResults(hashesTuple, resultsMap);
 
 	return results;
 };

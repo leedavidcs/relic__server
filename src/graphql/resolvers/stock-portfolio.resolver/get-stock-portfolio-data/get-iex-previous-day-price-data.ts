@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
+import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { PreviousDay } from "iexcloud_api_wrapper";
 
 export const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof PreviousDay } = {
@@ -17,11 +17,10 @@ export const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof Previous
 
 export const getIexPreviousDayPriceData = async (
 	ticker: string,
-	groupedKeys: { [key in keyof typeof Prefixes]: ReadonlyArray<string> },
+	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
 	context: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
-	const iexPreviousDayPriceKeys: ReadonlyArray<string> =
-		groupedKeys[Prefixes.IEX_PREVIOUS_DAY_PRICE];
+	const iexPreviousDayPriceKeys: readonly string[] = groupedKeys[Prefixes.IEX_PREVIOUS_DAY_PRICE];
 
 	if (!iexPreviousDayPriceKeys) {
 		return {};
@@ -37,13 +36,12 @@ export const getIexPreviousDayPriceData = async (
 		const previousDayPriceProp: keyof PreviousDay | null =
 			IexPreviousDayPriceSuffixToPropMap[key] || null;
 
-		return {
-			...acc,
-			...(previousDayPriceProp && {
-				[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}${PREFIX_PROP_DELIMITER}${key}`]: previousDayPrice[
-					previousDayPriceProp
-				]
-			})
+		const previousDayData = previousDayPriceProp && {
+			[`${Prefixes.IEX_PREVIOUS_DAY_PRICE}${PREFIX_PROP_DELIMITER}${key}`]: previousDayPrice[
+				previousDayPriceProp
+			]
 		};
+
+		return { ...acc, ...previousDayData };
 	}, {} as { [key in keyof typeof DataKeys]?: any });
 };

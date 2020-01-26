@@ -7,7 +7,7 @@ export interface IAbstractCursor<T> {
 	skip: (value: number) => IAbstractCursor<T>;
 	toArray: (
 		callback?: (error: Error | null, result: T) => void
-	) => PromiseLike<Array<T & IDataNode>>;
+	) => PromiseLike<(T & IDataNode)[]>;
 }
 
 export interface IAbstractSource<T> {

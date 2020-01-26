@@ -6,7 +6,7 @@ import {
 	Callback,
 	Context
 } from "aws-lambda";
-import ServerlessHttp from "serverless-http";
+import ServerlessHttp, { Handler } from "serverless-http";
 // tslint:disable:no-import-side-effect
 import "source-map-support/register";
 // tslint:enable:no-import-side-effect
@@ -21,30 +21,30 @@ const createHandler = async (): Promise<APIGatewayProxyHandler> => {
 		context: Context,
 		callback: Callback<APIGatewayProxyResult>
 	): void => {
-		const koaHandler = ServerlessHttp(server.app);
+		const koaHandler: Handler = ServerlessHttp(server.app);
 
-		new Promise<APIGatewayProxyResult>(async (resolve, reject) => {
-			try {
-				/**
-				 * @description ServerlessHttp.LambdaPartial has incorrect types. Await is required
-				 * here, even if the types state that it isn't. The koaHandler is wrapped in this
-				 * promise to still maintain correct types.
-				 * @author David Lee
-				 * @date October 10, 2019
-				 */
-				const result: APIGatewayProxyResult = await koaHandler(event, context);
+		const asyncHandler = async () => {
+			/**
+			 * @description ServerlessHttp.LambdaPartial has incorrect types. Await is required
+			 * here, even if the types state that it isn't. The koaHandler is wrapped in this
+			 * promise to still maintain correct types.
+			 * @author David Lee
+			 * @date October 10, 2019
+			 */
+			const result: APIGatewayProxyResult = await koaHandler(event, context);
 
-				await server.stop();
+			await server.stop();
 
-				resolve(result);
-			} catch (err) {
-				await server.stop();
+			return result;
+		};
 
-				reject(err);
-			}
-		})
+		asyncHandler()
 			.then((result) => callback(null, result))
-			.catch((err) => callback(err));
+			.catch(async (err) => {
+				await server.stop();
+
+				callback(err);
+			});
 	};
 
 	return handler;

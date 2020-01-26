@@ -7,9 +7,9 @@ import Koa, { ParameterizedContext } from "koa";
 import { applyMiddlewares } from "./middlewares";
 import { applyRoutes } from "./routes";
 
-const DEFAULT_PORT: number = 8080;
-const MAX_GRAPHQL_COMPLEXITY: number = 500;
-const MAX_GRAPHQL_DEPTH: number = 10;
+const DEFAULT_PORT = 8080;
+const MAX_GRAPHQL_COMPLEXITY = 500;
+const MAX_GRAPHQL_DEPTH = 10;
 
 const applyGraphQL = (server: Server): void => {
 	const apolloServer: ApolloServer = getApolloServer<

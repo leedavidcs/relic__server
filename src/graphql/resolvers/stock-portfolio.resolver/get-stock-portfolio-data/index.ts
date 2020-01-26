@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, IStockPortfolio, PREFIX_PROP_DELIMITER, Prefixes } from "@/mongodb";
+import { DataKeys, IStockPortfolio, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { doesExist } from "@/utils";
 import { isNil } from "ramda";
 import { getIexCompanyData } from "./get-iex-company-data";
@@ -27,21 +27,21 @@ const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] =
 };
 
 const groupKeysByPrefix = (
-	dataKeys: ReadonlyArray<string | null>
-): { [key in keyof typeof Prefixes]: ReadonlyArray<string> } => {
-	const withoutNulls: ReadonlyArray<string> = dataKeys.filter(doesExist);
-	const prefixedTuples: ReadonlyArray<[keyof typeof Prefixes, string]> = withoutNulls.map(
+	dataKeys: readonly (string | null)[]
+): { [key in keyof typeof Prefixes]: readonly string[] } => {
+	const withoutNulls: readonly string[] = dataKeys.filter(doesExist);
+	const prefixedTuples: readonly [keyof typeof Prefixes, string][] = withoutNulls.map(
 		createPrefixedTuple
 	);
 
 	const groupedByPrefix: {
-		[key in keyof typeof Prefixes]: ReadonlyArray<string>;
+		[key in keyof typeof Prefixes]: readonly string[];
 	} = prefixedTuples.reduce(
 		(acc, [prefix, prop]) => ({
 			...acc,
 			[prefix]: (acc[prefix] || []).concat(prop)
 		}),
-		{} as { [key in keyof typeof Prefixes]: ReadonlyArray<string> }
+		{} as { [key in keyof typeof Prefixes]: readonly string[] }
 	);
 
 	return groupedByPrefix;
@@ -49,7 +49,7 @@ const groupKeysByPrefix = (
 
 const getDataForTicker = async (
 	ticker: string,
-	groupedKeys: { [key in keyof typeof Prefixes]: ReadonlyArray<string> },
+	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
 	context: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
 	const iexCompanyData = await getIexCompanyData(ticker, groupedKeys, context);
@@ -88,13 +88,13 @@ export const getStockPortfolioData = async (
 ): Promise<{ [key: string]: any }> => {
 	const { headers, tickers } = stockPortfolio;
 
-	const dataKeys: ReadonlyArray<keyof typeof DataKeys | null> = headers.map(
+	const dataKeys: readonly (keyof typeof DataKeys | null)[] = headers.map(
 		({ dataKey }) => dataKey
 	);
 
 	const groupedByPrefix = groupKeysByPrefix(dataKeys);
 
-	const stockPortfolioData: ReadonlyArray<{ [key: string]: any }> = await Promise.all(
+	const stockPortfolioData: readonly { [key: string]: any }[] = await Promise.all(
 		tickers.map(async (ticker) => {
 			const resultsMap = await getDataForTicker(ticker, groupedByPrefix, context);
 			const mappedToHeaders = assignDataToHeaders(resultsMap, headers);

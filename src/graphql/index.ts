@@ -19,7 +19,7 @@ export * from "./context";
 export const typeDefs = gqlTypeDefs;
 
 const cacheHost: string = process.env.REDIS_GRAPHQL_HOST || "";
-const cachePort: number = Number(process.env.REDIS_GRAPHQL_PORT);
+const cachePort = Number(process.env.REDIS_GRAPHQL_PORT);
 
 interface IGetApolloServerOptions<P> {
 	getHeaders: (params: P) => { [key: string]: string };

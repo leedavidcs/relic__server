@@ -3,7 +3,7 @@ import { IPageInfo } from "@/graphql";
 import { Maybe } from "@/types";
 import { sort } from "ramda";
 
-const DEFAULT_LIMIT: number = 50;
+const DEFAULT_LIMIT = 50;
 
 export interface IPaginationParams {
 	before?: { value: string };
@@ -19,7 +19,7 @@ interface IGetSkipAndLimitParams extends Pick<IPaginationParams, "first" | "last
 export const getPageInfo = <T extends IDataNode>(
 	count: number,
 	pagination: Pick<IPaginationParams, "first" | "last">,
-	results: ReadonlyArray<T>
+	results: readonly T[]
 ): IPageInfo => {
 	const { first, last } = pagination;
 
@@ -90,7 +90,7 @@ export const limitDocsById = <T extends IDataNode>(
 };
 
 export const limitKeysById = (
-	keys: ReadonlyArray<string>,
+	keys: readonly string[],
 	pagination: Pick<IPaginationParams, "before" | "after">
 ): string[] => {
 	const { before, after } = pagination;
@@ -112,7 +112,7 @@ export const limitKeysById = (
 };
 
 export const getPaginatedKeys = (
-	keys: ReadonlyArray<string>,
+	keys: readonly string[],
 	pagination: Pick<IPaginationParams, "first" | "last">
 ): string[] => {
 	const { first, last } = pagination;

@@ -1,6 +1,6 @@
 import { IexPreviousDayPriceSuffixToPropMap } from "@/graphql/resolvers/stock-portfolio.resolver";
 import { IexPreviousDayPriceDataKeys, PREFIX_PROP_DELIMITER } from "@/mongodb";
-import { DataKey, DataKey_Provider, DataKeyOption } from "@/types";
+import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
 
 export const IexPreviousDayPriceDataKeyOptions = Object.keys(IexPreviousDayPriceDataKeys).reduce(
 	(acc, dataKey) => {
