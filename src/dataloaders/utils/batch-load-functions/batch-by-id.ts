@@ -7,7 +7,7 @@ export const batchById = async <
 	T extends InstanceType<typeof models[S]> = InstanceType<typeof models[S]>
 >(
 	sourceName: S,
-	keys: string[]
+	keys: ReadonlyArray<string>
 ) => {
 	const filter = { _id: { $in: keys } };
 

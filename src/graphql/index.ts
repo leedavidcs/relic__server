@@ -4,7 +4,6 @@ import { RedisCache } from "apollo-server-cache-redis";
 import { ApolloServerBase, Config } from "apollo-server-core";
 import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
-import { Constructor } from "protobufjs";
 import { deriveApolloContext } from "./context";
 import { schemaDirectives } from "./directives";
 import { getSchemaWithMiddleware } from "./middlewares";

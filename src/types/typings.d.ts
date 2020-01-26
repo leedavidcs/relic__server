@@ -9,3 +9,8 @@ declare module "*/schemas/index.graphql" {
 declare interface IDataNode {
 	id: string;
 }
+
+declare interface Constructor<T> extends Function {
+	new (...params: any[]): T;
+	prototype: T;
+}
