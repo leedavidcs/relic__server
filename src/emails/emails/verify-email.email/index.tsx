@@ -3,7 +3,9 @@ import React, { FunctionComponent } from "react";
 import { useStyles } from "./styles";
 
 export interface IVerifyEmailProps {
+	/** The uri the user should click to verify their account */
 	confirmationLink: string;
+	/** The username to display in the greeting */
 	username: string;
 }
 

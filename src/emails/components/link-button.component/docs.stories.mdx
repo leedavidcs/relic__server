@@ -1,0 +1,52 @@
+import { Paper } from "@/emails/components/paper.component";
+import { Meta, Preview, Props, Story } from "@storybook/addon-docs/blocks";
+import { select } from "@storybook/addon-knobs";
+import { LinkButton } from ".";
+
+<Meta title="general/link-button" component={LinkButton} />
+
+# LinkButton
+
+- [Table of contents](#linkbutton)
+  * [Description](#description)
+  * [Props](#props)
+  * [StandardStory](#standardstory)
+    + [Source](#source)
+
+## Description
+An link that appears like a button.
+
+## Props
+<Props of={LinkButton} />
+
+## StandardStory
+<Preview>
+	<Story name="standard">
+		{() => {
+			const size = select("size", {
+				small: "small",
+				medium: "medium",
+				large: "large"
+			});
+			const type = select("type", {
+				primary: "primary",
+				secondary: "secondary",
+				error: "error",
+				warning: "warning"
+			});
+			return (
+				<Paper>
+					<LinkButton
+						to="#"
+						text="Click me!"
+						size={size}
+						type={type}
+					/>
+				</Paper>
+			);
+		}}
+	</Story>
+</Preview>
+
+### Source
+(see code in story)

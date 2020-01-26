@@ -1,7 +1,10 @@
-import React, { FunctionComponent } from "react";
+import React, { FunctionComponent, ReactNode } from "react";
 
 interface IProps {
+	/** How its children should be aligned */
 	align: "left" | "right" | "center";
+	/** Children to be aligned */
+	children: ReactNode;
 }
 
 /**

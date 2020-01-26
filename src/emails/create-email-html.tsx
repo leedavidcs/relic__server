@@ -1,10 +1,10 @@
-import { SheetsRegistry } from "jss";
 import Juice from "juice";
 import { pipe } from "ramda";
 import React, { ComponentType } from "react";
 import ReactDOMServer from "react-dom/server";
-import { createGenerateId, JssProvider, ThemeProvider } from "react-jss";
+import { createGenerateId, JssProvider, SheetsRegistry, ThemeProvider } from "react-jss";
 import { standardTheme } from "./themes";
+import { RootProvider } from "./components/root-provider.component";
 
 const STYLE_TAG: string = "%STYLE%";
 const CONTENT_TAG: string = "%CONTENT%";
@@ -41,11 +41,9 @@ const interpolateContent = <P extends {}>(
 ): ((template: string) => string) => {
 	return (template: string): string => {
 		const contentStr: string = ReactDOMServer.renderToStaticMarkup(
-			<JssProvider registry={sheets} generateId={createGenerateId()}>
-				<ThemeProvider theme={standardTheme}>
-					<Content {...props} />
-				</ThemeProvider>
-			</JssProvider>
+			<RootProvider sheets={sheets}>
+				<Content {...props} />
+			</RootProvider>
 		);
 
 		const templateWithContent: string = template.replace(CONTENT_TAG, contentStr);
