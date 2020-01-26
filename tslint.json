@@ -30,7 +30,6 @@
 		"no-loop-statement": true,
 		"no-magic-numbers": true,
 		"no-method-signature": true,
-		"no-object-mutation": [true, { "ignore-prefix": "this" }],
 		"no-shadowed-variable": true,
 		"no-string-throw": true,
 		"no-var-keyword": true,

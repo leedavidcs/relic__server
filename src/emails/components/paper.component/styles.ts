@@ -3,6 +3,7 @@ import { createUseStyles } from "react-jss";
 
 const styles = (theme: CustomTheme) => ({
 	root: {
+		padding: 20,
 		borderRadius: 4,
 		boxShadow: [
 			"0px 1px 3px 0px rgba(0,0,0,0.2)",

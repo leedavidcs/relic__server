@@ -10,7 +10,7 @@ import {
 } from "@/graphql/pagination";
 import { models } from "@/mongodb";
 import { Maybe } from "@/types";
-import { doesExist } from "@/utils";
+import { doesExist, isNotError } from "@/utils";
 import Base64URL from "base64-url";
 import DataLoader from "dataloader";
 import { GraphQLScalarType, Kind, ValueNode } from "graphql";
@@ -122,9 +122,12 @@ export const resolveNestedConnection = async <
 		...MongoDB.adaptQueryArgs(restArgs)
 	}));
 
-	const entities: ReadonlyArray<(T & IDataNode) | null> = await loader.loadMany(withFilter);
-	const withoutNulls: ReadonlyArray<T & IDataNode> = entities.filter(doesExist);
-	const entitiesMap: { [key: string]: T & IDataNode } = indexBy(prop("id"), withoutNulls);
+	const entities: ReadonlyArray<Error | (T & IDataNode) | null> = await loader.loadMany(
+		withFilter
+	);
+	const withoutNulls: ReadonlyArray<Error | (T & IDataNode)> = entities.filter(doesExist);
+	const withoutErrors: ReadonlyArray<T & IDataNode> = withoutNulls.filter(isNotError);
+	const entitiesMap: { [key: string]: T & IDataNode } = indexBy(prop("id"), withoutErrors);
 
 	const finalKeys: ReadonlyArray<string> = Object.keys(entitiesMap);
 	const cursorLimitedKeys: ReadonlyArray<string> = limitKeysById(finalKeys, { before, after });

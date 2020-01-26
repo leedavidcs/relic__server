@@ -3,7 +3,7 @@ import DataLoader from "dataloader";
 import { batchById, batchByIdAndFilters, IObjectFilterKey } from "./utils";
 
 export const stockPortfolioById = (): DataLoader<string, IStockPortfolio & IDataNode> => {
-	return new DataLoader((keys: string[]) => batchById("StockPortfolio", keys));
+	return new DataLoader((keys: ReadonlyArray<string>) => batchById("StockPortfolio", keys));
 };
 
 export const stockPortfolio = (): DataLoader<

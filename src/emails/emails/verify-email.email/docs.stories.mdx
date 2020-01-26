@@ -1,0 +1,25 @@
+import { Meta, Preview, Props, Story } from "@storybook/addon-docs/blocks";
+import { VerifyEmail } from ".";
+
+<Meta title="emails/verify-email" component={VerifyEmail} />
+
+# VerifyEmail
+
+- [Table of contents](#verifyemail)
+  * [Description](#description)
+  * [Props](#props)
+  * [StandardStory](#standardstory)
+    + [Source](#source)
+
+## Props
+<Props of={VerifyEmail} />
+
+## StandardStory
+<Preview>
+	<Story name="standard">
+		<VerifyEmail confirmationLink="http://greatestexamplelink.com" username="DavidLee" />
+	</Story>
+</Preview>
+
+### Source
+(see code in story)

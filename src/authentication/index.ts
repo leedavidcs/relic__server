@@ -1,7 +1,7 @@
 import { IUser, UserModel } from "@/mongodb";
 import { getRefreshTokenUserId, saveRefreshToken } from "@/redis";
 import { Server } from "@/server";
-import Jwt from "jsonwebtoken";
+import Jwt, { Algorithm } from "jsonwebtoken";
 import { ParameterizedContext } from "koa";
 import Passport from "koa-passport";
 import { Types } from "mongoose";
@@ -15,7 +15,7 @@ export interface IWithUser {
 }
 
 const CONVERSION_UNIX_TIME: number = 1000;
-const JWT_SIGN_ALGORITHM: string = "HS256";
+const JWT_SIGN_ALGORITHM: Algorithm = "HS256";
 
 const jwtExpiresIn: number = Number(process.env.JWT_EXPIRES_IN);
 const jwtSecretKey: string = process.env.JWT_SECRET_KEY || "";
