@@ -1,8 +1,8 @@
 import { IUser, UserModel } from "@/mongodb";
 import { Server } from "@/server";
+import KoaRouter from "@koa/router";
 import HttpStatus from "http-status-codes";
 import Koa from "koa";
-import KoaRouter from "koa-router";
 
 /* tslint:disable:no-object-mutation */
 export const applyRoutes = (server: Server): void => {
