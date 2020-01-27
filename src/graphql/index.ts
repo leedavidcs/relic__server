@@ -6,6 +6,7 @@ import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
 import { deriveApolloContext } from "./context";
 import { schemaDirectives } from "./directives";
+import { devLogger } from "./extensions";
 import { getSchemaWithMiddleware } from "./middlewares";
 import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
@@ -55,6 +56,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		},
 		dataSources,
 		debug: process.env.NODE_ENV === "development",
+		extensions: [devLogger],
 		playground: process.env.NODE_ENV === "development",
 		plugins: getPlugins({ maxComplexity, schema }),
 		schema,

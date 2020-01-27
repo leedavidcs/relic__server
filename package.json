@@ -52,7 +52,6 @@
 		"@types/winston": "^2.4.4",
 		"apollo-server-cache-redis": "^1.1.5",
 		"apollo-server-koa": "^2.9.16",
-		"app-root-path": "^3.0.0",
 		"base64-url": "^2.3.3",
 		"bcryptjs": "^2.4.3",
 		"can-error": "^0.2.0",
