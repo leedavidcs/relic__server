@@ -1,7 +1,7 @@
 import { IServerContext } from "@/graphql";
 import { DataKeys, IStockPortfolio, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { doesExist } from "@/utils";
-import { isNil } from "ramda";
+import { isNil } from "lodash";
 import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";

@@ -1,7 +1,6 @@
 import { IAbstractCursor } from "@/connectors";
 import { IPageInfo } from "@/graphql";
 import { Maybe } from "@/types";
-import { sort } from "ramda";
 
 const DEFAULT_LIMIT = 50;
 
@@ -65,17 +64,18 @@ const getSkipAndLimit = (params: IGetSkipAndLimitParams): [number, number] => {
 };
 
 export const limitDocsById = <T extends IDataNode>(
-	data: T[],
+	data: readonly T[],
 	pagination: Pick<IPaginationParams, "before" | "after">
 ): T[] => {
 	const { before, after } = pagination;
 
-	const sorted: T[] = sort<T>((a, b) => {
+	const sorted: readonly T[] = [...data].sort((a, b) => {
 		const strA = a.id.toString();
 		const strB = b.id.toString();
 
 		return strA.localeCompare(strB);
-	}, data);
+	});
+
 	const count: number = sorted.length;
 
 	const afterIndex: number = after ? sorted.findIndex(({ id }) => id === after.value) : 0;
@@ -95,12 +95,12 @@ export const limitKeysById = (
 ): string[] => {
 	const { before, after } = pagination;
 
-	const sorted: string[] = sort<string>((a, b) => {
+	const sorted: readonly string[] = [...keys].sort((a, b) => {
 		const strA: string = a.toString();
 		const strB: string = b.toString();
 
 		return strA.localeCompare(strB);
-	}, keys);
+	});
 	const count: number = sorted.length;
 
 	const afterIndex: number = after ? sorted.findIndex((key) => key === after.value) : 0;
