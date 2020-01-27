@@ -1,5 +1,6 @@
 import { genSaltSync, hashSync } from "bcryptjs";
 import { Document, model, Model, Schema } from "mongoose";
+import Validator from "validator";
 
 const PASSWORD_MIN_LENGTH = 8;
 const BCRYPT_SALT_ROUNDS = 10;
@@ -18,7 +19,8 @@ const UserSchema: Schema<IUser> = new Schema({
 		index: {
 			unique: true
 		},
-		set: (email: string): string => email.toLowerCase()
+		set: (email: string): string => email.toLowerCase(),
+		validate: [(email: string) => Validator.isEmail(email), "Invalid email"]
 	},
 	emailVerified: {
 		type: Boolean,
