@@ -1,5 +1,5 @@
 import Juice from "juice";
-import { pipe } from "ramda";
+import { flow } from "lodash";
 import React, { ComponentType } from "react";
 import ReactDOMServer from "react-dom/server";
 import { SheetsRegistry } from "react-jss";
@@ -58,7 +58,7 @@ const inlineStyles = (template: string): string => Juice(template);
 export const createEmailHtml = <P extends {}>(template: ComponentType<P>, props: P): string => {
 	const sheets: SheetsRegistry = new SheetsRegistry();
 
-	const createHtmlTemplate = pipe(
+	const createHtmlTemplate: (template: string) => string = flow(
 		interpolateContent(template, props, sheets),
 		interpolateStyles(sheets),
 		inlineStyles

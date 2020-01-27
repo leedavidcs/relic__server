@@ -8,10 +8,10 @@ import { models } from "@/mongodb";
 import { Logger } from "@/utils";
 import { isConnectionInput, isVariableDateTimeInput } from "@/validators";
 import { ObjectId } from "bson";
+import { isNil, reject } from "lodash";
 import moment from "moment";
 import { Cursor } from "mongodb";
 import { Collection, Types } from "mongoose";
-import { isNil, reject } from "ramda";
 import {
 	AbstractConnector,
 	IAbstractSource,
@@ -78,11 +78,14 @@ const applyDateTimeInputFilter = (
 	const { before, after, equal } = value;
 	const oldFilters: { [key: string]: any }[] = filter.$or || [];
 
-	const newFilters: ({ [key: string]: any } | null | undefined)[] = reject(isNil, [
-		isNil(before) ? before : { [key]: { $lt: toDate(before) } },
-		isNil(after) ? after : { [key]: { $gt: toDate(after) } },
-		isNil(equal) ? equal : { [key]: { $lt: getEndDate(equal), $gt: toDate(equal) } }
-	]);
+	const newFilters: Record<string, any> = reject<Record<string, any>>(
+		[
+			before && { [key]: { $lt: toDate(before) } },
+			after && { [key]: { $gt: toDate(after) } },
+			equal && { [key]: { $lt: getEndDate(equal), $gt: toDate(equal) } }
+		],
+		isNil
+	);
 
 	const $or = oldFilters.concat(newFilters);
 
@@ -97,12 +100,15 @@ const applyConnectionInputFilter = (
 	const { someOf, allOf, size, empty } = value;
 	const oldFilters: { [key: string]: any }[] = filter.$and || [];
 
-	const newFilters: ({ [key: string]: any } | null | undefined)[] = reject(isNil, [
-		isNil(someOf) ? someOf : { [key]: { $in: someOf.map(idAdjustValue) } },
-		isNil(allOf) ? allOf : { [key]: { $in: allOf.map(idAdjustValue) } },
-		isNil(size) ? size : { [key]: { $size: size } },
-		isNil(empty) ? empty : { [key]: empty ? { $size: 0 } : { $not: { $size: 0 } } }
-	]);
+	const newFilters: Record<string, any> = reject(
+		[
+			someOf && { [key]: { $in: someOf.map(idAdjustValue) } },
+			allOf && { [key]: { $in: allOf.map(idAdjustValue) } },
+			size && { [key]: { $size: size } },
+			empty && { [key]: empty ? { $size: 0 } : { $not: { $size: 0 } } }
+		],
+		isNil
+	);
 
 	const $and = oldFilters.concat(newFilters);
 

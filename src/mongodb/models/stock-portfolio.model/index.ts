@@ -1,6 +1,6 @@
 import { ForeignKey } from "@/mongodb";
+import { uniqBy } from "lodash";
 import { Document, model, Model, Schema } from "mongoose";
-import { prop, uniqBy } from "ramda";
 import { DataKeys } from "./data-keys";
 
 export * from "./data-keys";
@@ -49,7 +49,7 @@ const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema({
 		default: [],
 		validate: {
 			validator: (headers: IStockPortfolio["headers"]) => {
-				const uniqByName: IStockPortfolio["headers"] = uniqBy(prop("name"), headers);
+				const uniqByName: IStockPortfolio["headers"] = uniqBy(headers, "name");
 
 				const isAllUniq: boolean = uniqByName.length === headers.length;
 

@@ -15,9 +15,9 @@ import Base64URL from "base64-url";
 import DataLoader from "dataloader";
 import { GraphQLScalarType, Kind, ValueNode } from "graphql";
 import { IResolverObject, IResolvers } from "graphql-tools";
+import { keyBy } from "lodash";
 import { Cursor as MongoDBCursor } from "mongodb";
 import { Document } from "mongoose";
-import { indexBy, prop } from "ramda";
 
 export interface IConnectionArguments extends IPaginationParams {
 	before?: any;
@@ -125,7 +125,7 @@ export const resolveNestedConnection = async <
 	const entities: readonly (Error | (T & IDataNode) | null)[] = await loader.loadMany(withFilter);
 	const withoutNulls: readonly (Error | (T & IDataNode))[] = entities.filter(doesExist);
 	const withoutErrors: readonly (T & IDataNode)[] = withoutNulls.filter(isNotError);
-	const entitiesMap: { [key: string]: T & IDataNode } = indexBy(prop("id"), withoutErrors);
+	const entitiesMap: { [key: string]: T & IDataNode } = keyBy(withoutErrors, "id");
 
 	const finalKeys: readonly string[] = Object.keys(entitiesMap);
 	const cursorLimitedKeys: readonly string[] = limitKeysById(finalKeys, { before, after });
