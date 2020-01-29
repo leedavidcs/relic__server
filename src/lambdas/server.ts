@@ -11,6 +11,14 @@ import ServerlessHttp, { Handler } from "serverless-http";
 import "source-map-support/register";
 // tslint:enable:no-import-side-effect
 
+/**
+ * TODO
+ * @description Websocket support still needs to be added. For now, use dedicated instance
+ * @see {@link: https://github.com/michalkvasnicak/aws-lambda-graphql}
+ * @author David Lee
+ * @date January 27, 2020
+ */
+
 const createHandler = async (): Promise<APIGatewayProxyHandler> => {
 	const server: Server = new Server();
 
@@ -23,7 +31,7 @@ const createHandler = async (): Promise<APIGatewayProxyHandler> => {
 	): void => {
 		const koaHandler: Handler = ServerlessHttp(server.app);
 
-		const asyncHandler = async () => {
+		const asyncHandler = async (): Promise<APIGatewayProxyResult> => {
 			/**
 			 * @description ServerlessHttp.LambdaPartial has incorrect types. Await is required
 			 * here, even if the types state that it isn't. The koaHandler is wrapped in this
