@@ -1,15 +1,14 @@
-FROM node:10.15.3-alpine
+FROM node:current-alpine
 
 # Set working directory to /stock-app/server
-WORKDIR /stock-app/app/server
+WORKDIR /usr/src/stock-app/server
 
-# Copy source files to working directory
+COPY package*.json ./
+
+RUN npm install
+
 COPY . .
 
-# Expose ports
 EXPOSE 3031
 
-# Clean install dependencies
-RUN npm ci
-
-CMD ["npm", "run", "sls:dev"]
+CMD ["npm", "run", "server:watch"]
