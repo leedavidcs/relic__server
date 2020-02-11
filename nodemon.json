@@ -10,9 +10,7 @@
 		".webpack",
 		"node_modules"
 	],
-	"watch": [
-		"src"
-	],
+	"watch": ["src"],
 	"exec": "npm run server:build:dev && npm start",
 	"ext": "ts"
 }

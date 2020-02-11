@@ -5,7 +5,7 @@ jspm_packages
 # Serverless directories
 .serverless
 
-# Webpack directories
+# Webpack directories (build artifacts)
 .webpack
 
 # Config
