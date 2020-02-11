@@ -25,4 +25,4 @@ COPY . .
 EXPOSE 3031
 
 # Start the container using the server:dev command
-CMD ["node", "run", "server:dev"]
+CMD ["npm", "run", "server:dev"]
