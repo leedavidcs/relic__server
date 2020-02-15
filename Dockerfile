@@ -1,6 +1,9 @@
 # Use the latest 'node' official version
 FROM node:12.15.0-alpine
 
+# Install python for dependencies that require node-gyp support
+RUN apk add --no-cache --virtual .gyp python make g++
+
 # Execute as unprivileged user that comes built into the node image from Docker.
 USER node
 
@@ -13,7 +16,8 @@ WORKDIR /home/node
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
+
 
 # Copy all remaining files from the current directory
   # Note: 'node_modules' will not be overwritten because of .dockerignore
