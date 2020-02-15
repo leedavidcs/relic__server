@@ -34,15 +34,7 @@ const configFn = (env, argv) => {
 				{
 					exclude: /node_modules/,
 					test: /\.(graphql|gql)$/,
-					use: [
-						{
-							loader: "webpack-graphql-loader",
-							options: {
-								output: "document",
-								removeUnusedFragments: true
-							}
-						}
-					]
+					loader: "graphql-tag/loader"
 				},
 				{ test: /\.tsx?$/, loader: "ts-loader" },
 				{ test: /\.node$/, loader: "node-loader" }

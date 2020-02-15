@@ -1,3 +1,6 @@
+# Local Settings
+.vscode
+
 # package directories
 node_modules
 jspm_packages
@@ -5,7 +8,7 @@ jspm_packages
 # Serverless directories
 .serverless
 
-# Webpack directories
+# Webpack directories (build artifacts)
 .webpack
 
 # Config

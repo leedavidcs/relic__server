@@ -1,0 +1,16 @@
+{
+	"verbose": true,
+	"ignore": [
+		"**/*.test.ts",
+		"**/*.spec.ts",
+		"**/*.js",
+		".git",
+		".jest",
+		".storybook",
+		".webpack",
+		"node_modules"
+	],
+	"watch": ["src"],
+	"exec": "npm run server:build:dev && npm start",
+	"ext": "ts"
+}

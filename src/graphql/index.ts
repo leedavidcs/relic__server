@@ -6,18 +6,16 @@ import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
 import { deriveApolloContext } from "./context";
 import { schemaDirectives } from "./directives";
-import { devLogger } from "./extensions";
 import { getSchemaWithMiddleware } from "./middlewares";
 import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
-import gqlTypeDefs from "./schemas/index.graphql";
+import { typeDefs } from "./schemas";
 import { getValidationRules } from "./validation-rules";
 
 export * from "./inputs";
 export * from "./pagination";
 export * from "./resolvers";
 export * from "./context";
-export const typeDefs = gqlTypeDefs;
 
 const cacheHost: string = process.env.REDIS_GRAPHQL_HOST || "";
 const cachePort = Number(process.env.REDIS_GRAPHQL_PORT);
@@ -56,7 +54,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 		},
 		dataSources,
 		debug: process.env.NODE_ENV === "development",
-		extensions: [devLogger],
+		extensions: [],
 		playground: process.env.NODE_ENV === "development",
 		plugins: getPlugins({ maxComplexity, schema }),
 		schema,

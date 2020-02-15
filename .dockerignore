@@ -1,0 +1,17 @@
+# Serverless directories
+.serverless
+
+# Webpack directories (build artifacts)
+.webpack
+
+# dependencies
+node_modules
+
+# Logs
+*.log
+
+# Testing
+.jest
+.nyc_output
+coverage
+test-reports

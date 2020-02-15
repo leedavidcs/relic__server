@@ -28,20 +28,18 @@ const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] =
 
 const groupKeysByPrefix = (
 	dataKeys: readonly (string | null)[]
-): { [key in keyof typeof Prefixes]: readonly string[] } => {
+): Record<keyof typeof Prefixes, readonly string[]> => {
 	const withoutNulls: readonly string[] = dataKeys.filter(doesExist);
 	const prefixedTuples: readonly [keyof typeof Prefixes, string][] = withoutNulls.map(
 		createPrefixedTuple
 	);
 
-	const groupedByPrefix: {
-		[key in keyof typeof Prefixes]: readonly string[];
-	} = prefixedTuples.reduce(
+	const groupedByPrefix: Record<keyof typeof Prefixes, readonly string[]> = prefixedTuples.reduce(
 		(acc, [prefix, prop]) => ({
 			...acc,
 			[prefix]: (acc[prefix] || []).concat(prop)
 		}),
-		{} as { [key in keyof typeof Prefixes]: readonly string[] }
+		{} as Record<keyof typeof Prefixes, readonly string[]>
 	);
 
 	return groupedByPrefix;
@@ -49,7 +47,7 @@ const groupKeysByPrefix = (
 
 const getDataForTicker = async (
 	ticker: string,
-	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
+	groupedKeys: Record<keyof typeof Prefixes, readonly string[]>,
 	context: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
 	const iexCompanyData = await getIexCompanyData(ticker, groupedKeys, context);
@@ -68,8 +66,8 @@ const getDataForTicker = async (
 const assignDataToHeaders = (
 	resultsMap: { [dataKey in keyof typeof DataKeys]?: any },
 	headers: IStockPortfolio["headers"]
-): { [key: string]: any } => {
-	const headersToResults: { [key: string]: any } = headers.reduce((acc, { name, dataKey }) => {
+): Record<string, any> => {
+	const headersToResults: Record<string, any> = headers.reduce((acc, { name, dataKey }) => {
 		if (dataKey === null) {
 			return acc;
 		}
@@ -77,7 +75,7 @@ const assignDataToHeaders = (
 		const result = resultsMap[dataKey];
 
 		return { ...acc, [name]: isNil(result) ? null : result };
-	}, {} as { [key: string]: any });
+	}, {} as Record<string, any>);
 
 	return headersToResults;
 };
@@ -85,7 +83,7 @@ const assignDataToHeaders = (
 export const getStockPortfolioData = async (
 	stockPortfolio: IStockPortfolio,
 	context: IServerContext
-): Promise<{ [key: string]: any }> => {
+): Promise<Record<string, any>> => {
 	const { headers, tickers } = stockPortfolio;
 
 	const dataKeys: readonly (keyof typeof DataKeys | null)[] = headers.map(
@@ -94,7 +92,7 @@ export const getStockPortfolioData = async (
 
 	const groupedByPrefix = groupKeysByPrefix(dataKeys);
 
-	const stockPortfolioData: readonly { [key: string]: any }[] = await Promise.all(
+	const stockPortfolioData: readonly Record<string, any>[] = await Promise.all(
 		tickers.map(async (ticker) => {
 			const resultsMap = await getDataForTicker(ticker, groupedByPrefix, context);
 			const mappedToHeaders = assignDataToHeaders(resultsMap, headers);

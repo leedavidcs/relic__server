@@ -1,9 +1,8 @@
-declare module "*/schemas/index.graphql" {
+declare module "*.graphql" {
 	import { DocumentNode } from "graphql";
+	const defaultDocument: DocumentNode;
 
-	const content: DocumentNode;
-
-	export default content;
+	export default defaultDocument;
 }
 
 declare interface IDataNode {
