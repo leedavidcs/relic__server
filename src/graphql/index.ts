@@ -10,14 +10,13 @@ import { devLogger } from "./extensions";
 import { getSchemaWithMiddleware } from "./middlewares";
 import { getPlugins } from "./plugins";
 import { resolvers } from "./resolvers";
-import gqlTypeDefs from "./schemas/index.graphql";
+import { typeDefs } from "./schemas";
 import { getValidationRules } from "./validation-rules";
 
 export * from "./inputs";
 export * from "./pagination";
 export * from "./resolvers";
 export * from "./context";
-export const typeDefs = gqlTypeDefs;
 
 const cacheHost: string = process.env.REDIS_GRAPHQL_HOST || "";
 const cachePort = Number(process.env.REDIS_GRAPHQL_PORT);

@@ -1,12 +1,3 @@
-#import './authentication.schema.graphql'
-#import './connection.schema.graphql'
-#import './data-key.schema.graphql'
-#import './directives.schema.graphql'
-#import './general-inputs.schema.graphql'
-#import './scalars.schema.graphql'
-#import './stock-portfolio.schema.graphql'
-#import './user.schema.graphql'
-
 "The viewer of this request"
 type Viewer {
 	"The viewer's id"
