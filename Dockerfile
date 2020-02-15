@@ -18,6 +18,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm ci
 
+# Bust cache here when files are updated to avoid reinstalling all app dependencies on rebuild
+ARG CACHE_BUST_FILES_UPDATED=unknown
 
 # Copy all remaining files from the current directory
   # Note: 'node_modules' will not be overwritten because of .dockerignore
