@@ -13,7 +13,9 @@ type StockPortfolioHeader {
 	dataKey: DataKey
 	"The configured width of this column"
 	width: Int!
-	"Whether this column should be resizable"
+	"Whether this column could be moved"
+	frozen: Boolean!
+	"Whether this column could be resized"
 	resizable: Boolean!
 }
 
@@ -23,6 +25,8 @@ type StockPortfolio {
 	id: ID!
 	"The user that this stock portfolio belongs to. Also the creator"
 	user: User! @cost(complexity: 1)
+	"The name, the user has given to this stock portfolio"
+	name: String!
 	"The headers (configs) for this data grid, including how data is resolved"
 	headers: [StockPortfolioHeader!]!
 	"The tickers that are the rows for this data grid"
