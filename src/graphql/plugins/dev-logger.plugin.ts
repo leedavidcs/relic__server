@@ -12,7 +12,7 @@ const isIntrospectionQuery = (request: GraphQLRequest): boolean => {
 /* eslint-disable no-console */
 export const devLoggerPlugin: ApolloServerPlugin = {
 	requestDidStart: (requestCtx) => {
-		if (isDevelopment) {
+		if (!isDevelopment) {
 			return;
 		}
 

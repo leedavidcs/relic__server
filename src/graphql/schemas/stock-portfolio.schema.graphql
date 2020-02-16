@@ -13,7 +13,9 @@ type StockPortfolioHeader {
 	dataKey: DataKey
 	"The configured width of this column"
 	width: Int!
-	"Whether this column should be resizable"
+	"Whether this column could be moved"
+	frozen: Boolean!
+	"Whether this column could be resized"
 	resizable: Boolean!
 }
 
@@ -23,6 +25,8 @@ type StockPortfolio {
 	id: ID!
 	"The user that this stock portfolio belongs to. Also the creator"
 	user: User! @cost(complexity: 1)
+	"The name, the user has given to this stock portfolio"
+	name: String!
 	"The headers (configs) for this data grid, including how data is resolved"
 	headers: [StockPortfolioHeader!]!
 	"The tickers that are the rows for this data grid"
@@ -70,7 +74,7 @@ extend type Query {
 
 extend type Mutation {
 	"Creates an empty stock portfolio"
-	createStockPortfolio: StockPortfolio!
+	createStockPortfolio: StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 	"Updates a stock portfolio"
@@ -81,11 +85,11 @@ extend type Mutation {
 		headers: [StockPortfolioHeaderInput!]
 		"The tickers that are the rows for this data grid"
 		tickers: [String!]
-	): StockPortfolio!
+	): StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 	"Deletes a stock portfolio"
-	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio!
+	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 }

@@ -65,10 +65,8 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
 	}
 
-	/* tslint:disable:no-object-mutation */
 	toUpdate.headers = headers;
 	toUpdate.tickers = tickers;
-	/* tslint:enable:no-object-mutation */
 
 	const updated: IStockPortfolio = await toUpdate.save();
 
