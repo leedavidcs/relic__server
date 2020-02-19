@@ -11,10 +11,8 @@ import {
 import { models } from "@/mongodb";
 import { Maybe } from "@/types";
 import { doesExist, isNotError } from "@/utils";
-import Base64URL from "base64-url";
 import DataLoader from "dataloader";
-import { GraphQLScalarType, Kind, ValueNode } from "graphql";
-import { IResolverObject, IResolvers } from "graphql-tools";
+import { IResolverObject } from "graphql-tools";
 import { keyBy } from "lodash";
 import { Cursor as MongoDBCursor } from "mongodb";
 import { Document } from "mongoose";
@@ -142,20 +140,3 @@ export const resolveNestedConnection = async <
 
 	return { edges, nodes, pageInfo };
 };
-
-const toCursor = ({ value }): string => Base64URL.encode(value.toString());
-
-const fromCursor = (cursor: string): { value: string } | null => {
-	const value: string = Base64URL.decode(cursor);
-
-	return value ? { value } : null;
-};
-
-const Cursor: GraphQLScalarType = new GraphQLScalarType({
-	name: "Cursor",
-	serialize: (value) => (value.value ? toCursor(value) : null),
-	parseLiteral: (ast: ValueNode) => (ast.kind === Kind.STRING ? fromCursor(ast.value) : null),
-	parseValue: fromCursor
-});
-
-export const ConnectionTypes: IResolvers = { Cursor };

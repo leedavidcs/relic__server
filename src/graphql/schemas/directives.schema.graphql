@@ -9,7 +9,6 @@ directive @cost(
 "Rate limit this field by logged-in user, or by IP if user does not exist"
 directive @rateLimit(
 	"""
-	"
 	Time interval window that the (max) number of requests can access this field. Specified in
 	Zeit's (ms) notation.
 	"""
