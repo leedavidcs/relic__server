@@ -1,5 +1,4 @@
 import { ForeignKey } from "@/mongodb";
-import { uniqBy } from "lodash";
 import { Document, Schema } from "mongoose";
 import { IStockPortfolioHeader, StockPortfolioHeaderSchema } from "./header.schema";
 import { setUniqueName } from "./set-unique-name.middleware";
@@ -24,16 +23,7 @@ export const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema(
 		},
 		headers: {
 			type: [StockPortfolioHeaderSchema],
-			default: [],
-			validate: {
-				validator: (headers: readonly IStockPortfolioHeader[]) => {
-					const uniqByName: readonly IStockPortfolioHeader[] = uniqBy(headers, "name");
-					const isAllUniq: boolean = uniqByName.length === headers.length;
-
-					return isAllUniq;
-				},
-				msg: "Header names must be unique."
-			}
+			default: []
 		},
 		tickers: {
 			type: [String],
