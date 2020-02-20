@@ -16,28 +16,39 @@ type TokenResponse {
 	refreshToken: String!
 }
 
+input LoginLocalUserInput {
+	"The email or username (either) of the user"
+	userIdentifier: String!
+	"The user's decrypted password"
+	password: String!
+}
+
+input RefreshAccessTokenInput {
+	"The refresh token, that is used to refresh the access token"
+	refreshToken: String!
+}
+
+input RegisterLocalUserInput {
+	"(Unique) The user's email"
+	email: EmailAddress!
+	"The user's decrypted password"
+	password: UserPassword!
+	"(Unique) The user's username"
+	username: String!
+}
+
 extend type Mutation {
 	"Logins in the user, and returns an expiring access token"
-	loginLocalUser(
-		"The email or username (either) of the user"
-		userIdentifier: String!
-		"The user's decrypted password"
-		password: String!
-	): TokenResponse! @rateLimit(window: "1m", max: 30)
+	loginLocalUser(input: LoginLocalUserInput!): TokenResponse @rateLimit(window: "1m", max: 30)
+
 	"Refreshes the currently logged-in user's access token"
-	refreshAccessToken(
-		"The refresh token, that is used to refresh the access token"
-		refreshToken: String!
-	): TokenResponse! @rateLimit(window: "1m", max: 30)
+	refreshAccessToken(input: RegisterLocalUserInput!): TokenResponse
+		@rateLimit(window: "1m", max: 30)
+
 	"Performs local authentication (custom username + password)"
-	registerLocalUser(
-		"(Unique) The user's email"
-		email: EmailAddress!
-		"The user's decrypted password"
-		password: String!
-		"The user's username"
-		username: String!
-	): RegisterLocalUserResponse! @rateLimit(window: "1m", max: 1)
+	registerLocalUser(input: RegisterLocalUserInput!): RegisterLocalUserResponse
+		@rateLimit(window: "1m", max: 1)
+
 	"Resends the account verification email to the logged-in user"
 	resendVerifyEmail: Boolean! @rateLimit(window: "1m", max: 30)
 }
