@@ -2,7 +2,6 @@ import { IServerContext } from "@/graphql";
 import { ConnectionEdge, resolveRootConnection } from "@/graphql/resolvers/connection.resolver";
 import { IStockPortfolio } from "@/mongodb";
 import { Logger, NotFoundError, UnexpectedError } from "@/utils";
-import { canError } from "can-error";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
 
@@ -53,9 +52,11 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	const [err, toUpdate] = await canError(stockPortfolioSource.findOne)({ id, user: user.id });
+	let toUpdate: IStockPortfolio | null = null;
 
-	if (err) {
+	try {
+		toUpdate = await stockPortfolioSource.findOne({ id, user: user.id });
+	} catch (err) {
 		Logger.error(`Error: updateStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not update the stock portfolio. (id = ${id})`);
@@ -84,12 +85,11 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	const [err, deleted] = await canError(stockPortfolioSource.findOneAndDelete)({
-		id,
-		user: user.id
-	});
+	let deleted: IStockPortfolio | null = null;
 
-	if (err) {
+	try {
+		deleted = await stockPortfolioSource.findOneAndDelete({ id, user: user.id });
+	} catch (err) {
 		Logger.error(`Error: depeteStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not delete the stock portfolio. (id = ${id})`);
