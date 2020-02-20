@@ -26,6 +26,11 @@ export interface IServerContext<
 	user: IUser | null;
 }
 
+// Context with non-nullable user, for resolvers that are guarded by authentication permissions
+export type IServerContextWithUser = Omit<IServerContext, "user"> & {
+	user: NonNullable<IServerContext["user"]>;
+};
+
 export const deriveApolloContext = async (
 	headers: { [key: string]: string } = {},
 	koaCtx: ParameterizedContext<IWithUser> | null

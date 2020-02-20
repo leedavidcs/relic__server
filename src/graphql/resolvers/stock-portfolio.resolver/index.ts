@@ -1,4 +1,4 @@
-import { IServerContext } from "@/graphql";
+import { IServerContext, IServerContextWithUser } from "@/graphql";
 import { ConnectionEdge, resolveRootConnection } from "@/graphql/resolvers/connection.resolver";
 import { IStockPortfolio } from "@/mongodb";
 import { Logger, NotFoundError, UnexpectedError } from "@/utils";
@@ -25,15 +25,11 @@ const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent,
 	return result;
 };
 
-const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const createStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
 	args,
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found.");
-	}
-
 	const result: IStockPortfolio = await MongoDB.get<IStockPortfolio>("StockPortfolio").create({
 		user: user.id
 	});
@@ -41,15 +37,11 @@ const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	return result;
 };
 
-const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const updateStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
 	{ input: { id, headers, tickers } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found.");
-	}
-
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
 	let toUpdate: IStockPortfolio | null = null;
@@ -74,15 +66,11 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	return updated;
 };
 
-const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
 	{ input: { id } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found");
-	}
-
 	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
 	let deleted: IStockPortfolio | null = null;
