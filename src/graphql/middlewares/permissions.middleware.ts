@@ -1,4 +1,6 @@
-import { allow, not, rule, shield } from "graphql-shield";
+import { IServerContext } from "@/graphql/context";
+import { IMiddlewareGenerator } from "graphql-middleware";
+import { not, rule, shield } from "graphql-shield";
 
 const isAuthenticated = rule({ cache: "contextual" })((parent, args, { user }) => {
 	const doesUserExist = Boolean(user);
@@ -6,7 +8,7 @@ const isAuthenticated = rule({ cache: "contextual" })((parent, args, { user }) =
 	return doesUserExist;
 });
 
-export const permissions = shield({
+export const permissions: IMiddlewareGenerator<any, IServerContext, any> = shield({
 	Mutation: {
 		loginLocalUser: not(isAuthenticated),
 		registerLocalUser: not(isAuthenticated),
@@ -15,7 +17,5 @@ export const permissions = shield({
 		createStockPortfolio: isAuthenticated,
 		deleteStockPortfolio: isAuthenticated,
 		updateStockPortfolio: isAuthenticated
-	},
-	StockPortfolio: allow,
-	User: allow
+	}
 });

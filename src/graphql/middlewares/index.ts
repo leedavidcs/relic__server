@@ -2,6 +2,7 @@ import { GraphQLSchema } from "graphql";
 import { applyMiddleware, IMiddlewareGenerator } from "graphql-middleware";
 import { IExecutableSchemaDefinition, makeExecutableSchema } from "graphql-tools";
 import { permissions } from "./permissions.middleware";
+import { validation } from "./validation.middleware";
 
 export const getSchemaWithMiddleware = ({
 	schemaDirectives,
@@ -12,7 +13,7 @@ export const getSchemaWithMiddleware = ({
 	"resolvers" | "schemaDirectives" | "typeDefs"
 >): GraphQLSchema => {
 	const schema: GraphQLSchema = makeExecutableSchema({ resolvers, schemaDirectives, typeDefs });
-	const middlewares: readonly IMiddlewareGenerator<any, any, any>[] = [permissions];
+	const middlewares: readonly IMiddlewareGenerator<any, any, any>[] = [validation, permissions];
 
 	const schemaWithMiddleare: GraphQLSchema = applyMiddleware(schema, ...middlewares);
 
