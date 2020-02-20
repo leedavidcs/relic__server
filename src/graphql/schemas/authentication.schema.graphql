@@ -1,5 +1,5 @@
 "The response object from a local register user request"
-type RegisterLocalUserResponse {
+type RegisterLocalUserPayload {
 	"Whether the registration successfully created a user or not"
 	success: Boolean!
 	"An error will be described if success is false"
@@ -9,7 +9,7 @@ type RegisterLocalUserResponse {
 }
 
 "The response from a successful login or token refresh request"
-type TokenResponse {
+type TokenPayload {
 	"JSON web token to authenticate API requests"
 	token: String!
 	"JSON web token to refresh the token"
@@ -39,14 +39,14 @@ input RegisterLocalUserInput {
 
 extend type Mutation {
 	"Logins in the user, and returns an expiring access token"
-	loginLocalUser(input: LoginLocalUserInput!): TokenResponse @rateLimit(window: "1m", max: 30)
+	loginLocalUser(input: LoginLocalUserInput!): TokenPayload @rateLimit(window: "1m", max: 30)
 
 	"Refreshes the currently logged-in user's access token"
-	refreshAccessToken(input: RegisterLocalUserInput!): TokenResponse
+	refreshAccessToken(input: RefreshAccessTokenInput!): TokenPayload
 		@rateLimit(window: "1m", max: 30)
 
 	"Performs local authentication (custom username + password)"
-	registerLocalUser(input: RegisterLocalUserInput!): RegisterLocalUserResponse
+	registerLocalUser(input: RegisterLocalUserInput!): RegisterLocalUserPayload
 		@rateLimit(window: "1m", max: 1)
 
 	"Resends the account verification email to the logged-in user"
