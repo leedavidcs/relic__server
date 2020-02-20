@@ -44,7 +44,7 @@ const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	parent,
-	{ id, headers, tickers },
+	{ input: { id, headers, tickers } },
 	{ connectors: { MongoDB }, user }
 ) => {
 	if (user === null) {
@@ -75,7 +75,7 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 	parent,
-	{ id },
+	{ input: { id } },
 	{ connectors: { MongoDB }, user }
 ) => {
 	if (user === null) {

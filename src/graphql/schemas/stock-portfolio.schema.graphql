@@ -72,24 +72,33 @@ extend type Query {
 		@rateLimit(window: "1m", max: 30)
 }
 
+input UpdateStockPortfolioInput {
+	"The ID of the stock portfolio to update"
+	id: ID!
+	"Headers for this data grid, including how data is resolved"
+	headers: [StockPortfolioHeaderInput!]
+	"The tickers that are the rows for this data grid"
+	tickers: [String!]
+}
+
+input DeleteStockPortfolioInput {
+	"Id of the stock portfolio to delete"
+	id: ID!
+}
+
 extend type Mutation {
 	"Creates an empty stock portfolio"
 	createStockPortfolio: StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
+
 	"Updates a stock portfolio"
-	updateStockPortfolio(
-		"The ID of the stock portfolio to update"
-		id: ID
-		"Headers for this data grid, including how data is resolved"
-		headers: [StockPortfolioHeaderInput!]
-		"The tickers that are the rows for this data grid"
-		tickers: [String!]
-	): StockPortfolio
+	updateStockPortfolio(input: UpdateStockPortfolioInput!): StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
+
 	"Deletes a stock portfolio"
-	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio
+	deleteStockPortfolio(input: DeleteStockPortfolioInput!): StockPortfolio
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 }
