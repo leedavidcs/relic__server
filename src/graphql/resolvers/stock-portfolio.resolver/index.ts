@@ -1,10 +1,10 @@
-import { IServerContext } from "@/graphql";
+import { IServerContext, IServerContextWithUser } from "@/graphql";
 import { ConnectionEdge, resolveRootConnection } from "@/graphql/resolvers/connection.resolver";
 import { IStockPortfolio } from "@/mongodb";
 import { Logger, NotFoundError, UnexpectedError } from "@/utils";
-import { canError } from "can-error";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
+import { getUniqueName } from "./get-unique-name";
 
 export * from "./get-stock-portfolio-data";
 
@@ -26,36 +26,34 @@ const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent,
 	return result;
 };
 
-const createStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const createStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
-	args,
+	{ input: { name } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found.");
-	}
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	const uniqueName: string = await getUniqueName(name, source);
 
-	const result: IStockPortfolio = await MongoDB.get<IStockPortfolio>("StockPortfolio").create({
+	const created: IStockPortfolio = await source.create({
+		name: uniqueName,
 		user: user.id
 	});
 
-	return result;
+	return { stockPortfolio: created };
 };
 
-const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const updateStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
-	{ id, headers, tickers },
+	{ input: { id, headers, tickers } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found.");
-	}
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	let toUpdate: IStockPortfolio | null = null;
 
-	const [err, toUpdate] = await canError(stockPortfolioSource.findOne)({ id, user: user.id });
-
-	if (err) {
+	try {
+		toUpdate = await source.findOne({ id, user: user.id });
+	} catch (err) {
 		Logger.error(`Error: updateStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not update the stock portfolio. (id = ${id})`);
@@ -70,26 +68,21 @@ const updateStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 
 	const updated: IStockPortfolio = await toUpdate.save();
 
-	return updated;
+	return { stockPortfolio: updated };
 };
 
-const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
+const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
-	{ id },
+	{ input: { id } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found");
-	}
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
-	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	let deleted: IStockPortfolio | null = null;
 
-	const [err, deleted] = await canError(stockPortfolioSource.findOneAndDelete)({
-		id,
-		user: user.id
-	});
-
-	if (err) {
+	try {
+		deleted = await source.findOneAndDelete({ id, user: user.id });
+	} catch (err) {
 		Logger.error(`Error: depeteStockPortfolio resolver: ${err}`);
 
 		throw new Error(`Could not delete the stock portfolio. (id = ${id})`);
@@ -99,7 +92,7 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContext, any> = async (
 		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
 	}
 
-	return deleted;
+	return { stockPortfolio: deleted };
 };
 
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {

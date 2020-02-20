@@ -72,24 +72,50 @@ extend type Query {
 		@rateLimit(window: "1m", max: 30)
 }
 
+input CreateStockPortfolioInput {
+	"(Unique) The name of this stock portfolio."
+	name: String = "New_Portfolio"
+}
+
+input UpdateStockPortfolioInput {
+	"The ID of the stock portfolio to update"
+	id: ID!
+	"Headers for this data grid, including how data is resolved"
+	headers: [StockPortfolioHeaderInput!]
+	"The tickers that are the rows for this data grid"
+	tickers: [String!]
+}
+
+input DeleteStockPortfolioInput {
+	"Id of the stock portfolio to delete"
+	id: ID!
+}
+
+type CreateStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
+type UpdateStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
+type DeleteStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
 extend type Mutation {
 	"Creates an empty stock portfolio"
-	createStockPortfolio: StockPortfolio
+	createStockPortfolio(input: CreateStockPortfolioInput!): CreateStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
+
 	"Updates a stock portfolio"
-	updateStockPortfolio(
-		"The ID of the stock portfolio to update"
-		id: ID
-		"Headers for this data grid, including how data is resolved"
-		headers: [StockPortfolioHeaderInput!]
-		"The tickers that are the rows for this data grid"
-		tickers: [String!]
-	): StockPortfolio
+	updateStockPortfolio(input: UpdateStockPortfolioInput!): UpdateStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
+
 	"Deletes a stock portfolio"
-	deleteStockPortfolio("Id of the stock portfolio to delete" id: ID): StockPortfolio
+	deleteStockPortfolio(input: DeleteStockPortfolioInput!): DeleteStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 }

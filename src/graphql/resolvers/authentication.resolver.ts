@@ -11,7 +11,7 @@ import { IFieldResolver, IResolverObject } from "graphql-tools";
 
 const loginLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	parent,
-	{ userIdentifier, password },
+	{ input: { userIdentifier, password } },
 	{ koaCtx }
 ) => {
 	if (koaCtx === null) {
@@ -32,7 +32,7 @@ const loginLocalUser: IFieldResolver<any, IServerContext, any> = async (
 
 const refreshAccessToken: IFieldResolver<any, IServerContext, any> = async (
 	parent,
-	{ refreshToken }
+	{ input: { refreshToken } }
 ) => {
 	const accessToken: string | null = await _refreshAccessToken(refreshToken);
 
@@ -48,7 +48,7 @@ const refreshAccessToken: IFieldResolver<any, IServerContext, any> = async (
 
 const registerLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	parent,
-	{ email, password, username },
+	{ input: { email, password, username } },
 	{ connectors: { MongoDB } }
 ) => {
 	const UserModel = MongoDB.get<IUser>("User");

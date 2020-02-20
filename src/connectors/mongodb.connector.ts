@@ -11,7 +11,7 @@ import { ObjectId } from "bson";
 import { isNil, reject } from "lodash";
 import moment from "moment";
 import { Cursor } from "mongodb";
-import { Collection, Types } from "mongoose";
+import { Collection, isValidObjectId } from "mongoose";
 import {
 	AbstractConnector,
 	IAbstractSource,
@@ -23,7 +23,7 @@ const MONTHS_IN_YEAR = 12;
 const isId = (value: any): value is string => {
 	try {
 		const strValue: string = value.toString();
-		const isValid: boolean = Types.ObjectId.isValid(strValue);
+		const isValid: boolean = isValidObjectId(strValue);
 
 		return !isValid ? false : new ObjectId(strValue).toString() === strValue;
 	} catch (err) {
@@ -69,6 +69,12 @@ const applyDefaultFilter = <T>(
 	key: string,
 	value: T
 ): { [key: string]: any } => ({ ...filter, [key]: { $eq: idAdjustValue(value) } });
+
+const applyRegexFilter = (
+	filter: { [key: string]: any },
+	key: string,
+	value: RegExp
+): { [key: string]: any } => ({ ...filter, [key]: { $regex: value } });
 
 const applyDateTimeInputFilter = (
 	filter: { [key: string]: any },
@@ -221,6 +227,8 @@ export class MongoDBConnector extends AbstractConnector {
 				const adaptedKey: string = key === "id" ? "_id" : key;
 				const extendedAcc: { [key: string]: any } = Array.isArray(value)
 					? applyArrayFilter(acc, adaptedKey, value)
+					: value instanceof RegExp
+					? applyRegexFilter(acc, adaptedKey, value)
 					: isConnectionInput(value)
 					? applyConnectionInputFilter(acc, adaptedKey, value)
 					: isVariableDateTimeInput(value)

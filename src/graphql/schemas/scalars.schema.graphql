@@ -32,3 +32,4 @@ scalar URL
 scalar USCurrency
 scalar UnsignedFloat
 scalar UnsignedInt
+scalar UserPassword
