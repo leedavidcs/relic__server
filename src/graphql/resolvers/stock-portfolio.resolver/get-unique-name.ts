@@ -1,5 +1,6 @@
 import { IAbstractSource } from "@/connectors";
 import { IStockPortfolio } from "@/mongodb";
+import { isEmpty } from "lodash";
 
 /**
  * @description Retrieves the number suffix of a string. If the string does not end with a number,
@@ -25,15 +26,21 @@ export const getUniqueName = async (
 	name: string,
 	source: IAbstractSource<IStockPortfolio>
 ): Promise<string> => {
-	const sameNameDoc: IStockPortfolio | null = await source.findOne({ name });
+	const stockPortfolios: readonly IStockPortfolio[] = await source.find({
+		name: new RegExp(`^${name}\\d*$`)
+	});
 
-	if (!sameNameDoc) {
+	if (isEmpty(stockPortfolios)) {
 		return name;
 	}
 
-	const numberSuffix: number = getNumberSuffix(name) + 1;
 	const baseStr: string = removeNumberSuffix(name);
-	const updatedName = `${baseStr}${numberSuffix}`;
+	const lowestUniqSuffixForName: number = stockPortfolios
+		.slice()
+		.map((stockPortfolio) => getNumberSuffix(stockPortfolio.name))
+		.sort((a, b) => a - b)
+		.reduce((nextSuffix, suffix) => (nextSuffix === suffix ? suffix + 1 : nextSuffix), 1);
+	const updatedName = `${baseStr}${lowestUniqSuffixForName}`;
 
 	return updatedName;
 };
