@@ -1,5 +1,5 @@
-import { Model } from "mongoose";
-import { IStockPortfolio } from "./schema";
+import { IAbstractSource } from "@/connectors";
+import { IStockPortfolio } from "@/mongodb";
 
 /**
  * @description Retrieves the number suffix of a string. If the string does not end with a number,
@@ -18,28 +18,22 @@ const getNumberSuffix = (str: string): number => {
 const removeNumberSuffix = (str: string): string => str.replace(/\d+$/, "");
 
 /**
- * @description Sets a unique name on a stock-portfolio, if a stock-portfolio with the same name
- *     already exists
+ * @description Returns a unique stock portfolio name, based on the name supplied. If the name is
+ *     already unique, it will be returned. Otherwise, this name will increment the name.
  */
-export const setUniqueName = async (stockPortfolio: IStockPortfolio): Promise<void> => {
-	const { constructor, isNew, name } = stockPortfolio;
+export const getUniqueName = async (
+	name: string,
+	source: IAbstractSource<IStockPortfolio>
+): Promise<string> => {
+	const sameNameDoc: IStockPortfolio | null = await source.findOne({ name });
 
-	if (!isNew) {
-		return;
-	}
-
-	const model = constructor as Model<IStockPortfolio>;
-
-	const sameNameDoc = await model.findOne({ name });
-
-	/* This name is unique. No need to generate a new name. */
 	if (!sameNameDoc) {
-		return;
+		return name;
 	}
 
 	const numberSuffix: number = getNumberSuffix(name) + 1;
 	const baseStr: string = removeNumberSuffix(name);
 	const updatedName = `${baseStr}${numberSuffix}`;
 
-	stockPortfolio.name = updatedName;
+	return updatedName;
 };

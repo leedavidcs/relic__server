@@ -4,6 +4,7 @@ import { IStockPortfolio } from "@/mongodb";
 import { Logger, NotFoundError, UnexpectedError } from "@/utils";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
+import { getUniqueName } from "./get-unique-name";
 
 export * from "./get-stock-portfolio-data";
 
@@ -27,10 +28,14 @@ const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent,
 
 const createStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
 	parent,
-	args,
+	{ input: { name } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	const result: IStockPortfolio = await MongoDB.get<IStockPortfolio>("StockPortfolio").create({
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	const uniqueName: string = await getUniqueName(name, source);
+
+	const result: IStockPortfolio = await source.create({
+		name: uniqueName,
 		user: user.id
 	});
 
@@ -42,12 +47,12 @@ const updateStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 	{ input: { id, headers, tickers } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
 	let toUpdate: IStockPortfolio | null = null;
 
 	try {
-		toUpdate = await stockPortfolioSource.findOne({ id, user: user.id });
+		toUpdate = await source.findOne({ id, user: user.id });
 	} catch (err) {
 		Logger.error(`Error: updateStockPortfolio resolver: ${err}`);
 
@@ -71,12 +76,12 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 	{ input: { id } },
 	{ connectors: { MongoDB }, user }
 ) => {
-	const stockPortfolioSource = MongoDB.get<IStockPortfolio>("StockPortfolio");
+	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
 
 	let deleted: IStockPortfolio | null = null;
 
 	try {
-		deleted = await stockPortfolioSource.findOneAndDelete({ id, user: user.id });
+		deleted = await source.findOneAndDelete({ id, user: user.id });
 	} catch (err) {
 		Logger.error(`Error: depeteStockPortfolio resolver: ${err}`);
 

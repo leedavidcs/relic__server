@@ -1,7 +1,6 @@
 import { ForeignKey } from "@/mongodb";
 import { Document, Schema } from "mongoose";
 import { IStockPortfolioHeader, StockPortfolioHeaderSchema } from "./header.schema";
-import { setUniqueName } from "./set-unique-name.middleware";
 
 export interface IStockPortfolio extends Document {
 	user: ForeignKey<"User">;
@@ -19,7 +18,7 @@ export const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema(
 		},
 		name: {
 			type: String,
-			default: "New_Portfolio"
+			required: true
 		},
 		headers: {
 			type: [StockPortfolioHeaderSchema],
@@ -34,15 +33,3 @@ export const StockPortfolioSchema: Schema<IStockPortfolio> = new Schema(
 );
 
 StockPortfolioSchema.index({ user: 1, name: 1 }, { unique: true });
-
-StockPortfolioSchema.pre("validate", async function(next) {
-	const stockPortfolio = this as IStockPortfolio;
-
-	try {
-		await setUniqueName(stockPortfolio);
-
-		next();
-	} catch (err) {
-		next(err);
-	}
-});
