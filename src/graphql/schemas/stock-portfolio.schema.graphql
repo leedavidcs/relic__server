@@ -91,19 +91,31 @@ input DeleteStockPortfolioInput {
 	id: ID!
 }
 
+type CreateStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
+type UpdateStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
+type DeleteStockPortfolioPayload {
+	stockPortfolio: StockPortfolio!
+}
+
 extend type Mutation {
 	"Creates an empty stock portfolio"
-	createStockPortfolio(input: CreateStockPortfolioInput!): StockPortfolio
+	createStockPortfolio(input: CreateStockPortfolioInput!): CreateStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 
 	"Updates a stock portfolio"
-	updateStockPortfolio(input: UpdateStockPortfolioInput!): StockPortfolio
+	updateStockPortfolio(input: UpdateStockPortfolioInput!): UpdateStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 
 	"Deletes a stock portfolio"
-	deleteStockPortfolio(input: DeleteStockPortfolioInput!): StockPortfolio
+	deleteStockPortfolio(input: DeleteStockPortfolioInput!): DeleteStockPortfolioPayload
 		@cost(complexity: 1, multipliers: ["first"])
 		@rateLimit(window: "1m", max: 30)
 }

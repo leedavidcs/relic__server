@@ -34,12 +34,12 @@ const createStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 	const source = MongoDB.get<IStockPortfolio>("StockPortfolio");
 	const uniqueName: string = await getUniqueName(name, source);
 
-	const result: IStockPortfolio = await source.create({
+	const created: IStockPortfolio = await source.create({
 		name: uniqueName,
 		user: user.id
 	});
 
-	return result;
+	return { stockPortfolio: created };
 };
 
 const updateStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
@@ -68,7 +68,7 @@ const updateStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 
 	const updated: IStockPortfolio = await toUpdate.save();
 
-	return updated;
+	return { stockPortfolio: updated };
 };
 
 const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = async (
@@ -92,7 +92,7 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 		throw new NotFoundError(`Stock portfolio could not be found. (id = ${id})`);
 	}
 
-	return deleted;
+	return { stockPortfolio: deleted };
 };
 
 const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
