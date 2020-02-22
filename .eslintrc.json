@@ -58,8 +58,9 @@
 				}
 			}
 		],
+		"import/no-unresolved": "off",
 		"import/order": [
-			"error",
+			"off",
 			{
 				"alphabetize": {
 					"order": "asc",
@@ -92,6 +93,7 @@
 				"ignore": [-2, -1, 0, 1, 2]
 			}
 		],
+		"no-multi-str": "off",
 		"no-multiple-empty-lines": "error",
 		"no-restricted-imports": [
 			"error",
