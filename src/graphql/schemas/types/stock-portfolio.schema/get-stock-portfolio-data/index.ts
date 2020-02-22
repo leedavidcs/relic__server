@@ -1,11 +1,12 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, IStockPortfolio, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
+import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { doesExist } from "@/utils";
 import { isNil } from "lodash";
 import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
 import { getIexQuoteData } from "./get-iex-quote-data";
+import { NexusGenRootTypes } from "@/graphql/generated/typegen";
 
 export * from "./get-iex-company-data";
 export * from "./get-iex-key-stats-data";
@@ -27,7 +28,7 @@ const createPrefixedTuple = (dataKey: string): [keyof typeof Prefixes, string] =
 };
 
 const groupKeysByPrefix = (
-	dataKeys: readonly (string | null)[]
+	dataKeys: readonly Maybe<string>[]
 ): Record<keyof typeof Prefixes, readonly string[]> => {
 	const withoutNulls: readonly string[] = dataKeys.filter(doesExist);
 	const prefixedTuples: readonly [keyof typeof Prefixes, string][] = withoutNulls.map(
@@ -65,10 +66,10 @@ const getDataForTicker = async (
 
 const assignDataToHeaders = (
 	resultsMap: { [dataKey in keyof typeof DataKeys]?: any },
-	headers: IStockPortfolio["headers"]
+	headers: readonly NexusGenRootTypes["StockPortfolioHeader"][]
 ): Record<string, any> => {
 	const headersToResults: Record<string, any> = headers.reduce((acc, { name, dataKey }) => {
-		if (dataKey === null) {
+		if (!dataKey) {
 			return acc;
 		}
 
@@ -81,12 +82,12 @@ const assignDataToHeaders = (
 };
 
 export const getStockPortfolioData = async (
-	stockPortfolio: IStockPortfolio,
+	stockPortfolio: NexusGenRootTypes["StockPortfolio"],
 	context: IServerContext
 ): Promise<Record<string, any>> => {
 	const { headers, tickers } = stockPortfolio;
 
-	const dataKeys: readonly (keyof typeof DataKeys | null)[] = headers.map(
+	const dataKeys: readonly Maybe<keyof typeof DataKeys>[] = headers.map(
 		({ dataKey }) => dataKey
 	);
 

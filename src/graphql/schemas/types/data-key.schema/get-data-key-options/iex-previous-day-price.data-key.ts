@@ -1,4 +1,4 @@
-import { IexPreviousDayPriceSuffixToPropMap } from "@/graphql/resolvers/stock-portfolio.resolver";
+import { IexPreviousDayPriceSuffixToPropMap } from "@/graphql/schemas/types/stock-portfolio.schema/get-stock-portfolio-data";
 import { IexPreviousDayPriceDataKeys, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
 

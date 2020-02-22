@@ -1,19 +1,15 @@
-import { IServerContext } from "@/graphql";
-import { DataKeyOption, QueryDataKeyOptionsArgs } from "@/types";
-import { IFieldResolver } from "graphql-tools";
+import { DataKeyOption } from "@/types";
 import { IexCompanyDataKeyOptions } from "./iex-company.data-key-option";
 import { IexKeyStatsDataKeyOptions } from "./iex-key-stats-data-key-option";
 import { IexPreviousDayPriceDataKeyOptions } from "./iex-previous-day-price.data-key";
 import { IexQuoteDataKeyOptions } from "./iex-quote.data-key-option";
+import { NexusGenArgTypes } from "@/graphql/generated/typegen";
 
 const isNoCaseSubStr = (str: string, subStr: string): boolean => {
 	return str.toLowerCase().includes(subStr.toLowerCase());
 };
 
-export const dataKeyOptions: IFieldResolver<any, IServerContext, QueryDataKeyOptionsArgs> = (
-	parent,
-	{ name, dataKey, provider }
-) => {
+export const getDataKeyOptions = ({ name, dataKey, provider }: NexusGenArgTypes["Query"]["dataKeyOptions"]) => {
 	const options: DataKeyOption[] = [
 		...IexCompanyDataKeyOptions,
 		...IexKeyStatsDataKeyOptions,

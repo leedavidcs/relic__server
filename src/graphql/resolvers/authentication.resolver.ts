@@ -4,12 +4,12 @@ import {
 	refreshAccessToken as _refreshAccessToken
 } from "@/authentication";
 import { createEmailHtml, ISendEmailResponse, sendEmail, VerifyEmail } from "@/emails";
-import { IServerContext } from "@/graphql";
 import { IUser } from "@/mongodb";
 import { getBaseUrl, OperationUnavailableError } from "@/utils";
-import { IFieldResolver, IResolverObject } from "graphql-tools";
+import { IResolverObject } from "graphql-tools";
+import { FieldResolver } from "nexus";
 
-const loginLocalUser: IFieldResolver<any, IServerContext, any> = async (
+const loginLocalUser: FieldResolver<"Mutation", "loginLocalUser"> = async (
 	parent,
 	{ input: { userIdentifier, password } },
 	{ koaCtx }
@@ -30,7 +30,7 @@ const loginLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	return tokens;
 };
 
-const refreshAccessToken: IFieldResolver<any, IServerContext, any> = async (
+const refreshAccessToken: FieldResolver<"Mutation", "refreshAccessToken"> = async (
 	parent,
 	{ input: { refreshToken } }
 ) => {
@@ -46,7 +46,7 @@ const refreshAccessToken: IFieldResolver<any, IServerContext, any> = async (
 	};
 };
 
-const registerLocalUser: IFieldResolver<any, IServerContext, any> = async (
+const registerLocalUser: FieldResolver<"Mutation", "registerLocalUser"> = async (
 	parent,
 	{ input: { email, password, username } },
 	{ connectors: { MongoDB } }
@@ -82,15 +82,11 @@ const registerLocalUser: IFieldResolver<any, IServerContext, any> = async (
 	};
 };
 
-const resendVerifyEmail: IFieldResolver<any, IServerContext, any> = async (
+const resendVerifyEmail: FieldResolver<"Mutation", "resendVerifyEmail"> = async (
 	parent,
 	args,
 	{ user }
 ) => {
-	if (user === null) {
-		throw new Error("Should not reach here: User is not found");
-	}
-
 	const { email, id, username } = user;
 
 	const emailTemplate: string = createEmailHtml(VerifyEmail, {
@@ -105,7 +101,7 @@ const resendVerifyEmail: IFieldResolver<any, IServerContext, any> = async (
 
 	const { success } = emailResponse;
 
-	return success;
+	return { success };
 };
 
 export const AuthenticationMutations: IResolverObject = {

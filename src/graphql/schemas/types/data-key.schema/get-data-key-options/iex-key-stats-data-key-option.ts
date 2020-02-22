@@ -1,4 +1,4 @@
-import { IexKeyStatsSuffixToPropMap } from "@/graphql/resolvers/stock-portfolio.resolver";
+import { IexKeyStatsSuffixToPropMap } from "@/graphql/schemas/types/stock-portfolio.schema/get-stock-portfolio-data";
 import { IexKeyStatsDataKeys, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
 

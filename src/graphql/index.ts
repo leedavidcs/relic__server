@@ -5,11 +5,10 @@ import { ApolloServerBase, Config } from "apollo-server-core";
 import { GraphQLSchema } from "graphql";
 import { ParameterizedContext } from "koa";
 import { deriveApolloContext } from "./context";
-import { schemaDirectives } from "./directives";
-import { getSchemaWithMiddleware } from "./middlewares";
+import { applyMiddlewaresToSchema } from "./middlewares";
 import { getPlugins } from "./plugins";
-import { resolvers } from "./resolvers";
-import { typeDefs } from "./schemas";
+import { applyResolversToSchema } from "./resolvers";
+import { nexusSchema } from "./schemas";
 import { getValidationRules } from "./validation-rules";
 
 export * from "./inputs";
@@ -33,11 +32,9 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 ): C => {
 	const { getHeaders, getKoaCtx, maxComplexity = Infinity, maxDepth = Infinity } = options;
 
-	const schema: GraphQLSchema = getSchemaWithMiddleware({
-		resolvers,
-		schemaDirectives,
-		typeDefs
-	});
+	const schemaWithResolvers: GraphQLSchema = applyResolversToSchema(nexusSchema);
+	const schemaWithMiddlewares: GraphQLSchema = applyMiddlewaresToSchema(schemaWithResolvers);
+	const schema: GraphQLSchema = schemaWithMiddlewares;
 
 	const config: Config = {
 		cache: new RedisCache({
