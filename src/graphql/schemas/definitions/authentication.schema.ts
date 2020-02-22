@@ -1,4 +1,4 @@
-import { inputObjectType, mutationField, objectType, arg } from "nexus";
+import { arg, inputObjectType, mutationField, objectType } from "nexus";
 import { EmailAddress, UserPassword } from "./scalars.schema";
 import { User } from "./user.schema";
 
