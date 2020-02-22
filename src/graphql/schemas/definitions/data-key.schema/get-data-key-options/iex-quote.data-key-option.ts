@@ -1,5 +1,4 @@
-import { IexQuoteSuffixToPropMap } from "@/graphql/schemas/types/stock-portfolio.schema/get-stock-portfolio-data";
-import { IexQuoteDataKeys, PREFIX_PROP_DELIMITER } from "@/mongodb";
+import { IexQuoteDataKeys, IexQuoteSuffixToPropMap, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
 
 export const IexQuoteDataKeyOptions = Object.keys(IexQuoteDataKeys).reduce((acc, dataKey) => {

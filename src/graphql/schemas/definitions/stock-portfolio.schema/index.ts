@@ -1,4 +1,4 @@
-import { Cursor, DataKey, JSONObject, PageInfo, User } from "@/graphql/schemas/types";
+import { Cursor, DataKey, JSONObject, PageInfo, User } from "@/graphql/schemas/definitions";
 import { arg, inputObjectType, intArg, mutationField, objectType, queryField } from "nexus";
 import { getStockPortfolioData } from "./get-stock-portfolio-data";
 

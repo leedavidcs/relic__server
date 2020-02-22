@@ -1,3 +1,5 @@
+import { PreviousDay } from "iexcloud_api_wrapper";
+
 export const IexPreviousDayPriceDataKeys = {
 	IEX_PREVIOUS_DAY_PRICE__SYMBOL: "IEX_PREVIOUS_DAY_PRICE__SYMBOL",
 	IEX_PREVIOUS_DAY_PRICE__DATE: "IEX_PREVIOUS_DAY_PRICE__DATE",
@@ -9,4 +11,17 @@ export const IexPreviousDayPriceDataKeys = {
 	IEX_PREVIOUS_DAY_PRICE__UNADJUSTED_VOLUME: "IEX_PREVIOUS_DAY_PRICE__UNADJUSTED_VOLUME",
 	IEX_PREVIOUS_DAY_PRICE__CHANGE: "IEX_PREVIOUS_DAY_PRICE__CHANGE",
 	IEX_PREVIOUS_DAY_PRICE__CHANGE_PERCENT: "IEX_PREVIOUS_DAY_PRICE__CHANGE_PERCENT"
+};
+
+export const IexPreviousDayPriceSuffixToPropMap: { [key: string]: keyof PreviousDay } = {
+	SYMBOL: "symbol",
+	DATE: "date",
+	OPEN: "open",
+	HIGH: "high",
+	LOW: "low",
+	CLOSE: "close",
+	VOLUME: "volume",
+	UNADJUSTED_VOLUME: "unadjustedVolume",
+	CHANGE: "change",
+	CHANGE_PERCENT: "changePercent"
 };

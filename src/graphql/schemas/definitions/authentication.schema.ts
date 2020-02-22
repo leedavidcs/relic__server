@@ -15,6 +15,7 @@ export const LoginLocalUserInput = inputObjectType({
 		});
 	}
 });
+
 export const RefreshAccessTokenInput = inputObjectType({
 	name: "RefreshAccessTokenInput",
 	definition: (t) => {

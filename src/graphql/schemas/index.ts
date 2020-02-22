@@ -1,6 +1,6 @@
 import { makeSchema, queryComplexityPlugin } from "nexus";
 import path from "path";
-import * as types from "./types";
+import * as types from "./definitions";
 
 const schemaPath: string = path.join(__dirname, "../generated/schema.graphql");
 const typegenPath: string = path.join(__dirname, "../generated/typegen.d.ts");
