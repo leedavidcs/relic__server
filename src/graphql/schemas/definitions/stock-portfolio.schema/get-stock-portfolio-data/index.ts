@@ -1,4 +1,5 @@
 import { IServerContext } from "@/graphql";
+import { NexusGenRootTypes } from "@/graphql/generated/typegen";
 import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
 import { doesExist } from "@/utils";
 import { isNil } from "lodash";
@@ -6,7 +7,6 @@ import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
 import { getIexQuoteData } from "./get-iex-quote-data";
-import { NexusGenRootTypes } from "@/graphql/generated/typegen";
 
 export * from "./get-iex-company-data";
 export * from "./get-iex-key-stats-data";
@@ -87,9 +87,7 @@ export const getStockPortfolioData = async (
 ): Promise<Record<string, any>> => {
 	const { headers, tickers } = stockPortfolio;
 
-	const dataKeys: readonly Maybe<keyof typeof DataKeys>[] = headers.map(
-		({ dataKey }) => dataKey
-	);
+	const dataKeys: readonly Maybe<keyof typeof DataKeys>[] = headers.map(({ dataKey }) => dataKey);
 
 	const groupedByPrefix = groupKeysByPrefix(dataKeys);
 
