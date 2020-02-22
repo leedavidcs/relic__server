@@ -44,8 +44,10 @@
 		],
 		"@typescript-eslint/no-explicit-any": "off",
 		"@typescript-eslint/no-misused-promises": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
 		"@typescript-eslint/no-parameter-properties": "off",
 		"@typescript-eslint/no-this-alias": "off",
+		"@typescript-eslint/no-unnecessary-type-assertion": "off",
 		"@typescript-eslint/prefer-for-of": "error",
 		"@typescript-eslint/prefer-function-type": "error",
 		"@typescript-eslint/tslint/config": [
