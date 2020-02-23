@@ -1,22 +1,19 @@
 import { IServerContext, IServerContextWithUser } from "@/graphql";
 import { ConnectionEdge, resolveRootConnection } from "@/graphql/resolvers/connection.resolver";
 import { IStockPortfolio } from "@/mongodb";
-import { Logger, NotFoundError, UnexpectedError } from "@/utils";
+import { Logger, NotFoundError } from "@/utils";
 import { IFieldResolver, IResolverObject } from "graphql-tools";
-import { getStockPortfolioData } from "./get-stock-portfolio-data";
 import { getUniqueName } from "./get-unique-name";
 
-export * from "./get-stock-portfolio-data";
-
-const stockPortfolios: IFieldResolver<any, IServerContext, any> = async (parent, args, context) => {
+const stockPortfolios: IFieldResolver<any, IServerContextWithUser, any> = async (
+	parent,
+	args,
+	context
+) => {
 	const {
 		loaders: { stockPortfolio },
 		user
 	} = context;
-
-	if (!user) {
-		throw new UnexpectedError();
-	}
 
 	const userId: string = user.id;
 	const filter: { [key: string]: any } = { ...args, user: userId };
@@ -95,9 +92,8 @@ const deleteStockPortfolio: IFieldResolver<any, IServerContextWithUser, any> = a
 	return { stockPortfolio: deleted };
 };
 
-const StockPortfolio: IResolverObject<IStockPortfolio, IServerContext> = {
-	user: ({ user }, args, { loaders }) => loaders.userById.load(user),
-	data: (parent, args, context) => getStockPortfolioData(parent, context)
+const StockPortfolio: IResolverObject<IStockPortfolio, IServerContextWithUser> = {
+	user: ({ user }, args, { loaders }) => loaders.userById.load(user)
 };
 
 const StockPortfolioEdge: IResolverObject<IStockPortfolio, IServerContext> = ConnectionEdge;

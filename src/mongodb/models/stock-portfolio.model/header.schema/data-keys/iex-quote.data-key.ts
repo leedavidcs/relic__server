@@ -1,3 +1,5 @@
+import { Quote } from "iexcloud_api_wrapper";
+
 export const IexQuoteDataKeys = {
 	IEX_QUOTE__SYMBOL: "IEX_QUOTE__SYMBOL",
 	IEX_QUOTE__COMPANY_NAME: "IEX_QUOTE__COMPANY_NAME",
@@ -36,4 +38,44 @@ export const IexQuoteDataKeys = {
 	IEX_QUOTE__WEEK_52_HIGH: "IEX_QUOTE__WEEK_52_HIGH",
 	IEX_QUOTE__WEEK_52_LOW: "IEX_QUOTE__WEEK_52_LOW",
 	IEX_QUOTE__YTD_CHANGE: "IEX_QUOTE__YTD_CHANGE"
+};
+
+export const IexQuoteSuffixToPropMap: { [key: string]: keyof Quote } = {
+	SYMBOL: "symbol",
+	COMPANY_NAME: "companyName",
+	CALCULATION_PRICE: "calculationPrice",
+	OPEN: "open",
+	OPEN_TIME: "openTime",
+	CLOSE: "close",
+	CLOSE_TIME: "closeTime",
+	HIGH: "high",
+	LOW: "low",
+	LATEST_PRICE: "latestPrice",
+	LATEST_SOURCE: "latestSource",
+	LATEST_TIME: "latestTime",
+	LATEST_UPDATE: "latestUpdate",
+	LATEST_VOLUME: "latestVolume",
+	IEX_REAL_TIME_PRICE: "iexRealtimePrice",
+	IEX_REAL_TIME_SIZE: "iexRealtimeSize",
+	IEX_LAST_UPDATED: "iexLastUpdated",
+	DELAYED_PRICE: "delayedPrice",
+	DELAYED_PRICE_TIME: "delayedPriceTime",
+	EXTENDED_PRICE: "extendedPrice",
+	EXTENDED_CHANGE: "extendedChange",
+	EXTENDED_CHANGE_PERCENT: "extendedChangePercent",
+	EXTENDED_PRICE_TIME: "extendedPriceTime",
+	PREVIOUS_CLOSE: "previousClose",
+	CHANGE: "change",
+	CHANGE_PERCENT: "changePercent",
+	IEX_MARKET_PERCENT: "iexMarketPercent",
+	IEX_VOLUME: "iexVolume",
+	AVG_TOTAL_VOLUME: "avgTotalVolume",
+	IEX_BID_PRICE: "iexBidPrice",
+	IEX_BID_SIZE: "iexBidSize",
+	IEX_ASK_PRICE: "iexAskPrice",
+	IEX_ASK_SIZE: "iexAskSize",
+	MARKET_CAP: "marketCap",
+	WEEK_52_HIGH: "week52High",
+	WEEK_52_LOW: "week52Low",
+	YTD_CHANGE: "ytdChange"
 };

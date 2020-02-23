@@ -14,7 +14,6 @@ import { doesExist, isNotError } from "@/utils";
 import DataLoader from "dataloader";
 import { IResolverObject } from "graphql-tools";
 import { keyBy } from "lodash";
-import { Cursor as MongoDBCursor } from "mongodb";
 import { Document } from "mongoose";
 
 export interface IConnectionArguments extends IPaginationParams {
@@ -32,11 +31,6 @@ export interface IPageInfo {
 	count: number;
 	startCursor: string | null;
 	lastCursor: string | null;
-}
-
-export interface IConnectionResults<T> {
-	pageInfo: IPageInfo;
-	query: MongoDBCursor<T>;
 }
 
 export interface IConnectionEdge<T> {
@@ -75,7 +69,7 @@ export const resolveRootConnection = async <
 	args: A,
 	loader: DataLoader<IObjectFilterKey, (T & IDataNode) | null>,
 	context: IServerContext
-) => {
+): Promise<IConnectionResult<T>> => {
 	const {
 		connectors: { MongoDB }
 	} = context;
