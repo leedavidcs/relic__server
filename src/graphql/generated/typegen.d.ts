@@ -142,6 +142,10 @@ export interface NexusGenRootTypes {
     id?: string | null; // ID
     username?: string | null; // String
   }
+  Connection: NexusGenRootTypes['StockPortfolioConnection'];
+  ConnectionEdge: NexusGenRootTypes['StockPortfolioEdge'];
+  ConnectionNode: NexusGenRootTypes['StockPortfolio'];
+  RequestRoot: NexusGenRootTypes['Query'] | NexusGenRootTypes['Mutation'];
   String: string;
   Int: number;
   Float: number;
@@ -149,7 +153,7 @@ export interface NexusGenRootTypes {
   ID: string;
   Cursor: any;
   EmailAddress: any;
-  JSON: any;
+  JSONObject: any;
   UserPassword: any;
 }
 
@@ -212,7 +216,7 @@ export interface NexusGenFieldTypes {
     success: boolean; // Boolean!
   }
   StockPortfolio: { // field return type
-    data: any; // JSON!
+    data: any[]; // [JSONObject!]!
     headers: NexusGenRootTypes['StockPortfolioHeader'][]; // [StockPortfolioHeader!]!
     id: string; // ID!
     name: string | null; // String
@@ -254,6 +258,18 @@ export interface NexusGenFieldTypes {
     id: string | null; // ID
     username: string | null; // String
   }
+  Connection: { // field return type
+    pageInfo: NexusGenRootTypes['PageInfo']; // PageInfo!
+  }
+  ConnectionEdge: { // field return type
+    cursor: any; // Cursor!
+  }
+  ConnectionNode: { // field return type
+    id: string; // ID!
+  }
+  RequestRoot: { // field return type
+    viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
+  }
 }
 
 export interface NexusGenArgTypes {
@@ -293,6 +309,10 @@ export interface NexusGenArgTypes {
 }
 
 export interface NexusGenAbstractResolveReturnTypes {
+  Connection: "StockPortfolioConnection"
+  ConnectionEdge: "StockPortfolioEdge"
+  ConnectionNode: "StockPortfolio"
+  RequestRoot: "Query" | "Mutation"
 }
 
 export interface NexusGenInheritedFields {}
@@ -303,9 +323,9 @@ export type NexusGenInputNames = "ConnectionInput" | "CreateStockPortfolioInput"
 
 export type NexusGenEnumNames = "DataKey" | "DataKey_Provider";
 
-export type NexusGenInterfaceNames = never;
+export type NexusGenInterfaceNames = "Connection" | "ConnectionEdge" | "ConnectionNode" | "RequestRoot";
 
-export type NexusGenScalarNames = "Boolean" | "Cursor" | "EmailAddress" | "Float" | "ID" | "Int" | "JSON" | "String" | "UserPassword";
+export type NexusGenScalarNames = "Boolean" | "Cursor" | "EmailAddress" | "Float" | "ID" | "Int" | "JSONObject" | "String" | "UserPassword";
 
 export type NexusGenUnionNames = never;
 

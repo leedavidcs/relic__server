@@ -2,6 +2,16 @@
 ### Do not make changes to this file directly
 
 
+interface Connection {
+  """Pagination info, on whether there is more data"""
+  pageInfo: PageInfo!
+}
+
+interface ConnectionEdge {
+  """Cursor for pagination"""
+  cursor: Cursor!
+}
+
 """Search items based on a connection property"""
 input ConnectionInput {
   """
@@ -19,6 +29,11 @@ input ConnectionInput {
   An array of IDs. Returns items such that this property contains some of 				specified IDs
   """
   someOf: [ID!]
+}
+
+interface ConnectionNode {
+  """The uuid of this resource"""
+  id: ID!
 }
 
 input CreateStockPortfolioInput {
@@ -194,7 +209,7 @@ scalar EmailAddress
 """
 The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
-scalar JSON
+scalar JSONObject
 
 input LoginLocalUserInput {
   """The user's decrypted password"""
@@ -205,7 +220,7 @@ input LoginLocalUserInput {
 }
 
 """Root mutation type"""
-type Mutation {
+type Mutation implements RequestRoot {
   createStockPortfolio(input: CreateStockPortfolioInput!): CreateStockPortfolioPayload
   deleteStockPortfolio(input: DeleteStockPortfolioInput!): DeleteStockPortfolioPayload
 
@@ -245,7 +260,7 @@ type PageInfo {
 }
 
 """Root query type"""
-type Query {
+type Query implements RequestRoot {
   """
   Retrieves the list of data key options for a stock portfolio header. All filters are 		OR'ed.
   """
@@ -307,6 +322,12 @@ type RegisterLocalUserPayload {
   user: User
 }
 
+"""Common properties for Query, Mutation and Subscription types"""
+interface RequestRoot {
+  """The viewer of this request"""
+  viewer: Viewer
+}
+
 """The response object from a resend verify email request"""
 type ResendVerifyEmailPayload {
   """Status, on whether the email was successfully resent"""
@@ -314,16 +335,16 @@ type ResendVerifyEmailPayload {
 }
 
 """StockPortfolio entity. This is what gets shown on the data grid"""
-type StockPortfolio {
+type StockPortfolio implements ConnectionNode {
   """The data that gets resolved based on headers and tickers"""
-  data: JSON!
+  data: [JSONObject!]!
 
   """
   The headers (configs) for this data grid, including how data is resolved
   """
   headers: [StockPortfolioHeader!]!
 
-  """The ID of the stock portfolio"""
+  """The uuid of this resource"""
   id: ID!
 
   """The name, the user has given to this stock portfolio"""
@@ -339,7 +360,7 @@ type StockPortfolio {
 """
 The stock portfolio connection, from which pagination and resource info can be gotten
 """
-type StockPortfolioConnection {
+type StockPortfolioConnection implements Connection {
   """Holds cursor and resource information"""
   edges: [StockPortfolioEdge!]!
 
@@ -351,7 +372,7 @@ type StockPortfolioConnection {
 }
 
 """Connection edges, which hold cursor and resource information"""
-type StockPortfolioEdge {
+type StockPortfolioEdge implements ConnectionEdge {
   """Cursor for pagination"""
   cursor: Cursor!
 
@@ -423,9 +444,7 @@ type User {
   username: String
 }
 
-"""
-A plain-text string of a user's password, that gets hashed when parsed.
-"""
+"""The plain-text password of a user to be hashed"""
 scalar UserPassword
 
 """Search items based on a range, or fuzzy date"""
