@@ -26,6 +26,8 @@ interface IGetApolloServerOptions<P> {
 	maxDepth?: number;
 }
 
+const isDebug: boolean = process.env.NODE_ENV !== "production";
+
 export const getApolloServer = <C extends ApolloServerBase, P extends { [key: string]: any }>(
 	Ctor: Constructor<C>,
 	options: IGetApolloServerOptions<P>
@@ -50,9 +52,9 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 			return apolloContext;
 		},
 		dataSources,
-		debug: process.env.NODE_ENV === "development",
+		debug: isDebug,
 		extensions: [],
-		playground: process.env.NODE_ENV === "development",
+		playground: isDebug,
 		plugins: getPlugins({ maxComplexity, schema }),
 		schema,
 		validationRules: getValidationRules({ maxDepth })
