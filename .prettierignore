@@ -1,8 +1,25 @@
-.webpack
-scripts/**/*
+# configs
+.github/**
+.jest/**
+.storybook/**
+
+# production
+.webpack/**
+
+# dependencies
+node_modules/**
+
+# scripts
+scripts/**
+*.js
+
+# generated files
+**/generated/**
+**/types/**
+**/*.d.ts
 
 # Logs
-logs/**/*
+logs/**
 
 # Testing
 .nyc_output
