@@ -25,7 +25,6 @@
 		"typeRoots": [
 			"node_modules/@types",
 			"src/types",
-			"src/graphql/generated/typegen.d.ts",
 			"tests/integration/types"
 		],
 		"types": ["jest", "node"],

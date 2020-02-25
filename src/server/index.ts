@@ -1,9 +1,12 @@
-import { applyAuthentication, IWithUser } from "@/authentication";
+import { applyAuthentication } from "@/authentication";
 import { getApolloServer } from "@/graphql";
 import { closeDatabase, connectToDatabase } from "@/mongodb";
+import { getPrismaClient } from "@/prisma";
+import { Logger } from "@/utils";
+import { PrismaClient } from "@prisma/client";
 import { ApolloServer } from "apollo-server-koa";
 import Http, { RequestListener } from "http";
-import Koa, { ParameterizedContext } from "koa";
+import Koa from "koa";
 import { applyMiddlewares } from "./middlewares";
 import { applyRoutes } from "./routes";
 
@@ -12,29 +15,31 @@ const MAX_GRAPHQL_COMPLEXITY = 500;
 const MAX_GRAPHQL_DEPTH = 10;
 
 const applyGraphQL = (server: Server): void => {
-	const apolloServer: ApolloServer = getApolloServer<
-		ApolloServer,
-		{ ctx: ParameterizedContext<IWithUser> }
-	>(ApolloServer, {
+	const { app, prisma } = server;
+
+	const apolloServer: ApolloServer = getApolloServer(ApolloServer, {
 		getHeaders: ({ ctx: { header } }) => header,
 		getKoaCtx: ({ ctx }) => ctx,
 		maxComplexity: MAX_GRAPHQL_COMPLEXITY,
-		maxDepth: MAX_GRAPHQL_DEPTH
+		maxDepth: MAX_GRAPHQL_DEPTH,
+		prisma
 	});
 
-	apolloServer.applyMiddleware({ app: server.app });
+	apolloServer.applyMiddleware({ app });
 };
 
 export class Server {
 	public app: Koa;
 	public httpServer: Http.Server;
+	public prisma: PrismaClient;
 
 	constructor(public port: number = DEFAULT_PORT) {
 		this.app = new Koa();
 
 		const requestListener: RequestListener = this.app.callback();
-
 		this.httpServer = new Http.Server(requestListener);
+
+		this.prisma = getPrismaClient();
 	}
 
 	public run(): Promise<void> {
@@ -62,6 +67,7 @@ export class Server {
 	}
 
 	public async configure(): Promise<void> {
+		await this.prisma.connect().then(() => Logger.info("Connected to Prisma"));
 		await connectToDatabase();
 
 		applyAuthentication(this);
@@ -71,6 +77,7 @@ export class Server {
 	}
 
 	public async prepareStop(): Promise<void> {
+		await this.prisma.disconnect().then(() => Logger.info("Disconnected from Prisma"));
 		await closeDatabase();
 	}
 }

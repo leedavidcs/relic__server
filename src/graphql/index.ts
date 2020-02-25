@@ -1,5 +1,6 @@
 import { IWithUser } from "@/authentication";
 import { dataSources } from "@/datasources";
+import { PrismaClient } from "@prisma/client";
 import { RedisCache } from "apollo-server-cache-redis";
 import { ApolloServerBase, Config } from "apollo-server-core";
 import { GraphQLSchema } from "graphql";
@@ -24,15 +25,22 @@ interface IGetApolloServerOptions<P> {
 	getKoaCtx: (params: P) => ParameterizedContext<IWithUser> | null;
 	maxComplexity?: number;
 	maxDepth?: number;
+	prisma: PrismaClient;
 }
 
 const isDebug: boolean = process.env.NODE_ENV !== "production";
 
-export const getApolloServer = <C extends ApolloServerBase, P extends { [key: string]: any }>(
+export const getApolloServer = <C extends ApolloServerBase, P extends Record<string, any>>(
 	Ctor: Constructor<C>,
 	options: IGetApolloServerOptions<P>
 ): C => {
-	const { getHeaders, getKoaCtx, maxComplexity = Infinity, maxDepth = Infinity } = options;
+	const {
+		getHeaders,
+		getKoaCtx,
+		maxComplexity = Infinity,
+		maxDepth = Infinity,
+		prisma
+	} = options;
 
 	const schemaWithResolvers: GraphQLSchema = applyResolversToSchema(nexusSchema);
 	const schemaWithMiddlewares: GraphQLSchema = applyMiddlewaresToSchema(schemaWithResolvers);
@@ -47,7 +55,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends { [key: st
 			const headers = getHeaders(params);
 			const koaCtx = getKoaCtx(params);
 
-			const apolloContext = await deriveApolloContext(headers, koaCtx);
+			const apolloContext = await deriveApolloContext({ headers, koaCtx, prisma });
 
 			return apolloContext;
 		},
