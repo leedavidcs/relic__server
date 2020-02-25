@@ -1,19 +1,12 @@
 import { IServerContextWithUser } from "@/graphql/context";
 import { GraphQLSchema } from "graphql";
 import { addResolveFunctionsToSchema, IResolvers } from "graphql-tools";
-import {
-	StockPortfolioMutations,
-	StockPortfolioQueries,
-	StockPortfolioTypes
-} from "./stock-portfolio.resolver";
+import { StockPortfolioMutations, StockPortfolioTypes } from "./stock-portfolio.resolver";
 
 export * from "./connection.resolver";
 export * from "./stock-portfolio.resolver";
 
 export const resolvers: IResolvers<any, IServerContextWithUser> = {
-	Query: {
-		...StockPortfolioQueries
-	},
 	Mutation: {
 		...StockPortfolioMutations
 	},

@@ -1,5 +1,4 @@
 export * from "./authentication.types";
-export * from "./connection.types";
 export * from "./data-key.types";
 export * from "./general-inputs.types";
 export * from "./root.types";
