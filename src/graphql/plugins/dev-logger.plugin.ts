@@ -1,7 +1,7 @@
 import { GraphQLRequest } from "apollo-server-core";
 import { ApolloServerPlugin } from "apollo-server-plugin-base";
 
-const isDevelopment: boolean = process.env.NODE_ENV === "development";
+const isDebug: boolean = process.env.NODE_ENV !== "production";
 
 const isIntrospectionQuery = (request: GraphQLRequest): boolean => {
 	const { operationName } = request;
@@ -12,7 +12,7 @@ const isIntrospectionQuery = (request: GraphQLRequest): boolean => {
 /* eslint-disable no-console */
 export const devLoggerPlugin: ApolloServerPlugin = {
 	requestDidStart: (requestCtx) => {
-		if (!isDevelopment) {
+		if (!isDebug) {
 			return;
 		}
 
