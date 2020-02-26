@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "es2017",
 		"module": "commonjs",
-		"lib": ["es2017", "esnext"],
+		"lib": ["es2017", "esnext", "dom"],
 		"jsx": "react",
 		"sourceMap": true,
 		"outDir": "./lib",

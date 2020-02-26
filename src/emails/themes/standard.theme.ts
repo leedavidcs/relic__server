@@ -13,14 +13,7 @@ export const standardTheme = {
 	onSecondary: "#000000",
 	onError: "#000000",
 	onWarning: "#000000",
-	highEmphasis: 0.87,
-	mediumEmphasis: 0.6,
-	disabled: 0.38,
 	surfaceOverlay: "#FFFFFF",
 	surfaceOverlayVariant: "#BB86FC",
-	surfaceOverlayHovered: 0.04,
-	surfaceOverlayFocused: 0.12,
-	surfaceOverlayPressed: 0.1,
-	surfaceOverlayDragged: 0.08,
-	fontPrimary: ["Helvetica Neue", "Helvetica", "Arial", "Roboto", "Segoe UI", "sans-serif"].join()
+	fontPrimary: "Helvetica"
 };
