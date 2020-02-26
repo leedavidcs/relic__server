@@ -4,7 +4,6 @@ import { User } from "@prisma/client";
 import Jwt, { Algorithm } from "jsonwebtoken";
 import { ParameterizedContext } from "koa";
 import Passport from "koa-passport";
-import { Types } from "mongoose";
 import { Strategy } from "passport";
 import { getLocalAuthStrategy } from "./local.authentication";
 
@@ -83,7 +82,7 @@ const getUserFromBearerToken = (bearerToken: string): string => {
 	return userId;
 };
 
-export const issueTokens = (userId: Types.ObjectId): ITokenResponse => {
+export const issueTokens = (userId: string): ITokenResponse => {
 	const refreshToken: string = getRefreshToken(userId.toString());
 	const accessToken: string = getAccessToken(userId.toString());
 

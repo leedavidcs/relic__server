@@ -3,7 +3,6 @@ import { User } from "@prisma/client";
 import BCrypt from "bcryptjs";
 import { ParameterizedContext } from "koa";
 import Passport from "koa-passport";
-import { Types } from "mongoose";
 import { Strategy } from "passport-local";
 import { issueTokens, ITokenResponse, IWithUser } from ".";
 
@@ -50,7 +49,7 @@ export const authenticateLocal = (
 		Passport.authenticate(
 			"local",
 			{ session: false },
-			(err: Error | null, userId: Types.ObjectId): void =>
+			(err: Error | null, userId: string): void =>
 				err ? reject(err) : resolve(issueTokens(userId))
 		)(ctx, () => Promise.resolve(undefined));
 	});
