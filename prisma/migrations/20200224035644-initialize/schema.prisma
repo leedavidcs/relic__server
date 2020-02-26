@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url = "***"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id            String @id @default(uuid())
+  email         String @unique
+  emailVerified Boolean @default(false)
+  password      String
+  username      String @unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model StockPortfolioHeader {
+  id        String @id @default(uuid())
+  name      String
+  dataKey   String
+  width     Int @default(100)
+  frozen    Boolean @default(false)
+  resizable Boolean @default(true)
+}
+
+model StockPortfolio {
+  id        String @id @default(uuid())
+  user      User
+  name      String
+  headers   StockPortfolioHeader[]
+  tickers   String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([user, name])
+}

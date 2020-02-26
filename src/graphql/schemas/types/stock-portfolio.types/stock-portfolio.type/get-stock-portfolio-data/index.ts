@@ -1,12 +1,11 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
+import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/data-keys";
 import { doesExist } from "@/utils";
 import { isNil } from "lodash";
 import { getIexCompanyData } from "./get-iex-company-data";
 import { getIexKeyStatsData } from "./get-iex-key-stats-data";
 import { getIexPreviousDayPriceData } from "./get-iex-previous-day-price-data";
 import { getIexQuoteData } from "./get-iex-quote-data";
-import { NexusGenRootTypes } from "@/graphql/generated/typegen";
 import { IServerContextWithUser } from "@/graphql/context";
 
 export * from "./get-iex-company-data";
@@ -68,7 +67,6 @@ const getDataForTicker = async (
 const assignDataToHeaders = (
 	resultsMap: { [dataKey in keyof typeof DataKeys]?: any },
 	headers
-	// : readonly NexusGenRootTypes["StockPortfolioHeader"][]
 ): Record<string, any> => {
 	const headersToResults: Record<string, any> = headers.reduce((acc, { name, dataKey }) => {
 		if (!dataKey) {
@@ -84,10 +82,10 @@ const assignDataToHeaders = (
 };
 
 export const getStockPortfolioData = async (
-	stockPortfolio: NexusGenRootTypes["StockPortfolio"],
+	stockPortfolio,
 	context: IServerContextWithUser
 ): Promise<Record<string, any>[]> => {
-	const { headers, tickers } = stockPortfolio;
+	const { headers = [], tickers } = stockPortfolio;
 
 	const dataKeys: readonly Maybe<keyof typeof DataKeys>[] = headers.map(({ dataKey }) => dataKey);
 

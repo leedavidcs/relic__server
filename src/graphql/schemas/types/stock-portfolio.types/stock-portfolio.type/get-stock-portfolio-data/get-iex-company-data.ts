@@ -1,21 +1,17 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, IexCompanySuffixToPropMap, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
+import { DataKeys, IexCompanySuffixToPropMap, Prefixes, PREFIX_PROP_DELIMITER } from "@/data-keys";
 import { Company } from "iexcloud_api_wrapper";
 
 export const getIexCompanyData = async (
 	ticker: string,
 	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
-	context: IServerContext
+	{ dataSources: { IexAPI } }: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
 	const iexCompanyKeys: readonly string[] = groupedKeys[Prefixes.IEX_COMPANY];
 
 	if (!iexCompanyKeys) {
 		return {};
 	}
-
-	const {
-		dataSources: { IexAPI }
-	} = context;
 
 	const company: Company = await IexAPI.getCompany(ticker);
 

@@ -1,5 +1,8 @@
-import { IexKeyStatsDataKeys, IexKeyStatsSuffixToPropMap, PREFIX_PROP_DELIMITER } from "@/mongodb";
-import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
+import {
+	IexKeyStatsDataKeys,
+	IexKeyStatsSuffixToPropMap,
+	PREFIX_PROP_DELIMITER
+} from "@/data-keys";
 
 export const IexKeyStatsDataKeyOptions = Object.keys(IexKeyStatsDataKeys).reduce((acc, dataKey) => {
 	const [, suffix] = dataKey.split(PREFIX_PROP_DELIMITER);
@@ -8,9 +11,9 @@ export const IexKeyStatsDataKeyOptions = Object.keys(IexKeyStatsDataKeys).reduce
 	/* eslint-disable max-len */
 	return acc.concat({
 		name: `iex.keyStats.${prop}`,
-		dataKey: dataKey as DataKey,
+		dataKey,
 		description: `Property (${prop}) in Key Stats. (see: https://iexcloud.io/docs/api/#key-stats)`,
-		provider: "IEX Cloud" as DataKey_Provider
+		provider: "IEX Cloud"
 	});
 	/* eslint-enable max-len */
-}, [] as DataKeyOption[]);
+}, [] as any[]);

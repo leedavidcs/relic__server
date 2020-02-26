@@ -1,17 +1,16 @@
-import { IUser, UserModel } from "@/mongodb";
 import { getRefreshTokenUserId, saveRefreshToken } from "@/redis";
 import { Server } from "@/server";
+import { User } from "@prisma/client";
 import Jwt, { Algorithm } from "jsonwebtoken";
 import { ParameterizedContext } from "koa";
 import Passport from "koa-passport";
-import { Types } from "mongoose";
 import { Strategy } from "passport";
-import { LocalAuth } from "./local.authentication";
+import { getLocalAuthStrategy } from "./local.authentication";
 
 export * from "./local.authentication";
 
 export interface IWithUser {
-	user: IUser | null;
+	user: User | null;
 }
 
 const CONVERSION_UNIX_TIME = 1000;
@@ -75,17 +74,15 @@ const getRefreshToken = (userId: string): string => {
 	return refreshToken;
 };
 
-const getUserFromBearerToken = async (bearerToken: string): Promise<IUser | null> => {
+const getUserFromBearerToken = (bearerToken: string): string => {
 	const result: IJwtPayload = verifyBearerToken(bearerToken);
 
 	const { userId } = result;
 
-	const user: IUser | null = await UserModel.findById(userId);
-
-	return user;
+	return userId;
 };
 
-export const issueTokens = (userId: Types.ObjectId): ITokenResponse => {
+export const issueTokens = (userId: string): ITokenResponse => {
 	const refreshToken: string = getRefreshToken(userId.toString());
 	const accessToken: string = getAccessToken(userId.toString());
 
@@ -97,14 +94,12 @@ export const issueTokens = (userId: Types.ObjectId): ITokenResponse => {
 	return tokenResponse;
 };
 
-export const getAuthorizedUser = async (
-	ctx: ParameterizedContext<IWithUser>
-): Promise<IUser | null> => {
+export const getAuthorizedUserId = (ctx: ParameterizedContext<IWithUser>): string | null => {
 	const bearerToken: string | null = getBearerToken(ctx);
 
-	const user: IUser | null = bearerToken ? await getUserFromBearerToken(bearerToken) : null;
+	const userId: string | null = bearerToken ? getUserFromBearerToken(bearerToken) : null;
 
-	return user;
+	return userId;
 };
 
 export const refreshAccessToken = async (refreshToken: string): Promise<string | null> => {
@@ -119,10 +114,12 @@ export const refreshAccessToken = async (refreshToken: string): Promise<string |
 	}
 };
 
-export const applyAuthentication = ({ app }: Server): void => {
+export const applyAuthentication = (server: Server): void => {
+	const { app } = server;
+
 	app.use(Passport.initialize());
 
-	const strategies: Strategy[] = [LocalAuth];
+	const strategies: Strategy[] = [getLocalAuthStrategy(server)];
 
 	strategies.forEach((strategy) => {
 		Passport.use(strategy);

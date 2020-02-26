@@ -1,23 +1,22 @@
-import { IUser, UserModel } from "@/mongodb";
 import { Server } from "@/server";
 import KoaRouter from "@koa/router";
+import { User } from "@prisma/client";
 import HttpStatus from "http-status-codes";
-import Koa from "koa";
 
 /* tslint:disable:no-object-mutation */
 export const applyRoutes = (server: Server): void => {
-	const app: Koa = server.app;
-
+	const { app } = server;
 	const router: KoaRouter = new KoaRouter();
 
 	router.get(
 		"/verifyEmail/:userId",
 		async (ctx): Promise<void> => {
 			const { userId } = ctx.params;
+			const { prisma } = server;
 
-			const user: IUser | null = await UserModel.findOne({ _id: userId });
+			const user: Maybe<User> = await prisma.user.findOne({ where: { id: userId } });
 
-			if (user === null) {
+			if (!user) {
 				ctx.status = HttpStatus.NOT_FOUND;
 				ctx.body = {
 					email: null,
@@ -27,9 +26,10 @@ export const applyRoutes = (server: Server): void => {
 				return;
 			}
 
-			user.emailVerified = true;
-
-			await user.save();
+			await prisma?.user.update({
+				where: { id: userId },
+				data: { emailVerified: true }
+			});
 
 			ctx.redirect("http://google.com");
 		}

@@ -1,6 +1,6 @@
 import { createEmailHtml, ISendEmailResponse, sendEmail, VerifyEmail } from "@/emails";
-import { IUser } from "@/mongodb";
 import { getBaseUrl } from "@/utils";
+import { User } from "@prisma/client";
 import { arg, inputObjectType, mutationField, objectType } from "nexus";
 
 export const RegisterLocalUserInput = inputObjectType({
@@ -50,14 +50,8 @@ export const registerLocalUser = mutationField("registerLocalUser", {
 			required: true
 		})
 	},
-	resolve: async (parent, { input: { email, password, username } }, ctx) => {
-		const {
-			connectors: { MongoDB }
-		} = ctx;
-
-		const UserModel = MongoDB.get<IUser>("User");
-
-		const existingUser: IUser | null = await UserModel.findOne({ email });
+	resolve: async (parent, { input: { email, password, username } }, { prisma }) => {
+		const existingUser: User | null = await prisma.user.findOne({ where: { email } });
 
 		if (existingUser !== null) {
 			return {
@@ -67,7 +61,9 @@ export const registerLocalUser = mutationField("registerLocalUser", {
 			};
 		}
 
-		const newUser: IUser = await UserModel.create({ email, password, username });
+		const newUser: User = await prisma.user.create({
+			data: { email, password, username }
+		});
 
 		const emailTemplate: string = createEmailHtml(VerifyEmail, {
 			confirmationLink: `${getBaseUrl()}/verifyEmail/${newUser.id}`,

@@ -5,8 +5,7 @@ export const DataKeyOption = objectType({
 	description: "A single data key option that can be selected for a stock portfolio header",
 	definition: (t) => {
 		t.string("name", { description: "A more normal name. This can be shown to users." });
-		t.field("dataKey", {
-			type: "DataKey",
+		t.string("dataKey", {
 			description: "A unique data key for fetching stock portfolio data"
 		});
 		t.string("description", {

@@ -10,8 +10,18 @@
 node_modules/**
 
 # scripts
+scripts/**
 *.js
 
 # generated files
+**/generated/**
 **/types/**
 **/*.d.ts
+
+# Logs
+logs/**
+
+# Testing
+.nyc_output
+coverage
+test-reports

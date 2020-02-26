@@ -2,8 +2,7 @@ import {
 	IexPreviousDayPriceDataKeys,
 	IexPreviousDayPriceSuffixToPropMap,
 	PREFIX_PROP_DELIMITER
-} from "@/mongodb";
-import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
+} from "@/data-keys";
 
 export const IexPreviousDayPriceDataKeyOptions = Object.keys(IexPreviousDayPriceDataKeys).reduce(
 	(acc, dataKey) => {
@@ -12,12 +11,12 @@ export const IexPreviousDayPriceDataKeyOptions = Object.keys(IexPreviousDayPrice
 
 		return acc.concat({
 			name: `iex.previousDayPrice.${prop}`,
-			dataKey: dataKey as DataKey,
+			dataKey,
 			description:
 				`Property (${prop}) in Previous Day Price. (see: ` +
 				"https://iexcloud.io/docs/api/#previous-day-price)",
-			provider: "IEX Cloud" as DataKey_Provider
+			provider: "IEX Cloud"
 		});
 	},
-	[] as DataKeyOption[]
+	[] as any[]
 );
