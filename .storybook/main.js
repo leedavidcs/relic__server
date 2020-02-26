@@ -5,7 +5,6 @@ const webpackCraOverrides = require("../webpack-cra-overrides");
 module.exports = {
 	addons: [
 		"@storybook/addon-docs",
-		"@storybook/addon-knobs",
 		"@storybook/addon-viewport",
 		{
 			name: "@storybook/preset-create-react-app",
