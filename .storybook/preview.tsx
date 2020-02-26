@@ -1,6 +1,5 @@
 import { addDecorator, addParameters, configure } from "@storybook/react";
 import { themes } from "@storybook/theming";
-import { withRootProvider } from "../src/emails/storybook";
 
 const alphabeticSort = (a, b) => {
 	const isSameKind: boolean = a[1].kind === b[1].kind;
@@ -21,7 +20,5 @@ addParameters({
 		theme: themes.dark
 	}
 });
-
-addDecorator(withRootProvider);
 
 configure(require.context("../src", true, /\.?stories(\/index)?\.(tsx?|mdx)$/), module);

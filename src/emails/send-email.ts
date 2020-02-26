@@ -22,10 +22,7 @@ export const sendEmail = async (options: CustomSendEmailOptions): Promise<ISendE
 	try {
 		await transporter.sendMail({ sender: emailSenderUser, to, subject, html });
 
-		return {
-			success: true,
-			error: null
-		};
+		return { success: true, error: null };
 	} catch (err) {
 		return {
 			success: false,
