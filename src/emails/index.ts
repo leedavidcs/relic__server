@@ -1,3 +1,4 @@
+import { Logger } from "@/utils";
 import path from "path";
 import * as templates from "./emails";
 import { generateTemplates } from "./generate-templates";
@@ -10,8 +11,12 @@ const isDebug: boolean = process.env.NODE_ENV !== "production";
 
 const templatePath: string = path.resolve(__dirname, "./generated");
 
-generateTemplates({
-	shouldGenerateArtifacts: isDebug,
-	output: templatePath,
-	templates
-});
+export const buildEmailTemplates = () => {
+	generateTemplates({
+		shouldGenerateArtifacts: isDebug,
+		output: templatePath,
+		templates
+	});
+
+	Logger.info("Email templates have been built.");
+};

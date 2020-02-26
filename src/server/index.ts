@@ -1,4 +1,5 @@
 import { applyAuthentication } from "@/authentication";
+import { buildEmailTemplates } from "@/emails";
 import { getApolloServer } from "@/graphql";
 import { getPrismaClient } from "@/prisma";
 import { Logger } from "@/utils";
@@ -66,6 +67,8 @@ export class Server {
 	}
 
 	public async configure(): Promise<void> {
+		buildEmailTemplates();
+
 		await this.prisma.connect().then(() => Logger.info("Connected to Prisma"));
 
 		applyAuthentication(this);
