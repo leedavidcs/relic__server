@@ -1,5 +1,5 @@
 import { IServerContext } from "@/graphql";
-import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/mongodb";
+import { DataKeys, Prefixes, PREFIX_PROP_DELIMITER } from "@/data-keys";
 import { doesExist } from "@/utils";
 import { isNil } from "lodash";
 import { getIexCompanyData } from "./get-iex-company-data";
@@ -85,7 +85,7 @@ export const getStockPortfolioData = async (
 	stockPortfolio,
 	context: IServerContextWithUser
 ): Promise<Record<string, any>[]> => {
-	const { headers, tickers } = stockPortfolio;
+	const { headers = [], tickers } = stockPortfolio;
 
 	const dataKeys: readonly Maybe<keyof typeof DataKeys>[] = headers.map(({ dataKey }) => dataKey);
 

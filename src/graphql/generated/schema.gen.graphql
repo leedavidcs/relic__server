@@ -7,114 +7,6 @@ input BooleanFilter {
   not: Boolean
 }
 
-input CreateStockPortfolioInput {
-  """(Unique) The name of this stock portfolio."""
-  name: String = "New_Portfolio"
-}
-
-type CreateStockPortfolioPayload {
-  stockPortfolio: StockPortfolio!
-}
-
-"""Pagination cursor. Use this to fetch items before or after an item"""
-scalar Cursor
-
-"""
-The dataKey property of a stock portfolio header, that determines what data is pulled
-"""
-enum DataKey {
-  IEX_COMPANY__CEO
-  IEX_COMPANY__COMPANY_NAME
-  IEX_COMPANY__DESCRIPTION
-  IEX_COMPANY__EMPLOYEES
-  IEX_COMPANY__EXCHANGE
-  IEX_COMPANY__INDUSTRY
-  IEX_COMPANY__ISSUE_TYPE
-  IEX_COMPANY__SECTOR
-  IEX_COMPANY__SECURITY_NAME
-  IEX_COMPANY__SYMBOL
-  IEX_COMPANY__TAGS
-  IEX_COMPANY__WEBSITE
-  IEX_KEY_STATS__AVG_10_VOLUME
-  IEX_KEY_STATS__AVG_30_VOLUME
-  IEX_KEY_STATS__BETA
-  IEX_KEY_STATS__COMPANY_NAME
-  IEX_KEY_STATS__DAY_200_MOVINGAVG
-  IEX_KEY_STATS__DAY_30_CHANGE_PERCENT
-  IEX_KEY_STATS__DAY_5_CHANGE_PERCENT
-  IEX_KEY_STATS__DAY_50_MOVINGAVG
-  IEX_KEY_STATS__DIVIDEND_YIELD
-  IEX_KEY_STATS__EMPLOYEES
-  IEX_KEY_STATS__EX_DIVIDEND_DATE
-  IEX_KEY_STATS__FLOAT
-  IEX_KEY_STATS__MARKET_CAP
-  IEX_KEY_STATS__MAX_CHANGE_PERCENT
-  IEX_KEY_STATS__MONTH_1_CHANGE_PERCENT
-  IEX_KEY_STATS__MONTH_3_CHANGE_PERCENT
-  IEX_KEY_STATS__MONTH_6_CHANGE_PERCENT
-  IEX_KEY_STATS__NEXT_DIVIDEND_DATE
-  IEX_KEY_STATS__NEXT_EARNINGS_DATE
-  IEX_KEY_STATS__PE_RATIO
-  IEX_KEY_STATS__SHARES_OUTSTANDING
-  IEX_KEY_STATS__SYMBOL
-  IEX_KEY_STATS__TTM_DIVIDEND_RATE
-  IEX_KEY_STATS__TTM_EPS
-  IEX_KEY_STATS__WEEK_52_CHANGE
-  IEX_KEY_STATS__WEEK_52_HIGH
-  IEX_KEY_STATS__WEEK_52_LOW
-  IEX_KEY_STATS__YEAR_1_CHANGE_PERCENT
-  IEX_KEY_STATS__YEAR_2_CHANGE_PERCENT
-  IEX_KEY_STATS__YEAR_5_CHANGE_PERCENT
-  IEX_KEY_STATS__YTD_CHANGE_PERCENT
-  IEX_PREVIOUS_DAY_PRICE__CHANGE
-  IEX_PREVIOUS_DAY_PRICE__CHANGE_PERCENT
-  IEX_PREVIOUS_DAY_PRICE__CLOSE
-  IEX_PREVIOUS_DAY_PRICE__DATE
-  IEX_PREVIOUS_DAY_PRICE__HIGH
-  IEX_PREVIOUS_DAY_PRICE__LOW
-  IEX_PREVIOUS_DAY_PRICE__OPEN
-  IEX_PREVIOUS_DAY_PRICE__SYMBOL
-  IEX_PREVIOUS_DAY_PRICE__UNADJUSTED_VOLUME
-  IEX_PREVIOUS_DAY_PRICE__VOLUME
-  IEX_QUOTE__AVG_TOTAL_VOLUME
-  IEX_QUOTE__CALCULATION_PRICE
-  IEX_QUOTE__CHANGE
-  IEX_QUOTE__CHANGE_PERCENT
-  IEX_QUOTE__CLOSE
-  IEX_QUOTE__CLOSE_TIME
-  IEX_QUOTE__COMPANY_NAME
-  IEX_QUOTE__DELAYED_PRICE
-  IEX_QUOTE__DELAYED_PRICE_TIME
-  IEX_QUOTE__EXTENDED_CHANGE
-  IEX_QUOTE__EXTENDED_CHANGE_PERCENT
-  IEX_QUOTE__EXTENDED_PRICE
-  IEX_QUOTE__EXTENDED_PRICE_TIME
-  IEX_QUOTE__HIGH
-  IEX_QUOTE__IEX_ASK_PRICE
-  IEX_QUOTE__IEX_ASK_SIZE
-  IEX_QUOTE__IEX_BID_PRICE
-  IEX_QUOTE__IEX_BID_SIZE
-  IEX_QUOTE__IEX_LAST_UPDATED
-  IEX_QUOTE__IEX_MARKET_PERCENT
-  IEX_QUOTE__IEX_REAL_TIME_PRICE
-  IEX_QUOTE__IEX_REAL_TIME_SIZE
-  IEX_QUOTE__IEX_VOLUME
-  IEX_QUOTE__LATEST_PRICE
-  IEX_QUOTE__LATEST_SOURCE
-  IEX_QUOTE__LATEST_TIME
-  IEX_QUOTE__LATEST_UPDATE
-  IEX_QUOTE__LATEST_VOLUME
-  IEX_QUOTE__LOW
-  IEX_QUOTE__MARKET_CAP
-  IEX_QUOTE__OPEN
-  IEX_QUOTE__OPEN_TIME
-  IEX_QUOTE__PREVIOUS_CLOSE
-  IEX_QUOTE__SYMBOL
-  IEX_QUOTE__WEEK_52_HIGH
-  IEX_QUOTE__WEEK_52_LOW
-  IEX_QUOTE__YTD_CHANGE
-}
-
 """The provider for the data provided by the data key"""
 enum DataKey_Provider {
   """IEX Cloud (see `https://iexcloud.io/`)"""
@@ -126,7 +18,7 @@ A single data key option that can be selected for a stock portfolio header
 """
 type DataKeyOption {
   """A unique data key for fetching stock portfolio data"""
-  dataKey: DataKey
+  dataKey: String
 
   """A description of the data that is fetched with this data key"""
   description: String
@@ -139,50 +31,6 @@ type DataKeyOption {
 }
 
 scalar DateTime
-
-input DateTimeFilter {
-  equals: DateTime
-  gt: DateTime
-  gte: DateTime
-  in: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  not: DateTime
-  notIn: [DateTime!]
-}
-
-"""Search items based on date-time property"""
-input DateTimeInput {
-  """Date: DD in (MM/DD/YYYY), indexed from 1"""
-  day: Int
-
-  """Hours of the day (can be 0-23)"""
-  hours: Int
-
-  """Milliseconds of the second (can be from 0-999)"""
-  milliseconds: Int
-
-  """Minutes of the hour (can be 0-59)"""
-  minutes: Int
-
-  """Date: MM in (MM/DD/YYYY), indexed from 1"""
-  month: Int
-
-  """Seconds of the minute (can be 0-59)"""
-  seconds: Int
-
-  """Date: YYYY in (MM/DD/YYYY), indexed from 1"""
-  year: Int!
-}
-
-input DeleteStockPortfolioInput {
-  """Id of the stock portfolio to delete"""
-  id: ID!
-}
-
-type DeleteStockPortfolioPayload {
-  stockPortfolio: StockPortfolio!
-}
 
 """
 A field whose value conforms to the standard internet email address format as
@@ -216,8 +64,8 @@ input LoginLocalUserInput {
 
 """Root mutation type"""
 type Mutation implements RequestRoot {
-  createStockPortfolio(input: CreateStockPortfolioInput!): CreateStockPortfolioPayload
-  deleteStockPortfolio(input: DeleteStockPortfolioInput!): DeleteStockPortfolioPayload
+  createOneStockPortfolio(data: StockPortfolioCreateInput!): StockPortfolio!
+  deleteOneStockPortfolio(where: StockPortfolioWhereUniqueInput!): StockPortfolio
 
   """Logins in the user, and returns an expiring access token"""
   loginLocalUser(input: LoginLocalUserInput!): TokenPayload
@@ -230,7 +78,7 @@ type Mutation implements RequestRoot {
 
   """Resends the account verification email to the logged-in user"""
   resendVerifyEmail: ResendVerifyEmailPayload
-  updateStockPortfolio(input: UpdateStockPortfolioInput!): UpdateStockPortfolioPayload
+  updateOneStockPortfolio(data: StockPortfolioUpdateInput!): StockPortfolio!
 
   """The viewer of this request"""
   viewer: Viewer
@@ -316,10 +164,8 @@ type StockPortfolio {
   user: User!
 }
 
-input StockPortfolioFilter {
-  every: StockPortfolioWhereInput
-  none: StockPortfolioWhereInput
-  some: StockPortfolioWhereInput
+input StockPortfolioCreateInput {
+  name: String!
 }
 
 """A column configuration for the stock portfolio on the data grid"""
@@ -339,8 +185,9 @@ input StockPortfolioHeaderFilter {
 
 input StockPortfolioHeaderInput {
   dataKey: String!
+  frozen: Boolean!
   name: String!
-  tickers: [String!]!
+  resizable: Boolean!
   width: Int!
 }
 
@@ -362,22 +209,24 @@ input StockPortfolioHeaderWhereUniqueInput {
 }
 
 input StockPortfolioOrderByInput {
-  createdAt: OrderByArg
   id: OrderByArg
   name: OrderByArg
-  updatedAt: OrderByArg
+}
+
+input StockPortfolioUpdateInput {
+  headers: [StockPortfolioHeaderInput!]
+  id: ID!
+  name: String
+  tickers: [String!]
 }
 
 input StockPortfolioWhereInput {
   AND: [StockPortfolioWhereInput!]
-  createdAt: DateTimeFilter
   headers: StockPortfolioHeaderFilter
   id: UUIDFilter
   name: StringFilter
   NOT: [StockPortfolioWhereInput!]
   OR: [StockPortfolioWhereInput!]
-  updatedAt: DateTimeFilter
-  user: UserWhereInput
 }
 
 input StockPortfolioWhereUniqueInput {
@@ -407,21 +256,6 @@ type TokenPayload {
   token: String!
 }
 
-input UpdateStockPortfolioInput {
-  """Headers for this data grid, including how data is resolved"""
-  headers: [StockPortfolioHeaderInput!]
-
-  """The ID of the stock portfolio to update"""
-  id: ID!
-
-  """The tickers that are the rows for this data grid"""
-  tickers: [String!]
-}
-
-type UpdateStockPortfolioPayload {
-  stockPortfolio: StockPortfolio!
-}
-
 """Basic user of the application"""
 type User {
   createdAt: DateTime!
@@ -437,20 +271,6 @@ type User {
 """The plain-text password of a user to be hashed"""
 scalar UserPassword
 
-input UserWhereInput {
-  AND: [UserWhereInput!]
-  createdAt: DateTimeFilter
-  email: StringFilter
-  emailVerified: BooleanFilter
-  id: UUIDFilter
-  NOT: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  password: StringFilter
-  stockPortfolios: StockPortfolioFilter
-  updatedAt: DateTimeFilter
-  username: StringFilter
-}
-
 scalar UUID
 
 input UUIDFilter {
@@ -465,24 +285,6 @@ input UUIDFilter {
   not: UUID
   notIn: [UUID!]
   startsWith: UUID
-}
-
-"""Search items based on a range, or fuzzy date"""
-input VariableDateTimeInput {
-  """
-  Returns items such that this property comes after the specified date-time
-  """
-  after: DateTimeInput
-
-  """
-  Returns items such that this property comes before the specified date-time
-  """
-  before: DateTimeInput
-
-  """
-  Returns items such that this property's date-time contains exactly the fields as 				specifed
-  """
-  equal: DateTimeInput
 }
 
 """The viewer of this request"""

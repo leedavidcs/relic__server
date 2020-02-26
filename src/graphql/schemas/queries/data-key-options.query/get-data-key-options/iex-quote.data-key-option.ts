@@ -1,5 +1,4 @@
-import { IexQuoteDataKeys, IexQuoteSuffixToPropMap, PREFIX_PROP_DELIMITER } from "@/mongodb";
-import { DataKey, DataKeyOption, DataKey_Provider } from "@/types";
+import { IexQuoteDataKeys, IexQuoteSuffixToPropMap, PREFIX_PROP_DELIMITER } from "@/data-keys";
 
 export const IexQuoteDataKeyOptions = Object.keys(IexQuoteDataKeys).reduce((acc, dataKey) => {
 	const [, suffix] = dataKey.split(PREFIX_PROP_DELIMITER);
@@ -7,8 +6,8 @@ export const IexQuoteDataKeyOptions = Object.keys(IexQuoteDataKeys).reduce((acc,
 
 	return acc.concat({
 		name: `iex.quote.${prop}`,
-		dataKey: dataKey as DataKey,
+		dataKey,
 		description: `Property (${prop}) in Quote. (see: https://iexcloud.io/docs/api/#quote)`,
-		provider: "IEX Cloud" as DataKey_Provider
+		provider: "IEX Cloud"
 	});
-}, [] as DataKeyOption[]);
+}, [] as any[]);

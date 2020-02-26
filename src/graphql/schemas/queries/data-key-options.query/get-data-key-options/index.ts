@@ -1,4 +1,3 @@
-import { DataKeyOption } from "@/types";
 import { IexCompanyDataKeyOptions } from "./iex-company.data-key-option";
 import { IexKeyStatsDataKeyOptions } from "./iex-key-stats-data-key-option";
 import { IexPreviousDayPriceDataKeyOptions } from "./iex-previous-day-price.data-key";
@@ -15,7 +14,7 @@ interface IGetDataKeyOptions {
 }
 
 export const getDataKeyOptions = ({ name, dataKey, provider }: IGetDataKeyOptions) => {
-	const options: DataKeyOption[] = [
+	const options = [
 		...IexCompanyDataKeyOptions,
 		...IexKeyStatsDataKeyOptions,
 		...IexPreviousDayPriceDataKeyOptions,

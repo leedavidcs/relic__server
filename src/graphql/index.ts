@@ -8,13 +8,9 @@ import { ParameterizedContext } from "koa";
 import { deriveApolloContext } from "./context";
 import { applyMiddlewaresToSchema } from "./middlewares";
 import { getPlugins } from "./plugins";
-import { applyResolversToSchema } from "./resolvers";
 import { nexusSchema } from "./schemas";
 import { getValidationRules } from "./validation-rules";
 
-export * from "./inputs";
-export * from "./pagination";
-export * from "./resolvers";
 export * from "./context";
 
 const cacheHost: string = process.env.REDIS_GRAPHQL_HOST || "";
@@ -42,8 +38,7 @@ export const getApolloServer = <C extends ApolloServerBase, P extends Record<str
 		prisma
 	} = options;
 
-	const schemaWithResolvers: GraphQLSchema = applyResolversToSchema(nexusSchema);
-	const schemaWithMiddlewares: GraphQLSchema = applyMiddlewaresToSchema(schemaWithResolvers);
+	const schemaWithMiddlewares: GraphQLSchema = applyMiddlewaresToSchema(nexusSchema);
 	const schema: GraphQLSchema = schemaWithMiddlewares;
 
 	const config: Config = {

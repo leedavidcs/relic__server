@@ -1,18 +1,7 @@
 import { getAuthorizedUserId, IWithUser } from "@/authentication";
-import { AbstractConnector, connectors } from "@/connectors";
-import { getLoaders } from "@/dataloaders";
 import { dataSources } from "@/datasources";
 import { PrismaClient, User } from "@prisma/client";
-import DataLoader from "dataloader";
 import { ParameterizedContext } from "koa";
-
-interface IContextConnectors {
-	[key: string]: AbstractConnector;
-}
-
-interface IContextLoaders {
-	[key: string]: DataLoader<any, any>;
-}
 
 interface IDeriveApolloContextInput {
 	headers: Record<string, string>;
@@ -20,14 +9,9 @@ interface IDeriveApolloContextInput {
 	prisma: PrismaClient;
 }
 
-export interface IServerContext<
-	C extends IContextConnectors = typeof connectors,
-	L extends IContextLoaders = ReturnType<typeof getLoaders>
-> {
-	connectors: C;
+export interface IServerContext {
 	dataSources: ReturnType<typeof dataSources>;
 	headers: { [key: string]: string };
-	loaders: L;
 	koaCtx: ParameterizedContext<IWithUser> | null;
 	prisma: PrismaClient;
 	user: User | null;
@@ -43,15 +27,12 @@ export const deriveApolloContext = async ({
 	koaCtx,
 	prisma
 }: IDeriveApolloContextInput) => {
-	const loaders = getLoaders();
 	const userId: string | null = koaCtx ? getAuthorizedUserId(koaCtx) : null;
 
 	const user: User | null = userId ? await prisma.user.findOne({ where: { id: userId } }) : null;
 
 	const apolloContext: Omit<IServerContext, "dataSources"> = {
-		connectors,
 		headers,
-		loaders,
 		koaCtx,
 		prisma,
 		user

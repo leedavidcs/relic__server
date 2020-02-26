@@ -28,7 +28,14 @@ export const nexusSchema = makeSchema({
 		output: false
 	},
 	plugins: [
-		nexusPrismaPlugin({ outputs: { typegen: nexusTypegenPath } }),
+		nexusPrismaPlugin({
+			outputs: { typegen: nexusTypegenPath },
+			computedInputs: {
+				user: ({ ctx }) => ({ connect: { id: ctx.user.id } }),
+				createdAt: () => undefined,
+				updatedAt: () => undefined
+			}
+		}),
 		queryComplexityPlugin()
 	],
 	typegenAutoConfig: {

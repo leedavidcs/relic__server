@@ -4,23 +4,19 @@ import {
 	IexPreviousDayPriceSuffixToPropMap,
 	Prefixes,
 	PREFIX_PROP_DELIMITER
-} from "@/mongodb";
+} from "@/data-keys";
 import { PreviousDay } from "iexcloud_api_wrapper";
 
 export const getIexPreviousDayPriceData = async (
 	ticker: string,
 	groupedKeys: { [key in keyof typeof Prefixes]: readonly string[] },
-	context: IServerContext
+	{ dataSources: { IexAPI } }: IServerContext
 ): Promise<{ [key in keyof typeof DataKeys]?: any }> => {
 	const iexPreviousDayPriceKeys: readonly string[] = groupedKeys[Prefixes.IEX_PREVIOUS_DAY_PRICE];
 
 	if (!iexPreviousDayPriceKeys) {
 		return {};
 	}
-
-	const {
-		dataSources: { IexAPI }
-	} = context;
 
 	const previousDayPrice: PreviousDay = await IexAPI.getPreviousDayPrice(ticker);
 

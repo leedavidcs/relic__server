@@ -23,31 +23,6 @@ export interface NexusGenInputs {
     equals?: boolean | null; // Boolean
     not?: boolean | null; // Boolean
   }
-  CreateStockPortfolioInput: { // input type
-    name?: string | null; // String
-  }
-  DateTimeFilter: { // input type
-    equals?: any | null; // DateTime
-    gt?: any | null; // DateTime
-    gte?: any | null; // DateTime
-    in?: any[] | null; // [DateTime!]
-    lt?: any | null; // DateTime
-    lte?: any | null; // DateTime
-    not?: any | null; // DateTime
-    notIn?: any[] | null; // [DateTime!]
-  }
-  DateTimeInput: { // input type
-    day?: number | null; // Int
-    hours?: number | null; // Int
-    milliseconds?: number | null; // Int
-    minutes?: number | null; // Int
-    month?: number | null; // Int
-    seconds?: number | null; // Int
-    year: number; // Int!
-  }
-  DeleteStockPortfolioInput: { // input type
-    id: string; // ID!
-  }
   IntFilter: { // input type
     equals?: number | null; // Int
     gt?: number | null; // Int
@@ -70,10 +45,8 @@ export interface NexusGenInputs {
     password: any; // UserPassword!
     username: string; // String!
   }
-  StockPortfolioFilter: { // input type
-    every?: NexusGenInputs['StockPortfolioWhereInput'] | null; // StockPortfolioWhereInput
-    none?: NexusGenInputs['StockPortfolioWhereInput'] | null; // StockPortfolioWhereInput
-    some?: NexusGenInputs['StockPortfolioWhereInput'] | null; // StockPortfolioWhereInput
+  StockPortfolioCreateInput: { // input type
+    name: string; // String!
   }
   StockPortfolioHeaderFilter: { // input type
     every?: NexusGenInputs['StockPortfolioHeaderWhereInput'] | null; // StockPortfolioHeaderWhereInput
@@ -82,8 +55,9 @@ export interface NexusGenInputs {
   }
   StockPortfolioHeaderInput: { // input type
     dataKey: string; // String!
+    frozen: boolean; // Boolean!
     name: string; // String!
-    tickers: string[]; // [String!]!
+    resizable: boolean; // Boolean!
     width: number; // Int!
   }
   StockPortfolioHeaderWhereInput: { // input type
@@ -102,21 +76,22 @@ export interface NexusGenInputs {
     id?: string | null; // String
   }
   StockPortfolioOrderByInput: { // input type
-    createdAt?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     id?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
     name?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
-    updatedAt?: NexusGenEnums['OrderByArg'] | null; // OrderByArg
+  }
+  StockPortfolioUpdateInput: { // input type
+    headers?: NexusGenInputs['StockPortfolioHeaderInput'][] | null; // [StockPortfolioHeaderInput!]
+    id: string; // ID!
+    name?: string | null; // String
+    tickers?: string[] | null; // [String!]
   }
   StockPortfolioWhereInput: { // input type
     AND?: NexusGenInputs['StockPortfolioWhereInput'][] | null; // [StockPortfolioWhereInput!]
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
     headers?: NexusGenInputs['StockPortfolioHeaderFilter'] | null; // StockPortfolioHeaderFilter
     id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
     name?: NexusGenInputs['StringFilter'] | null; // StringFilter
     NOT?: NexusGenInputs['StockPortfolioWhereInput'][] | null; // [StockPortfolioWhereInput!]
     OR?: NexusGenInputs['StockPortfolioWhereInput'][] | null; // [StockPortfolioWhereInput!]
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    user?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
   }
   StockPortfolioWhereUniqueInput: { // input type
     id?: string | null; // String
@@ -147,49 +122,19 @@ export interface NexusGenInputs {
     notIn?: any[] | null; // [UUID!]
     startsWith?: any | null; // UUID
   }
-  UpdateStockPortfolioInput: { // input type
-    headers?: NexusGenInputs['StockPortfolioHeaderInput'][] | null; // [StockPortfolioHeaderInput!]
-    id: string; // ID!
-    tickers?: string[] | null; // [String!]
-  }
-  UserWhereInput: { // input type
-    AND?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    createdAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    email?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    emailVerified?: NexusGenInputs['BooleanFilter'] | null; // BooleanFilter
-    id?: NexusGenInputs['UUIDFilter'] | null; // UUIDFilter
-    NOT?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    OR?: NexusGenInputs['UserWhereInput'][] | null; // [UserWhereInput!]
-    password?: NexusGenInputs['StringFilter'] | null; // StringFilter
-    stockPortfolios?: NexusGenInputs['StockPortfolioFilter'] | null; // StockPortfolioFilter
-    updatedAt?: NexusGenInputs['DateTimeFilter'] | null; // DateTimeFilter
-    username?: NexusGenInputs['StringFilter'] | null; // StringFilter
-  }
-  VariableDateTimeInput: { // input type
-    after?: NexusGenInputs['DateTimeInput'] | null; // DateTimeInput
-    before?: NexusGenInputs['DateTimeInput'] | null; // DateTimeInput
-    equal?: NexusGenInputs['DateTimeInput'] | null; // DateTimeInput
-  }
 }
 
 export interface NexusGenEnums {
-  DataKey: "IEX_COMPANY__CEO" | "IEX_COMPANY__COMPANY_NAME" | "IEX_COMPANY__DESCRIPTION" | "IEX_COMPANY__EMPLOYEES" | "IEX_COMPANY__EXCHANGE" | "IEX_COMPANY__INDUSTRY" | "IEX_COMPANY__ISSUE_TYPE" | "IEX_COMPANY__SECTOR" | "IEX_COMPANY__SECURITY_NAME" | "IEX_COMPANY__SYMBOL" | "IEX_COMPANY__TAGS" | "IEX_COMPANY__WEBSITE" | "IEX_KEY_STATS__AVG_10_VOLUME" | "IEX_KEY_STATS__AVG_30_VOLUME" | "IEX_KEY_STATS__BETA" | "IEX_KEY_STATS__COMPANY_NAME" | "IEX_KEY_STATS__DAY_200_MOVINGAVG" | "IEX_KEY_STATS__DAY_30_CHANGE_PERCENT" | "IEX_KEY_STATS__DAY_5_CHANGE_PERCENT" | "IEX_KEY_STATS__DAY_50_MOVINGAVG" | "IEX_KEY_STATS__DIVIDEND_YIELD" | "IEX_KEY_STATS__EMPLOYEES" | "IEX_KEY_STATS__EX_DIVIDEND_DATE" | "IEX_KEY_STATS__FLOAT" | "IEX_KEY_STATS__MARKET_CAP" | "IEX_KEY_STATS__MAX_CHANGE_PERCENT" | "IEX_KEY_STATS__MONTH_1_CHANGE_PERCENT" | "IEX_KEY_STATS__MONTH_3_CHANGE_PERCENT" | "IEX_KEY_STATS__MONTH_6_CHANGE_PERCENT" | "IEX_KEY_STATS__NEXT_DIVIDEND_DATE" | "IEX_KEY_STATS__NEXT_EARNINGS_DATE" | "IEX_KEY_STATS__PE_RATIO" | "IEX_KEY_STATS__SHARES_OUTSTANDING" | "IEX_KEY_STATS__SYMBOL" | "IEX_KEY_STATS__TTM_DIVIDEND_RATE" | "IEX_KEY_STATS__TTM_EPS" | "IEX_KEY_STATS__WEEK_52_CHANGE" | "IEX_KEY_STATS__WEEK_52_HIGH" | "IEX_KEY_STATS__WEEK_52_LOW" | "IEX_KEY_STATS__YEAR_1_CHANGE_PERCENT" | "IEX_KEY_STATS__YEAR_2_CHANGE_PERCENT" | "IEX_KEY_STATS__YEAR_5_CHANGE_PERCENT" | "IEX_KEY_STATS__YTD_CHANGE_PERCENT" | "IEX_PREVIOUS_DAY_PRICE__CHANGE" | "IEX_PREVIOUS_DAY_PRICE__CHANGE_PERCENT" | "IEX_PREVIOUS_DAY_PRICE__CLOSE" | "IEX_PREVIOUS_DAY_PRICE__DATE" | "IEX_PREVIOUS_DAY_PRICE__HIGH" | "IEX_PREVIOUS_DAY_PRICE__LOW" | "IEX_PREVIOUS_DAY_PRICE__OPEN" | "IEX_PREVIOUS_DAY_PRICE__SYMBOL" | "IEX_PREVIOUS_DAY_PRICE__UNADJUSTED_VOLUME" | "IEX_PREVIOUS_DAY_PRICE__VOLUME" | "IEX_QUOTE__AVG_TOTAL_VOLUME" | "IEX_QUOTE__CALCULATION_PRICE" | "IEX_QUOTE__CHANGE" | "IEX_QUOTE__CHANGE_PERCENT" | "IEX_QUOTE__CLOSE" | "IEX_QUOTE__CLOSE_TIME" | "IEX_QUOTE__COMPANY_NAME" | "IEX_QUOTE__DELAYED_PRICE" | "IEX_QUOTE__DELAYED_PRICE_TIME" | "IEX_QUOTE__EXTENDED_CHANGE" | "IEX_QUOTE__EXTENDED_CHANGE_PERCENT" | "IEX_QUOTE__EXTENDED_PRICE" | "IEX_QUOTE__EXTENDED_PRICE_TIME" | "IEX_QUOTE__HIGH" | "IEX_QUOTE__IEX_ASK_PRICE" | "IEX_QUOTE__IEX_ASK_SIZE" | "IEX_QUOTE__IEX_BID_PRICE" | "IEX_QUOTE__IEX_BID_SIZE" | "IEX_QUOTE__IEX_LAST_UPDATED" | "IEX_QUOTE__IEX_MARKET_PERCENT" | "IEX_QUOTE__IEX_REAL_TIME_PRICE" | "IEX_QUOTE__IEX_REAL_TIME_SIZE" | "IEX_QUOTE__IEX_VOLUME" | "IEX_QUOTE__LATEST_PRICE" | "IEX_QUOTE__LATEST_SOURCE" | "IEX_QUOTE__LATEST_TIME" | "IEX_QUOTE__LATEST_UPDATE" | "IEX_QUOTE__LATEST_VOLUME" | "IEX_QUOTE__LOW" | "IEX_QUOTE__MARKET_CAP" | "IEX_QUOTE__OPEN" | "IEX_QUOTE__OPEN_TIME" | "IEX_QUOTE__PREVIOUS_CLOSE" | "IEX_QUOTE__SYMBOL" | "IEX_QUOTE__WEEK_52_HIGH" | "IEX_QUOTE__WEEK_52_LOW" | "IEX_QUOTE__YTD_CHANGE"
   DataKey_Provider: "IEX_CLOUD"
   OrderByArg: "asc" | "desc"
 }
 
 export interface NexusGenRootTypes {
-  CreateStockPortfolioPayload: { // root type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
-  }
   DataKeyOption: { // root type
-    dataKey?: NexusGenEnums['DataKey'] | null; // DataKey
+    dataKey?: string | null; // String
     description?: string | null; // String
     name?: string | null; // String
     provider?: NexusGenEnums['DataKey_Provider'] | null; // DataKey_Provider
-  }
-  DeleteStockPortfolioPayload: { // root type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
   }
   Mutation: {};
   Query: {};
@@ -219,9 +164,6 @@ export interface NexusGenRootTypes {
     refreshToken: string; // String!
     token: string; // String!
   }
-  UpdateStockPortfolioPayload: { // root type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
-  }
   User: { // root type
     createdAt: any; // DateTime!
     email?: any | null; // EmailAddress
@@ -242,7 +184,6 @@ export interface NexusGenRootTypes {
   Float: number;
   Boolean: boolean;
   ID: string;
-  Cursor: any;
   DateTime: any;
   EmailAddress: any;
   JSONObject: any;
@@ -252,53 +193,40 @@ export interface NexusGenRootTypes {
 
 export interface NexusGenAllTypes extends NexusGenRootTypes {
   BooleanFilter: NexusGenInputs['BooleanFilter'];
-  CreateStockPortfolioInput: NexusGenInputs['CreateStockPortfolioInput'];
-  DateTimeFilter: NexusGenInputs['DateTimeFilter'];
-  DateTimeInput: NexusGenInputs['DateTimeInput'];
-  DeleteStockPortfolioInput: NexusGenInputs['DeleteStockPortfolioInput'];
   IntFilter: NexusGenInputs['IntFilter'];
   LoginLocalUserInput: NexusGenInputs['LoginLocalUserInput'];
   RefreshAccessTokenInput: NexusGenInputs['RefreshAccessTokenInput'];
   RegisterLocalUserInput: NexusGenInputs['RegisterLocalUserInput'];
-  StockPortfolioFilter: NexusGenInputs['StockPortfolioFilter'];
+  StockPortfolioCreateInput: NexusGenInputs['StockPortfolioCreateInput'];
   StockPortfolioHeaderFilter: NexusGenInputs['StockPortfolioHeaderFilter'];
   StockPortfolioHeaderInput: NexusGenInputs['StockPortfolioHeaderInput'];
   StockPortfolioHeaderWhereInput: NexusGenInputs['StockPortfolioHeaderWhereInput'];
   StockPortfolioHeaderWhereUniqueInput: NexusGenInputs['StockPortfolioHeaderWhereUniqueInput'];
   StockPortfolioOrderByInput: NexusGenInputs['StockPortfolioOrderByInput'];
+  StockPortfolioUpdateInput: NexusGenInputs['StockPortfolioUpdateInput'];
   StockPortfolioWhereInput: NexusGenInputs['StockPortfolioWhereInput'];
   StockPortfolioWhereUniqueInput: NexusGenInputs['StockPortfolioWhereUniqueInput'];
   StringFilter: NexusGenInputs['StringFilter'];
   UUIDFilter: NexusGenInputs['UUIDFilter'];
-  UpdateStockPortfolioInput: NexusGenInputs['UpdateStockPortfolioInput'];
-  UserWhereInput: NexusGenInputs['UserWhereInput'];
-  VariableDateTimeInput: NexusGenInputs['VariableDateTimeInput'];
-  DataKey: NexusGenEnums['DataKey'];
   DataKey_Provider: NexusGenEnums['DataKey_Provider'];
   OrderByArg: NexusGenEnums['OrderByArg'];
 }
 
 export interface NexusGenFieldTypes {
-  CreateStockPortfolioPayload: { // field return type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
-  }
   DataKeyOption: { // field return type
-    dataKey: NexusGenEnums['DataKey'] | null; // DataKey
+    dataKey: string | null; // String
     description: string | null; // String
     name: string | null; // String
     provider: NexusGenEnums['DataKey_Provider'] | null; // DataKey_Provider
   }
-  DeleteStockPortfolioPayload: { // field return type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
-  }
   Mutation: { // field return type
-    createStockPortfolio: NexusGenRootTypes['CreateStockPortfolioPayload'] | null; // CreateStockPortfolioPayload
-    deleteStockPortfolio: NexusGenRootTypes['DeleteStockPortfolioPayload'] | null; // DeleteStockPortfolioPayload
+    createOneStockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
+    deleteOneStockPortfolio: NexusGenRootTypes['StockPortfolio'] | null; // StockPortfolio
     loginLocalUser: NexusGenRootTypes['TokenPayload'] | null; // TokenPayload
     refreshAccessToken: NexusGenRootTypes['TokenPayload'] | null; // TokenPayload
     registerLocalUser: NexusGenRootTypes['RegisterLocalUserPayload'] | null; // RegisterLocalUserPayload
     resendVerifyEmail: NexusGenRootTypes['ResendVerifyEmailPayload'] | null; // ResendVerifyEmailPayload
-    updateStockPortfolio: NexusGenRootTypes['UpdateStockPortfolioPayload'] | null; // UpdateStockPortfolioPayload
+    updateOneStockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
   Query: { // field return type
@@ -335,9 +263,6 @@ export interface NexusGenFieldTypes {
     refreshToken: string; // String!
     token: string; // String!
   }
-  UpdateStockPortfolioPayload: { // field return type
-    stockPortfolio: NexusGenRootTypes['StockPortfolio']; // StockPortfolio!
-  }
   User: { // field return type
     createdAt: any; // DateTime!
     email: any | null; // EmailAddress
@@ -359,11 +284,11 @@ export interface NexusGenFieldTypes {
 
 export interface NexusGenArgTypes {
   Mutation: {
-    createStockPortfolio: { // args
-      input: NexusGenInputs['CreateStockPortfolioInput']; // CreateStockPortfolioInput!
+    createOneStockPortfolio: { // args
+      data: NexusGenInputs['StockPortfolioCreateInput']; // StockPortfolioCreateInput!
     }
-    deleteStockPortfolio: { // args
-      input: NexusGenInputs['DeleteStockPortfolioInput']; // DeleteStockPortfolioInput!
+    deleteOneStockPortfolio: { // args
+      where: NexusGenInputs['StockPortfolioWhereUniqueInput']; // StockPortfolioWhereUniqueInput!
     }
     loginLocalUser: { // args
       input: NexusGenInputs['LoginLocalUserInput']; // LoginLocalUserInput!
@@ -374,8 +299,8 @@ export interface NexusGenArgTypes {
     registerLocalUser: { // args
       input: NexusGenInputs['RegisterLocalUserInput']; // RegisterLocalUserInput!
     }
-    updateStockPortfolio: { // args
-      input: NexusGenInputs['UpdateStockPortfolioInput']; // UpdateStockPortfolioInput!
+    updateOneStockPortfolio: { // args
+      data: NexusGenInputs['StockPortfolioUpdateInput']; // StockPortfolioUpdateInput!
     }
   }
   Query: {
@@ -411,15 +336,15 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "CreateStockPortfolioPayload" | "DataKeyOption" | "DeleteStockPortfolioPayload" | "Mutation" | "Query" | "RegisterLocalUserPayload" | "ResendVerifyEmailPayload" | "StockPortfolio" | "StockPortfolioHeader" | "TokenPayload" | "UpdateStockPortfolioPayload" | "User" | "Viewer";
+export type NexusGenObjectNames = "DataKeyOption" | "Mutation" | "Query" | "RegisterLocalUserPayload" | "ResendVerifyEmailPayload" | "StockPortfolio" | "StockPortfolioHeader" | "TokenPayload" | "User" | "Viewer";
 
-export type NexusGenInputNames = "BooleanFilter" | "CreateStockPortfolioInput" | "DateTimeFilter" | "DateTimeInput" | "DeleteStockPortfolioInput" | "IntFilter" | "LoginLocalUserInput" | "RefreshAccessTokenInput" | "RegisterLocalUserInput" | "StockPortfolioFilter" | "StockPortfolioHeaderFilter" | "StockPortfolioHeaderInput" | "StockPortfolioHeaderWhereInput" | "StockPortfolioHeaderWhereUniqueInput" | "StockPortfolioOrderByInput" | "StockPortfolioWhereInput" | "StockPortfolioWhereUniqueInput" | "StringFilter" | "UUIDFilter" | "UpdateStockPortfolioInput" | "UserWhereInput" | "VariableDateTimeInput";
+export type NexusGenInputNames = "BooleanFilter" | "IntFilter" | "LoginLocalUserInput" | "RefreshAccessTokenInput" | "RegisterLocalUserInput" | "StockPortfolioCreateInput" | "StockPortfolioHeaderFilter" | "StockPortfolioHeaderInput" | "StockPortfolioHeaderWhereInput" | "StockPortfolioHeaderWhereUniqueInput" | "StockPortfolioOrderByInput" | "StockPortfolioUpdateInput" | "StockPortfolioWhereInput" | "StockPortfolioWhereUniqueInput" | "StringFilter" | "UUIDFilter";
 
-export type NexusGenEnumNames = "DataKey" | "DataKey_Provider" | "OrderByArg";
+export type NexusGenEnumNames = "DataKey_Provider" | "OrderByArg";
 
 export type NexusGenInterfaceNames = "RequestRoot";
 
-export type NexusGenScalarNames = "Boolean" | "Cursor" | "DateTime" | "EmailAddress" | "Float" | "ID" | "Int" | "JSONObject" | "String" | "UUID" | "UserPassword";
+export type NexusGenScalarNames = "Boolean" | "DateTime" | "EmailAddress" | "Float" | "ID" | "Int" | "JSONObject" | "String" | "UUID" | "UserPassword";
 
 export type NexusGenUnionNames = never;
 

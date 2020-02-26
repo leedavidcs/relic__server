@@ -1,6 +1,5 @@
 import { applyAuthentication } from "@/authentication";
 import { getApolloServer } from "@/graphql";
-import { closeDatabase, connectToDatabase } from "@/mongodb";
 import { getPrismaClient } from "@/prisma";
 import { Logger } from "@/utils";
 import { PrismaClient } from "@prisma/client";
@@ -68,7 +67,6 @@ export class Server {
 
 	public async configure(): Promise<void> {
 		await this.prisma.connect().then(() => Logger.info("Connected to Prisma"));
-		await connectToDatabase();
 
 		applyAuthentication(this);
 		applyMiddlewares(this);
@@ -78,6 +76,5 @@ export class Server {
 
 	public async prepareStop(): Promise<void> {
 		await this.prisma.disconnect().then(() => Logger.info("Disconnected from Prisma"));
-		await closeDatabase();
 	}
 }
