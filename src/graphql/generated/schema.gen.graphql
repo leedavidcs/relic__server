@@ -104,6 +104,7 @@ type Query implements RequestRoot {
     """Filter by provider (partial works)"""
     provider: String
   ): [DataKeyOption!]!
+  stockPortfolio(where: StockPortfolioWhereUniqueInput!): StockPortfolio
   stockPortfolios(after: StockPortfolioWhereUniqueInput, before: StockPortfolioWhereUniqueInput, first: Int, last: Int, orderBy: StockPortfolioOrderByInput, skip: Int, where: StockPortfolioWhereInput): [StockPortfolio!]!
 
   """The viewer of this request"""
@@ -290,14 +291,14 @@ input UUIDFilter {
 """The viewer of this request"""
 type Viewer {
   """The viewer's email"""
-  email: String
+  email: String!
 
   """Whether this viewer verified their email address"""
-  emailVerified: Boolean
+  emailVerified: Boolean!
 
   """The viewer's id"""
-  id: ID
+  id: ID!
 
   """The viewer's username"""
-  username: String
+  username: String!
 }
