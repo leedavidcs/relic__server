@@ -173,10 +173,10 @@ export interface NexusGenRootTypes {
     username: string; // String!
   }
   Viewer: { // root type
-    email?: string | null; // String
-    emailVerified?: boolean | null; // Boolean
-    id?: string | null; // ID
-    username?: string | null; // String
+    email: string; // String!
+    emailVerified: boolean; // Boolean!
+    id: string; // ID!
+    username: string; // String!
   }
   RequestRoot: NexusGenRootTypes['Query'] | NexusGenRootTypes['Mutation'];
   String: string;
@@ -231,6 +231,7 @@ export interface NexusGenFieldTypes {
   }
   Query: { // field return type
     dataKeyOptions: NexusGenRootTypes['DataKeyOption'][]; // [DataKeyOption!]!
+    stockPortfolio: NexusGenRootTypes['StockPortfolio'] | null; // StockPortfolio
     stockPortfolios: NexusGenRootTypes['StockPortfolio'][]; // [StockPortfolio!]!
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
   }
@@ -272,10 +273,10 @@ export interface NexusGenFieldTypes {
     username: string; // String!
   }
   Viewer: { // field return type
-    email: string | null; // String
-    emailVerified: boolean | null; // Boolean
-    id: string | null; // ID
-    username: string | null; // String
+    email: string; // String!
+    emailVerified: boolean; // Boolean!
+    id: string; // ID!
+    username: string; // String!
   }
   RequestRoot: { // field return type
     viewer: NexusGenRootTypes['Viewer'] | null; // Viewer
@@ -308,6 +309,9 @@ export interface NexusGenArgTypes {
       dataKey?: string | null; // String
       name?: string | null; // String
       provider?: string | null; // String
+    }
+    stockPortfolio: { // args
+      where: NexusGenInputs['StockPortfolioWhereUniqueInput']; // StockPortfolioWhereUniqueInput!
     }
     stockPortfolios: { // args
       after?: NexusGenInputs['StockPortfolioWhereUniqueInput'] | null; // StockPortfolioWhereUniqueInput
